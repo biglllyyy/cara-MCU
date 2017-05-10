@@ -1,0 +1,95 @@
+$CPUSERIES-911
+$Prj-Debug
+$0
+-g
+-w 1
+-I "..\core\src\hal"
+-I "..\core\src\comm"
+-I "..\core\src"
+-I "..\core\src\mid"
+-I "..\core\src\comm\crc"
+-I "..\core\src\comm\aes"
+-I "src\DataStore"
+-I "src\MB915xx"
+-I "src\flash"
+-I "src\io"
+-I "src\system"
+-I "src"
+-O 0
+-K LONGADDRESS
+-B
+-K NOSCHEDULE
+-K A1
+-K SARG
+-Xdof
+-INF STACK
+-K NOUNROLL
+$other
+$time
+1469177153
+$end
+$1
+-g
+-w 3
+-O 0
+-linf ON
+-lsrc ON
+-lsec ON
+-lcros OFF
+-linc ON
+-lexp OBJ
+-pl 60
+-pw 100
+-tab 8
+-Xdof
+$other
+$time
+1469005252
+$end
+$2
+-g
+-AL 2
+-ra _INRAM01=0x00010000/0x0001BFFF
+-ro _INROM01=0x00080000/0x000BFFFF
+-ro _INROM02=0x000FFC00/0x000FFFFF
+-ro _INROM03=0x00330000/0x0033FFFF
+-check_locate
+-m
+-mmi
+-pl 60
+-pw 132
+-Xals
+-Xalr
+-na
+-w 1
+-Xdof
+$other
+-l lib911if.lib
+-sc DATA/Data+INIT=_INRAM01
+-sc CODE+@INIT+CONST=_INROM01
+$time
+1469177183
+$end
+$3
+-dt s,d,r,a
+-pl 60
+-pw 132
+-g
+-Xdof
+$other
+$time
+1469177183
+$end
+$4
+-Xdof
+$other
+$time
+1469005252
+$end
+$5
+$other
+$time
+1469005252
+$end
+$Prjend
+$CPUSERIESEND

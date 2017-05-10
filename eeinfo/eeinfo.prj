@@ -1,0 +1,256 @@
+[Version]
+DLLVer=02.5010.00.2
+PRJVer=1
+
+[PRJKIND]
+mode=1
+
+[CPUTYPE]
+CpuSerise=911
+
+[DirInfo]
+PRJ=C:\Mac\yzkj\mcu\06software-mcu\eeinfo\
+
+[PrjInfo]
+Count=1
+PrjInfo-0=Debug
+Active=Debug
+
+[MEMBER]
+F0=27
+F1=0 l ..\core\Debug\ABS\core.lib
+F2=0 f Source Files
+F3=0 c src\flash_tool_main.c
+F4=0 h src\ft_version.h
+F5=0 f Source Files\MB915xx
+F6=0 c src\MB915xx\_fr.c
+F7=0 c src\MB915xx\KeyPortReg.c
+F8=0 a src\MB915xx\startup.asm
+F9=0 c src\MB915xx\vectors.c
+F10=0 f Source Files\stub
+F11=0 c src\stub\sbrk.c
+F12=0 c src\stub\stub.c
+F13=0 c src\stub\write.c
+F14=0 f Source Files\DataStore
+F15=0 c src\DataStore\app_data_store.c
+F16=0 h src\DataStore\app_data_store.h
+F17=0 f Source Files\io
+F18=0 c src\io\app_io.c
+F19=0 h src\io\app_io.h
+F20=0 h src\io\io_cfg.h
+F21=0 f Source Files\system
+F22=0 c src\system\app_system.c
+F23=0 h src\system\app_system.h
+F24=0 f Source Files\flash
+F25=0 c src\flash\FLASH.c
+F26=0 h src\flash\FLASH.h
+F27=0 f Include Files
+
+[OPTIONFILE]
+FILE=eeinfo.dat
+
+[CPUTYPE-Debug]
+CsvFile=Lib\911\911.csv
+CpuName=MB91F522KW
+Count=0
+
+[DirInfo-Debug]
+CONFIG=Debug\
+OBJ=Debug\OBJ\
+LST=Debug\LST\
+OPT=Debug\OPT\
+
+[MEMBER-Debug]
+F0=14
+F1=0 m 1 Debug\ABS\eeinfo.abs
+F2=0 l 1 ..\core\Debug\ABS\core.lib
+F3=5 c 1 src\stub\sbrk.c
+F3-1=- ..\..\..\..\..\Softune6\LIB\911\INCLUDE\stdio.h
+F3-2=- ..\..\..\..\..\Softune6\LIB\911\INCLUDE\stddef.h
+F3-3=- ..\..\..\..\..\Softune6\LIB\911\INCLUDE\stdarg.h
+F3-4=- ..\..\..\..\..\Softune6\LIB\911\INCLUDE\unistd.h
+F3-5=- ..\..\..\..\..\Softune6\LIB\911\INCLUDE\sys\types.h
+F4=6 c 1 src\stub\stub.c
+F4-1=- ..\..\..\..\..\Softune6\LIB\911\INCLUDE\stdio.h
+F4-2=- ..\..\..\..\..\Softune6\LIB\911\INCLUDE\stddef.h
+F4-3=- ..\..\..\..\..\Softune6\LIB\911\INCLUDE\stdarg.h
+F4-4=- ..\..\..\..\..\Softune6\LIB\911\INCLUDE\fcntl.h
+F4-5=- ..\..\..\..\..\Softune6\LIB\911\INCLUDE\unistd.h
+F4-6=- ..\..\..\..\..\Softune6\LIB\911\INCLUDE\sys\types.h
+F5=4 c 1 src\stub\write.c
+F5-1=- ..\..\..\..\..\Softune6\LIB\911\INCLUDE\unistd.h
+F5-2=- ..\..\..\..\..\Softune6\LIB\911\INCLUDE\sys\types.h
+F5-3=- ..\..\..\..\..\Softune6\LIB\911\INCLUDE\string.h
+F5-4=- ..\..\..\..\..\Softune6\LIB\911\INCLUDE\stddef.h
+F6=2 c 1 src\MB915xx\_fr.c
+F6-1=- src\MB915xx\_fr.h
+F6-2=- src\MB915xx\mb91520.h
+F7=0 c 1 src\MB915xx\KeyPortReg.c
+F8=0 a 1 src\MB915xx\startup.asm
+F9=3 c 1 src\MB915xx\vectors.c
+F9-1=- src\MB915xx\_fr.h
+F9-2=- src\MB915xx\mb91520.h
+F9-3=- ..\core\src\comm\comm_typedef.h
+F10=19 c 1 src\DataStore\app_data_store.c
+F10-1=- src\DataStore\app_data_store.h
+F10-2=- ..\core\src\mid\mid_data_store.h
+F10-3=- ..\core\src\mid\mid_flash.h
+F10-4=- ..\core\src\hal\hal_flash.h
+F10-5=- ..\..\..\..\..\Softune6\LIB\911\INCLUDE\string.h
+F10-6=- ..\..\..\..\..\Softune6\LIB\911\INCLUDE\stddef.h
+F10-7=- ..\..\..\..\..\Softune6\LIB\911\INCLUDE\stdlib.h
+F10-8=- ..\core\src\hal\hal_uart.h
+F10-9=- ..\core\src\comm\comm_typedef.h
+F10-10=- ..\core\src\comm\uart_queue.h
+F10-11=- ..\core\src\mid\mid_dbg.h
+F10-12=- ..\core\src\hal\hal_reload_timer.h
+F10-13=- ..\core\src\hal\hal_wdg.h
+F10-14=- ..\core\src\comm\aes\aes.h
+F10-15=- ..\core\src\comm\crc\crc16.h
+F10-16=- ..\core\src\mid\mid_string.h
+F10-17=- ..\core\src\g_variable.h
+F10-18=- ..\core\src\mid\mid_trip.h
+F10-19=- ..\core\src\mid\mid_filter.h
+F11=25 c 1 src\flash_tool_main.c
+F11-1=- ..\..\..\..\..\Softune6\LIB\911\INCLUDE\stdlib.h
+F11-2=- ..\..\..\..\..\Softune6\LIB\911\INCLUDE\stddef.h
+F11-3=- src\MB915xx\_fr.h
+F11-4=- src\MB915xx\mb91520.h
+F11-5=- ..\core\src\mid\mid_scheduler.h
+F11-6=- ..\core\src\comm\comm_typedef.h
+F11-7=- src\system\app_system.h
+F11-8=- ..\core\src\hal\hal_wdg.h
+F11-9=- ..\core\src\hal\hal_uart.h
+F11-10=- ..\core\src\comm\uart_queue.h
+F11-11=- ..\core\src\mid\mid_dbg.h
+F11-12=- ..\core\src\mid\mid_trip.h
+F11-13=- ..\core\src\comm\crc\crc16.h
+F11-14=- ..\core\src\comm\aes\aes.h
+F11-15=- ..\core\src\mid\mid_string.h
+F11-16=- ..\core\src\g_variable.h
+F11-17=- ..\core\src\mid\mid_filter.h
+F11-18=- ..\core\src\hal\hal_reload_timer.h
+F11-19=- ..\core\src\hal\hal_flash.h
+F11-20=- ..\..\..\..\..\Softune6\LIB\911\INCLUDE\string.h
+F11-21=- src\DataStore\app_data_store.h
+F11-22=- ..\core\src\mid\mid_data_store.h
+F11-23=- ..\core\src\mid\mid_flash.h
+F11-24=- src\ft_version.h
+F11-25=- src\flash\FLASH.h
+F12=13 c 1 src\io\app_io.c
+F12-1=- src\io\app_io.h
+F12-2=- ..\core\src\mid\mid_pin.h
+F12-3=- ..\core\src\hal\hal_gpio.h
+F12-4=- ..\core\src\comm\comm_typedef.h
+F12-5=- ..\core\src\mid\mid_filter.h
+F12-6=- src\io\io_cfg.h
+F12-7=- ..\core\src\function_cfg.h
+F12-8=- ..\core\src\mid\mid_led.h
+F12-9=- ..\core\src\g_variable.h
+F12-10=- ..\core\src\hal\hal_wdg.h
+F12-11=- src\MB915xx\KeyPortReg.h
+F12-12=- src\MB915xx\_fr.h
+F12-13=- src\MB915xx\mb91520.h
+F13=27 c 1 src\system\app_system.c
+F13-1=- ..\..\..\..\..\Softune6\LIB\911\INCLUDE\stdlib.h
+F13-2=- ..\..\..\..\..\Softune6\LIB\911\INCLUDE\stddef.h
+F13-3=- src\system\app_system.h
+F13-4=- ..\core\src\comm\comm_typedef.h
+F13-5=- ..\core\src\mid\mid_scheduler.h
+F13-6=- ..\core\src\mid\mid_switch.h
+F13-7=- ..\core\src\mid\mid_pin.h
+F13-8=- ..\core\src\hal\hal_gpio.h
+F13-9=- ..\core\src\mid\mid_filter.h
+F13-10=- ..\core\src\mid\mid_can.h
+F13-11=- ..\core\src\hal\hal_can.h
+F13-12=- ..\core\src\mid\mid_adc.h
+F13-13=- ..\core\src\mid\mid_ds1302.h
+F13-14=- ..\core\src\hal\hal_icu16.h
+F13-15=- ..\core\src\hal\hal_clock.h
+F13-16=- src\MB915xx\_fr.h
+F13-17=- src\MB915xx\mb91520.h
+F13-18=- ..\core\src\hal\hal_adc.h
+F13-19=- ..\core\src\hal\hal_reload_timer.h
+F13-20=- ..\core\src\hal\hal_uart.h
+F13-21=- ..\core\src\comm\uart_queue.h
+F13-22=- ..\core\src\g_variable.h
+F13-23=- ..\core\src\hal\hal_free_run_timer.h
+F13-24=- src\io\io_cfg.h
+F13-25=- ..\core\src\function_cfg.h
+F13-26=- src\io\app_io.h
+F13-27=- ..\core\src\mid\mid_dbg.h
+F14=14 c 1 src\flash\FLASH.c
+F14-1=- ..\..\..\..\..\Softune6\LIB\911\INCLUDE\stdlib.h
+F14-2=- ..\..\..\..\..\Softune6\LIB\911\INCLUDE\stddef.h
+F14-3=- ..\..\..\..\..\Softune6\LIB\911\INCLUDE\string.h
+F14-4=- src\flash\FLASH.h
+F14-5=- src\MB915xx\mb91520.h
+F14-6=- ..\core\src\mid\mid_dbg.h
+F14-7=- ..\core\src\hal\hal_uart.h
+F14-8=- ..\core\src\comm\comm_typedef.h
+F14-9=- ..\core\src\comm\uart_queue.h
+F14-10=- ..\core\src\hal\hal_reload_timer.h
+F14-11=- ..\core\src\hal\hal_wdg.h
+F14-12=- ..\core\src\mid\mid_string.h
+F14-13=- ..\core\src\hal\hal_flash.h
+F14-14=- ..\core\src\mid\mid_flash.h
+
+[BUILDMODE-Debug]
+kernel=1
+
+[RUNSET-Debug]
+CONVERT=1
+CONVERTKIND=0
+
+[DebState-Debug]
+SupCount=1
+Supfile-0=Debug\SETUP_4_M.sup
+Current=SETUP_4_M.sup
+AliasFile=
+CPURunMode=
+
+[AsmBefore]
+Count=0
+
+[AsmAfter]
+Count=0
+
+[CcBefore]
+Count=0
+
+[CcAfter]
+Count=0
+
+[LnkBefore]
+Count=0
+
+[LnkAfter]
+Count=1
+T0-Title=delobj
+T0-ExeName=..\delfile.bat
+T0-Option=..\eeinfo\Debug\Obj\eeinfo_main.*
+T0-Directory=
+T0-Disable=0
+T0-AddOptDialog=0
+T0-AddOption=
+T0-UseOutput=1
+T0-FileDataCount=0
+
+[LibBefore]
+Count=0
+
+[LibAfter]
+Count=0
+
+[CnvBefore]
+Count=0
+
+[CnvAfter]
+Count=0
+
+[ConfigBefore]
+Count=0
+
+[ConfigAfter]
+Count=0
+

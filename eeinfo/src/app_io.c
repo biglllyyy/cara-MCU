@@ -247,7 +247,7 @@ void app_cfg_io_in(void)
 void app_cfg_io_out(void)
 {
 	// 启动时不关闭ARM的电源
-	mid_io_config(&VCC_4V2_EN,0,2,IO_GENERAL_OUTPUT,VALID_LOW_LEVEL);
+	mid_io_config(&VCC_4V2_EN,0,2,IO_GENERAL_OUTPUT,VALID_HIGH_LEVEL);
 	// Backlight enable pin
 	mid_io_config(&BL_POWER_CTRL,15,3,IO_GENERAL_OUTPUT,VALID_HIGH_LEVEL);
 

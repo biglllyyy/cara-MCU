@@ -106,7 +106,7 @@ unsigned char Open_Upgrade_Condition_Judgment(void)
 		Console("Not a valid firmware, force to upgrade\n");
 		return 1;
 	}				
-	if(mid_get_io_sts(&open_io_group[Key0]) == OFF)
+	if(mid_get_io_sts(&open_io_group[Key0]) == ON)  //modify by niu for the new board
 	{
 		Console("Upgrade key pressed\n");
 		return 1;

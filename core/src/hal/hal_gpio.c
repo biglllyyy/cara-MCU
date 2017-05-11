@@ -205,6 +205,15 @@ void hal_gpio_Init(void)
     WriteKeyProtectedRegister((unsigned int )&EPFR35,EPFR[35],BYTE_ACCESS);	// write EPFR
 #endif
 
+
+		/*enable VCC_4V2_EN*/
+#if 0
+	set_single_io_dir(0,2,IO_GENERAL_OUTPUT);
+	set_single_io_sts(0,2,1);
+
+#endif
+
+
 #endif
 }
 

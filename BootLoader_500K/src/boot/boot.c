@@ -177,6 +177,14 @@ void CAN_Boot_Process(void)
 	U16 demo_flag_read	  = * (U16 *) 0x33E004;
 	U16 display_flag_read = * (U16 *) 0x33E008;
 
+	#if 0  // just for first flash app into no core board
+	U8 i = 0;
+	U8 index = 0;
+	U8 erase_flag		= 0;
+
+	U16 flash_up_success_flg = 0;
+	#endif
+
 
 	mid_Clock_Init();
 	mid_System_Tick_Init();
@@ -194,7 +202,115 @@ void CAN_Boot_Process(void)
 	
 	Console("Saber Bootloader in %s version %d.%d.%d\n",PROJECT ,BL_VER_MAJOR, BL_VER_MINOR, BL_VER_REV);
 
-	
+
+#if 0   // just for first flash app into no core board
+
+	for (index = WF_START_PAGE; index < WF_END_PAGE; index++) // work flash
+	{
+		erase_flag = mid_work_flash_sect_erasing(index);
+
+		if (erase_flag == FAIL)
+		{
+			//uart_update_data.updateInfo.sts = 10;
+			break;
+		}
+		else 
+		{
+			//uart_update_data.updateInfo.sts = 0;
+		}
+	}
+
+
+
+
+	flash_up_success_flg = 0x55AA;
+
+	for (i = 0; i < 3; i++)
+	{
+		if (mid_Work_Flash_Sector_Programing(FLASH_UPDATE_STS_ADDRESS, &flash_up_success_flg, 1) == 0)
+		{
+			//uart_update_data.updateInfo.sts = 0; /* CRC校验通过，则升级成功 */
+			break;
+		}
+		else 
+		{
+			//uart_update_data.updateInfo.sts = 1;
+		}
+	}
+
+
+#endif
+
+#if 0  //just for test io output
+	while(1)
+	{
+		wdg_feed();
+		/*enable VCC_4V2_EN*/
+#if 1
+		set_single_io_dir(0,2,IO_GENERAL_OUTPUT);
+		set_single_io_sts(0,2,1);
+
+#endif
+
+		/*enable LED1*/
+#if 1
+		set_single_io_dir(1,0,IO_GENERAL_OUTPUT);
+		set_single_io_sts(1,0,1);
+
+#endif
+
+		/*enable LED2*/
+#if 1
+		set_single_io_dir(1,1,IO_GENERAL_OUTPUT);
+		set_single_io_sts(1,1,1);
+
+#endif
+
+		/*enable LED3*/
+#if 1
+		set_single_io_dir(1,2,IO_GENERAL_OUTPUT);
+		set_single_io_sts(1,2,1);
+
+#endif
+
+		/*enable LED4*/
+#if 1
+		set_single_io_dir(1,3,IO_GENERAL_OUTPUT);
+		set_single_io_sts(1,3,1);
+
+#endif
+
+		/*enable LED5*/
+#if 1
+		set_single_io_dir(1,4,IO_GENERAL_OUTPUT);
+		set_single_io_sts(1,4,1);
+
+#endif
+
+		/*enable LED6*/
+#if 1
+		set_single_io_dir(1,5,IO_GENERAL_OUTPUT);
+		set_single_io_sts(1,5,1);
+
+#endif
+
+		/*enable LED7*/
+#if 1
+		set_single_io_dir(1,6,IO_GENERAL_OUTPUT);
+		set_single_io_sts(1,6,1);
+
+#endif
+
+		/*enable LED8*/
+#if 1
+		set_single_io_dir(1,7,IO_GENERAL_OUTPUT);
+		set_single_io_sts(1,7,1);
+
+#endif
+	}
+#endif
+
+
 	while (1)
 	{
 		wdg_feed();

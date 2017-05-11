@@ -169,6 +169,15 @@ void app_sys_init(void)
     app_software_init();
     print_gpio();
     app_tasks_init();
+/*enable VCC_4V2_EN*/
+#if 0
+	set_single_io_dir(0,2,IO_GENERAL_OUTPUT);
+	set_single_io_sts(0,2,1);
+
+	set_single_io_dir(1,0,IO_GENERAL_OUTPUT);
+	set_single_io_sts(1,0,1);
+
+#endif
     __EI();
 }
 /* ig off -> on action */

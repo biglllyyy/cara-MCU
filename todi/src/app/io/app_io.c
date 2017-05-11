@@ -207,13 +207,13 @@ void app_cfg_io(void)
 void app_cfg_led_out_io(void)
 {
 	
-	mid_io_config(&leds_out[LED_LEFTTURNLIGHT],1,6,IO_GENERAL_OUTPUT,VALID_HIGH_LEVEL);
-	mid_io_config(&leds_out[LED_REARFOGLAMP],1,5,IO_GENERAL_OUTPUT,VALID_HIGH_LEVEL);
-	mid_io_config(&leds_out[LED_FRONTFOGLAMP],1,4,IO_GENERAL_OUTPUT,VALID_HIGH_LEVEL);
-	mid_io_config(&leds_out[LED_HIGHBEAM],1,3,IO_GENERAL_OUTPUT,VALID_HIGH_LEVEL);
-	mid_io_config(&leds_out[LED_PARK],1,2,IO_GENERAL_OUTPUT,VALID_HIGH_LEVEL);
-	mid_io_config(&leds_out[LED_LIGHTMAINCTL],1,1,IO_GENERAL_OUTPUT,VALID_HIGH_LEVEL);
-	mid_io_config(&leds_out[LED_POSITION],1,0,IO_GENERAL_OUTPUT,VALID_HIGH_LEVEL);
+	mid_io_config(&leds_out[LED_LEFTTURNLIGHT],1,6,IO_GENERAL_OUTPUT,1);
+	mid_io_config(&leds_out[LED_REARFOGLAMP],1,5,IO_GENERAL_OUTPUT,1);
+	mid_io_config(&leds_out[LED_FRONTFOGLAMP],1,4,IO_GENERAL_OUTPUT,1);
+	mid_io_config(&leds_out[LED_HIGHBEAM],1,3,IO_GENERAL_OUTPUT,1);
+	mid_io_config(&leds_out[LED_PARK],1,2,IO_GENERAL_OUTPUT,1);
+	mid_io_config(&leds_out[LED_LIGHTMAINCTL],1,1,IO_GENERAL_OUTPUT,1);
+	mid_io_config(&leds_out[LED_POSITION],1,0,IO_GENERAL_OUTPUT,1);
 
 	mid_io_config(&leds_out[LED_RIGHTTURNLIGHT],13,3,IO_GENERAL_OUTPUT,VALID_HIGH_LEVEL);
 	mid_io_config(&leds_out[LED_RESERVELED1],13,2,IO_GENERAL_OUTPUT,VALID_HIGH_LEVEL);

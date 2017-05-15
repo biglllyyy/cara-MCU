@@ -7,7 +7,7 @@ FILE-0=BootLoader_500K\prj\BootLoader.prj
 FILE-1=core\core.prj
 FILE-2=todi\todi.prj
 FILE-3=eeinfo\eeinfo.prj
-ActivePrj=BootLoader.prj
+ActivePrj=todi.prj
 
 [SubPrj-BootLoader.prj]
 Count=0
@@ -30,6 +30,5 @@ AutoLoad=1
 WSP=D:\Code\todi\
 
 [EditState]
-STATE-1=BootLoader_500K\src\boot\boot.c:275
-Count=1
+Count=0
 

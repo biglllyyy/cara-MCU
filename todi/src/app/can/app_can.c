@@ -1440,6 +1440,9 @@ void can_id_345_send(void)
 	}
 	else
 	{
+	#if 1  //just for test can send by niujianlong
+		hal_can_sent(CAN_CHN,&can_msg[msg_box-1]);
+	#endif
 		
 	}
 }
@@ -1514,6 +1517,9 @@ void app_can_sent_task(void)
 	}
 	else
 	{
+	#if 1  //just for test can send by niujianlong
+		can_id_345_send();
+	#endif
 		
 	}
 }

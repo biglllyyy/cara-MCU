@@ -3,1287 +3,343 @@
 
 #include  "mid_can.h"
 
-#define    MSG_BOX_ALl				31
+#define    MSG_BOX_ALl				23
 
 #define		CAN_LOST_TIME			25
 
-typedef  struct {//HAVAL_2013_2P4L_AT_2WD
-	 struct  
-	{
-		/* b63 -b0 */
-		U32		ABS_WssRLEdgesSum:16;
-		U32		ABS_WssRREdgesSum:16;	
-			
-		U32		ABS_ABSFault:1;
-		U32		ABS_EBDFault:1;	
-		U32		ABS_VehicleSpeedValidSignal:1;
-		U32		ABS_VehicleSpeed:13;
-		U32   ABS_ABSControlActive:1;
-		U32   Reserved:15;
-	}id_265;
-	struct  
-	{	
-		/* b63 -b0*/
-		U32   ECM_EngTrqFailure:1;
-		U32		ECM_ACCompRelaySts:1;
-		U32		ECM_TCUTrqRedFail:2;
-		U32		Reserved1:2;	
-		U32		ECM_EngSpdFailure:1;
-		U32		Reserved2:1;
-		U32		ECM_TQI_ACOR:8;
-		U32		ECM_EngSpd:16;
-		U32		ECM_TQI:8;
-		U32		ECM_CAN_TQFR:8;
-		U32		Reserved3:2;		
-		U32		ECM_CAN_TQ_STND:6;
-		U32		ECM_IntakeAirTemp:8;	
-	}id_111;
-	 struct 
-	{
-		/* b63 -b0*/
-		U32   ECM_MAFAltiFactor:8;
-		U32		ECM_EngCoolantTemp:8;
-		U32		ECM_CAN_SOAKTM:12;
-		U32		ECM_EngCoolantTempWrn:1;
-		U32		Reserved1:3;
-		U32		ECM_BaroPressure:8;
-		U32		ECM_ThrtlCmdPos:8;
-		U32		Reserved2:3;
-		U32		ECM_CAN_BRK_SW:1;
-		U32		ECM_ThrtlCmdPosFail:1;		
-		U32		ECM_BaroPressureFail:1;
-		U32		ECM_CAN_BRK_LAMP:1;	
-		U32		ECM_ECMImmoAuthRes:1;	
-		U32		ECM_OBDDrivingCycle:1;	
-		U32		ECM_OBDWarmUp:1;	
-		U32		Reserved3:1;
-		U32		ECM_EngStatus:2;
-		U32		Reserved4:3;	
-	}id_271;
-	 struct 
-	{
-		/* b63 -b0*/
-		U32		TCU_ConvertClhLckSts:2;	
-		U32		TCU_TCURedTrqType:1;
-		U32		Reserved1:1;	
-		U32		TCU_GearChgActive:1;	
-		U32		TCU_GearSts:3;
-		U32		Reserved2:2;		
-		U32		TCU_TCUFailure:2;	
-		U32		TCU_GearLeverPos:4;	
-		U32		Reserved3:5;	
-		U32		TCU_TCUOBDMILOnReq:1;	
-		U32		Reserved4:2;
-		U32		TCU_TrqRedReq:8;	
-		U32		TCU_TransOilTemp:8;	
-		U32		Reserved5:4;
-		U32		TCU_TCUTrqCtrlActiveFlag:2;	
-		U32		Reserved6:10;
-		U32		TCU_TCUVehicleSpd:8;	
-	}id_131;
-	 struct 
-	{
-		/* b63 -b0*/
-		U32		BCM_LFTirePressure:8;	
-		U32		BCM_RFTirePressure:8;
-		U32		BCM_LeftFrontTireTemp:8;	
-		U32		BCM_RightFrontTireTemp:8;	
-		U32		BCM_LRTirePressure:8;
-		U32		BCM_RRTirePressure:8;		
-		U32		BCM_LeftRearTireTemp:8;	
-		U32		BCM_RightRearTireTemp:8;	
-	}id_095;
-	struct 
-	{
-		/* b63 -b0*/
-		U32		BCM_PosLmpSts:1;	
-		U32		BCM_LHPosLmpFailSts:1;
-		U32		BCM_RHPosLmpFailSts:1;	
-		U32		BCM_LicPlateLmpFailSts:1;	
-		U32		BCM_DRLSts:2;
-		U32		BCM_DRLFailSts:2;	
-		
-		U32		BCM_FrontFogLmpSts:2;	
-		U32		BCM_RearFogLmpSts:1;
-		U32		BCM_HighBeamSts:1;
-		U32		BCM_LowBeamSts:1;
-		U32		BCM_LeftTurnSignalCmd:1;	
-		U32		BCM_RightTurnSignalCmd:1;	
-		U32		BCM_BrakeLmpFailSts:1;
-		
-		U32		BCM_RearLidSts:1;		
-		U32		BCM_DriverDoorSts:1;	
-		U32		BCM_LRDoorSts:1;	
-		U32		BCM_PassengerDoorSts:1;	
-		U32		BCM_RRDoorSts:1;
-		U32		BCM_KeyInsertionSts:1;	
-		U32		BCM_WindShieldWiperAct:1;	
-		U32		BCM_BrakePedSts:1;
-		
-		U32		BCM_BrakePedFailSts:1;		
-		U32		BCM_BattVolt:7;	
-		
-		U32		BCM_RearFogLmpFailSts:1;	
-		U32		BCM_BacklightDutyCycle:7;	
-		
-		U32		BCM_RLSFailSts:2;
-		U32		BCM_ParkBrakeSts:1;	
-		U32		BCM_ParkBrakeFailSts:2;	
-		U32		BCM_ReversGearSts:2;
-		U32		BCM_HoodSts:1;		
-		
-		U32		BCM_ReversGearFailSts:2;	
-		U32		BCM_LFTireIndSts:2;	
-		U32		BCM_RFTireIndSts:2;	
-		U32		BCM_LRTireIndSts:2;
-		
-		U32		BCM_RRTireIndSts:2;	
-		U32		BCM_TPMSFailureInd:2;	
-		U32		BCM_TPWarningInd:2;
-		U32		BCM_TPFastLeakageInd:2;		
-	}id_311;
-	struct 
-	{
-		/* b63 -b0*/
-		U32		ECM_FuelCutOffActive:1;	
-		U32		ECM_AccEffPosSts:1;
-		U32		ECM_AccActualPosSts:1;	
-		U32		Reserved1:1;
-		U32		ECM_MILSts:1;	
-		U32		ECM_EngineSVSSignal:1;
-		U32		ECM_CruiseCtrlAct:2;		
-		U32		ECM_CAN_N_IDL:16;	
-		U32		ECM_AccEffPos:8;	
-		U32		ECM_AccActualPos:8;	
-		U32		ECM_TgtCruiseVehSpd:8;
-		U32		ECM_Fuelconsumption:16;	
-	}id_371;
-	struct 
-	{
-		/* b63 -b0*/
-		U32		ABM_PsngrSeatBeltSts:1;	
-		U32		ABM_DrSeatBeltSts:1;
-		U32		ABM_AirBagFault:1;	
-		U32   Reserved1:5;
-		U32   Reserved2:24;
-		U32   Reserved3:32;
-	}id_351;
-	
-	struct{
-		/*63-0*/
-		U32 RearRadarLeftSensorSegNum:	3;
-		U32 RearRadarLeftSensorSegFlash:	1;
-		U32 RearRadarLeftMidSensorSegNum:	3;
-		U32 RearRadarLeftMidSensorSegFlash:	1;
-		U32 RearRadarRightMidSensorSegNum:	3;
-		U32 RearRadarRightMidSensorSegFlash:	1;
-		U32 RearRadarRightSensorSegNum:	3;
-		U32 RearRadarRightSensorSegFlash:	1;
-		U32 RearRadarDiag:	1;
-		U32 RearRadarWarning:	1;
-		U32 RearRadarsoundlevel:	3;
-		U32 RearRadarReserved1:2;
-		U32 RadarFailure:	1;
-		U32 FrontRadarLeftSensorSegNum:	3;
-		U32 FrontRadarLeftSensorSegFlash:	1;
-		U32 FrontRadarLeftMidSensorSegNum:	3;
-		U32 FrontRadarLeftMidSensorSegFlash:	1;
-		U32 FrontRadarRightMidSensorSegNum:	3;
-		U32 FrontRadarRightMidSensorSegFlash:	1;
-		U32 FrontRadarRightSensorSegNum:	3;
-		U32 FrontRadarRightSensorSegFlash:	1;
-		U32 FrontRadarDiag:	1;
-		U32 FrontRadarWarning:	1;
-		U32 FrontRadarsoundlevel:	3;
-		U32 FrontRadarReserved:	3;
-		U32 RearRadarReserved2:16;
-	}id_3df;
-	struct
-	{
-		U32 Reserved1						: 7;
-		U32 VehTotalMileageValid:	1;
-		U32 VehTotalMileage			: 24;
-		U32 Reserved2						: 32;
-	}id_345;
-	struct
-	{
-		U8 config[8];
-	}id_7a6;
-	struct
-	{
-		U32 ALS			: 1;
-		U32 Reserved1	: 7;
-		U32 Reserved2	: 24;
-		U32 Reserved3	: 32;
-	}id_365;
-	struct
-	{
-		U32 CarACstate	: 8; /* 空调开关 0x10-on; 0x90-吹前档玻璃 */
-		U32 WindSpeed	: 8; /* 风量级别 1-8级:0x10-0x80 */
-		U32 outCarTemp	: 8;
-		U32 inCarTemp	: 8;
-		U32 Reserved1   : 32;
-	}id_08B;
+typedef enum {
+	/*BMS CAN ID*/
+	CAN_ID_18AA28F3,
+	CAN_ID_1818D0F3,
+	CAN_ID_1819D0F3,
+	CAN_ID_181AD0F3,
+	CAN_ID_181BD0F3,
+	CAN_ID_181CD0F3,
+	CAN_ID_181DD0F3,
+	CAN_ID_181ED0F3,
+	CAN_ID_181FD0F3,
+	/*BMS Interaction*/
+	CAN_ID_1800F328,  //send
+	CAN_ID_180028F3,
+	CAN_ID_180028F4,
+	/*电机*/
+	CAN_ID_1882BBAB,  //send
+	CAN_ID_1002FF1E,
+	CAN_ID_1003FF1E,
+	CAN_ID_1004FF1E,
+	/*气泵*/
+	//CAN_ID_18FF1103,
+	CAN_ID_1429289B,
+	CAN_ID_142A289B,
+	CAN_ID_18AB9B28, //send
+	/*仪表与远程通讯*/
+	CAN_ID_18FFA017,  //send
+	/*DC-DC电源*/
+	CAN_ID_1828272B,
+	/*油泵控制器*/
+	CAN_ID_142A2895,
+	CAN_ID_ALL
+} MSG_ID_TYPE;
 
-	struct /*另一块中控屏*/
-	{
-		U32 CarACstate	: 8; /* 前除霜 0x90-on; 0x40-后除霜 */
-		U32 WindSpeed	: 8; /* 风量级别 1-8级:0x10-0x80；空调开关 0x40-on */
-		U32 outCarTemp	: 8;
-		U32 inCarTemp	: 8;
-		U32 Reserved1   : 32;
-	}id_485;
-} car0_can_signal_t;
-typedef  struct {//HAVAL_2013_1P5T_MT_2WD
-	 struct  
-	{
-		/* b63 -b0 */
-		U32		ABS_WssRLEdgesSum:16;
-		U32		ABS_WssRREdgesSum:16;	
-			
-		U32		ABS_ABSFault:1;
-		U32		ABS_EBDFault:1;	
-		U32		ABS_VehicleSpeedValidSignal:1;
-		U32		ABS_VehicleSpeed:13;
-		U32   ABS_ABSControlActive:1;
-		U32   Reserved:15;
-	}id_265;
-	struct  
-	{	
-		/* b63 -b0*/
-		U32   Reserved1: 32;
-		U32		Reserved2:	8;
-		U32   ECM_EngSpd:16;
-		U32		Reserved3:8;	
-	}id_111;
-	 struct 
-	{
-		/* b63 -b0*/
-		U32 	ECM_Fuelconsumption:16;
-		U32		Reserved1:8;
-		U32		ECM_Fuelconsumption_H:8;
-		U32		ECM_Fuelconsumption_L:8;
-		U32		ECM_ThrtlCmdPos:8;
-		U32   ECM_CruiseCtrlAct:2;
-		U32		Reserved2:1;
-		U32		ECM_CAN_BRK_SW:1;
-		U32		ECM_ThrtlCmdPosFail:1;		
-		U32		ECM_BaroPressureFail:1;
-		U32		ECM_CAN_BRK_LAMP:1;	
-		U32		ECM_ECMImmoAuthRes:1;
-		U32		ECM_MILSts:1;	
-		U32		ECM_OBDWarmUp:1;	
-		U32		Reserved3:1;
-		U32		ECM_EngStatus:2;	
-		U32		Reserved4:2;
-		U32		ECM_EngineSVSSignal:1;
-	}id_271;
-	 struct 
-	{
-		/* b63 -b0*/
-		U32		BCM_LFTirePressure:8;	
-		U32		BCM_RFTirePressure:8;
-		U32		BCM_LeftFrontTireTemp:8;	
-		U32		BCM_RightFrontTireTemp:8;	
-		U32		BCM_LRTirePressure:8;
-		U32		BCM_RRTirePressure:8;		
-		U32		BCM_LeftRearTireTemp:8;	
-		U32		BCM_RightRearTireTemp:8;	
-	}id_095;
-	struct 
-	{
-		/* b63 -b0*/
-		U32		BCM_PosLmpSts:1;	
-		U32		BCM_LHPosLmpFailSts:1;
-		U32		BCM_RHPosLmpFailSts:1;	
-		U32		BCM_LicPlateLmpFailSts:1;	
-		U32		BCM_DRLSts:2;
-		U32		BCM_DRLFailSts:2;		
-		U32		BCM_FrontFogLmpSts:2;	
-		U32		BCM_RearFogLmpSts:1;
-		U32		BCM_HighBeamSts:1;
-		U32		BCM_LowBeamSts:1;
-		U32		BCM_LeftTurnSignalCmd:1;	
-		U32		BCM_RightTurnSignalCmd:1;	
-		U32		BCM_BrakeLmpFailSts:1;
-		U32		BCM_RearLidSts:1;		
-		U32		BCM_DriverDoorSts:1;	
-		U32		BCM_LRDoorSts:1;	
-		U32		BCM_PassengerDoorSts:1;	
-		U32		BCM_RRDoorSts:1;
-		U32		BCM_KeyInsertionSts:1;	
-		U32		BCM_WindShieldWiperAct:1;	
-		U32		BCM_BrakePedSts:1;
-		U32		BCM_BrakePedFailSts:1;		
-		U32		BCM_BattVolt:7;	
-		U32		BCM_RearFogLmpFailSts:1;	
-		U32		BCM_BacklightDutyCycle:7;	
-		U32		BCM_RLSFailSts:2;
-		U32		BCM_ParkBrakeSts:1;	
-		U32		BCM_ParkBrakeFailSts:2;	
-		U32		BCM_ReversGearSts:2;
-		U32		BCM_HoodSts:1;		
-		U32		BCM_ReversGearFailSts:2;	
-		U32		BCM_LFTireIndSts:2;	
-		U32		BCM_RFTireIndSts:2;	
-		U32		BCM_LRTireIndSts:2;
-		U32		BCM_RRTireIndSts:2;	
-		U32		BCM_TPMSFailureInd:2;	
-		U32		BCM_TPWarningInd:2;
-		U32		BCM_TPFastLeakageInd:2;		
-	}id_311;
-	struct 
-	{
-		/* b63 -b0*/
-		U32		ECM_FuelCutOffActive:1;	
-		U32		ECM_AccEffPosSts:1;
-		U32		ECM_AccActualPosSts:1;	
-		U32		Reserved1:1;
-		U32		Reserved0:1;	
-		U32		ECM_EngineSVSSignal:1;
-		U32		Reserverd2:2;	
-		U32		ECM_CAN_N_IDL:16;	
-		U32		ECM_EngCoolantTemp:8;	
-		U32		ECM_AccActualPos:8;	
-		U32		ECM_TgtCruiseVehSpd:8;
-		U32		Reserverd3:16;	
-	}id_371;
-	struct 
-	{
-		/* b63 -b0*/
-		U32		ABM_PsngrSeatBeltSts:1;	
-		U32		ABM_DrSeatBeltSts:1;
-		U32		ABM_AirBagFault:1;	
-		U32   Reserved1:5;
-		U32   Reserved2:24;
-		U32   Reserved3:32;
-	}id_351;
-	
-	struct{
-		/*63-0*/
-		U32 RearRadarLeftSensorSegNum:	3;
-		U32 RearRadarLeftSensorSegFlash:	1;
-		U32 RearRadarLeftMidSensorSegNum:	3;
-		U32 RearRadarLeftMidSensorSegFlash:	1;
-		U32 RearRadarRightMidSensorSegNum:	3;
-		U32 RearRadarRightMidSensorSegFlash:	1;
-		U32 RearRadarRightSensorSegNum:	3;
-		U32 RearRadarRightSensorSegFlash:	1;
-		U32 RearRadarDiag:	1;
-		U32 RearRadarWarning:	1;
-		U32 RearRadarsoundlevel:	3;
-		U32 RearRadarReserved1:2;
-		U32 RadarFailure:	1;
-		U32 FrontRadarLeftSensorSegNum:	3;
-		U32 FrontRadarLeftSensorSegFlash:	1;
-		U32 FrontRadarLeftMidSensorSegNum:	3;
-		U32 FrontRadarLeftMidSensorSegFlash:	1;
-		U32 FrontRadarRightMidSensorSegNum:	3;
-		U32 FrontRadarRightMidSensorSegFlash:	1;
-		U32 FrontRadarRightSensorSegNum:	3;
-		U32 FrontRadarRightSensorSegFlash:	1;
-		U32 FrontRadarDiag:	1;
-		U32 FrontRadarWarning:	1;
-		U32 FrontRadarsoundlevel:	3;
-		U32 FrontRadarReserved:	3;
-		U32 RearRadarReserved2:16;
-	}id_3df;
-	struct
-	{
-		U32 Reserved1						: 7;
-		U32 VehTotalMileageValid:	1;
-		U32 VehTotalMileage			: 24;
-		U32 Reserved2						: 32;
-	}id_345;
-	struct
-	{
-		U8 config[8];
-	}id_7a6;
-	struct
-	{
-		U32 reserved1:24;
-		U32 reserved2:8;
-		U32 reserved3:8;
-		U32 reserved4:3;
-		U32 ESP_ERR:1;
-		U32 reserved5:1;
-		U32 reserved6:1;
-		U32 reserved7:1;
-		U32 reserved8:1;
-		U32 reserved9:8;	
-		U32 reserved10:1;																
-		U32 ESP_OFF		:	1;
-		U32 ESP_NML	:	1;
-		U32 reserved11				:	1;
-		U32 reserved12	:	4;
+typedef enum {
+	CAN_ID_18AA28F3_PERIOD = 2000, /*Period:2000ms*/
+	CAN_ID_1818D0F3_PERIOD = 1000, /*Period:1000ms*/
+	CAN_ID_1819D0F3_PERIOD = 1000, /*Period:1000ms*/
+	CAN_ID_181AD0F3_PERIOD = 1000, /*Period:1000ms*/
+	CAN_ID_181BD0F3_PERIOD = 1000, /*Period:1000ms*/
+	CAN_ID_181CD0F3_PERIOD = 1000, /*Period:1000ms*/
+	CAN_ID_181DD0F3_PERIOD = 1000, /*Period:1000ms*/
+	CAN_ID_181ED0F3_PERIOD = 1000, /*Period:1000ms*/
+	CAN_ID_181FD0F3_PERIOD = 1000, /*Period:1000ms*/
+	CAN_ID_1800F328_PERIOD = 100, /*Period:100ms*/
+	CAN_ID_180028F3_PERIOD = 100, /*Period:100ms*/
+	CAN_ID_180028F4_PERIOD = 100, /*Period:100ms*/
+	CAN_ID_1882BBAB_PERIOD = 100, /*Period:100ms*/
+	CAN_ID_1002FF1E_PERIOD = 100, /*Period:100ms*/
+	CAN_ID_1003FF1E_PERIOD = 100, /*Period:100ms*/
+	CAN_ID_1004FF1E_PERIOD = 100, /*Period:100ms*/
+	CAN_ID_1429289B_PERIOD = 100, /*Period:100ms*/
+	CAN_ID_142A289B_PERIOD = 100, /*Period:100ms*/
+	CAN_ID_18AB9B28_PERIOD = 100, /*Period:100ms*/
+	CAN_ID_18FFA017_PERIOD = 100, /*Period:100ms*/
+	CAN_ID_1828272B_PERIOD = 100, /*Period:100ms*/
+	CAN_ID_142A2895_PERIOD = 100, /*Period:100ms*/
+} CAN_ID_PERIOD;
 
-	}id_211;
+typedef struct {
+	/*can msg receive*/
+	struct {
+		U8 u8ParamType; /* 1--参数类型（1） */
+		U8 u8BattBoxCnt; /* 电池箱体个数（单位:1个） */
+		U8 u8BattSubControlCnt; /* 电池管理系统从控单元个数（单位:1个） */
+		U8 u8BSTotalStringHigh; /* 电池系统总串数（高字节） */
+		U8 u8BSTotalStringLow; /* 电池系统总串数（低字节） */
+		U8 u8BMSNumberHigh; /* 电池管理系统编号高字节 */
+		U8 u8BMSNumberLow; /* 电池管理系统编号低字节 */
+		U8 u8RelayStatus; /* 放电继电器状态  */
+	} ID_18AA28F3; /* BMS -LCD01 */
+#if 0
+	struct  //参数报文名称：BMS -LCD01
+	{
+		U8 DataType2;
+		U8 NumOfBUM;
+		U8 NumOfBatterySingle;
+		U8 NumOfBatteryTemperatureDetect;
+		U8 Reserved1;
+		U8 Reserved2;
+		U8 Reserved3;
+		U8 Reserved4;
+	}ID_18AA28F3_datatype2;
+#endif
+	struct {
+		U8 u8TotalVolHigh;
+		U8 u8TotalVolLow;
+		U8 u8TotalCurrHigh;
+		U8 u8TotalCurrLow;
+		U8 u8SOC;
+		U8 u8BattSysLife; /* 电池管理系统的 LIFE(0~255)  */
+		U8 u8BattStatusFlag1; /* 电池 Status_Flag1  */
+		U8 u8BattStatusFlag2; /* 电池 Status_Flag2  */
+	} ID_1818D0F3; /* BMS -CAN2_B1 */
+	struct {
+		U8 u8HighestVolHigh; /* 最高单体电池电压高字节   */
+		U8 u8HighestVolLow; /* 最高单体电池电压高字节   */
+		U8 u8LowestVolHigh; /* 最低单体电池电压高字节   */
+		U8 u8LowestVolLow; /* 最低单体电池电压低字节   */
+		U8 u8HighestTemp; /* 电池最高温度   */
+		U8 u8LowestTemp; /* 电池最低温度   */
+		U8 u8BattStatusFlag3; /* 电池 Status_Flag3  */
+		U8 u8RelayStatusFlag3; /* 继电器Status_Flag4  */
+	} ID_1819D0F3; /* BMS -CAN2_B2 */
+	struct {
+		U8 u8HighestVolBoxNum; /* 最高单体电压所在箱号（1~N） */
+		U8 u8HighestVolPosition; /* 最高单体电压所在箱内位置 */
+		U8 u8LowestVolBoxNum; /* 最低单体电压所在箱号（1~N） */
+		U8 u8LowestVolPosition; /* 最低单体电压所在箱内位置 */
+		U8 u8HighestTempBoxNum; /* 最高温度所在箱号（1~N） */
+		U8 u8HighestTempPosition; /* 最高温度所在箱内位置 */
+		U8 u8LowestTempBoxNum; /* 最低温度电压所在箱号（1~N） */
+		U8 u8LowestTempPosition; /* 最低温度所在箱内位置 */
+	} ID_181AD0F3; /* BMS -CAN2_B3 */
+	struct  //报文名称：BMSCAN2_B4
+	{
+		U8 u8BMUCommStatus1to8; /* 1~8号BMU 通讯状态 */
+		U8 u8BMUCommStatus9to16; /* 9~16号BMU 通讯状态 */
+		U8 u8BMUCommStatus17to24; /* 17~24号BMU 通讯状态 */
+		U8 u8BMUCommStatus25to32;/* 25~32号BMU 通讯状态 */
+		U8 Reserved1;
+		U8 Reserved2;
+		U8 Reserved3;
+		U8 Reserved4;
+	} ID_181BD0F3;
+	struct  //报文名称：BMSCAN2_B5
+	{
+		U8 BalancedStatusOf1to8BMU;
+		U8 BalancedStatusOf9to16BMU;
+		U8 BalancedStatusOf17to24BMU;
+		U8 BalancedStatusOf25to32BMU;
+		U8 Reserved1;
+		U8 Reserved2;
+		U8 Reserved3;
+		U8 Reserved4;
+	} ID_181CD0F3;
+	struct  //报文名称：BMSCAN2_B6
+	{
+		U8 ChargingPlug1DCPTemperature;
+		U8 ChargingPlug1DCNTemperature;
+		U8 ChargingPlug2DCPTemperature;
+		U8 ChargingPlug2DCNTemperature;
+		U8 PositiveInsulationResistanceH;
+		U8 PositiveInsulationResistanceL;
+		U8 NegativeInsulationResistanceH;
+		U8 NegativeInsulationResistanceL;
+	} ID_181DD0F3;
+	struct  //报文名称：BMSCAN2_B7
+	{
+		U8 ResidualEnergyH;
+		U8 ResidualEnergyL;
+		U8 Status_Flag5;
+		U8 Status_Flag6;
+		U8 Reserved1;
+		U8 Reserved2;
+		U8 Reserved3;
+		U8 Reserved4;
+	} ID_181ED0F3;
+	struct  //报文名称：BMSCAN2_B8
+	{
+		U8 HighSingleVoltPos;
+		U8 LowSingleVoltPos;
+		U8 MaxTemperPos;
+		U8 MinTemperPos;
+		U8 HighSingleVoltPackNum;
+		U8 LowSingleVoltPackNum;
+		U8 MaxTemperPackNum;
+		U8 MinTemperPackNum;
+	} ID_181FD0F3;
 
-	struct
-	{
-		U32 ALS			: 1;
-		U32 Reserved1	: 7;
-		U32 Reserved2	: 24;
-		U32 Reserved3	: 32;
-	}id_365;
+	/*can interactive msg send  */
 
-	struct  
-	{	
-		/* b63 -b0*/
-		U32   Reserved1 		: 18;
-		U32   PEPS_TurnOFFpwr	: 1;
-		U32   PEPS_TakeAwayKey	: 1;
-		U32   PEPS_CheckNoKey	: 1;
-		U32   reserved2			: 11;
-		U32	  PEPS_TurnGearPN	: 1;
-		U32	  Reserved3 		: 3;
-		U32	  PEPS_ERROR 		: 1;	
-		U32	  Reserved4 		: 7;	
-		U32	  PEPS_ERROR1 		: 1;	
-		U32	  Reserved5 		: 19;	
-	}id_0A5;
+	struct	//报文名称：LCD_BMS  仪表单体信息请求命令  ID：0x1800F328
+	{
+		U8 NumOfBMU;
+		U8 Reserved1;
+		U8 Reserved2;
+		U8 Reserved3;
+		U8 Reserved4;
+		U8 Reserved5;
+		U8 Reserved6;
+		U8 Reserved7;
+	} ID_1800F328;
 
-	struct
+	struct	//报文名称：BMS -LCD02  反馈单体电压信息数据帧  ID：0x180028F3
 	{
-		U32 CarACstate	: 8; /* 空调开关 0x10-on; 0x90-吹前档玻璃 */
-		U32 WindSpeed	: 8; /* 风量级别 1-8级:0x10-0x80 */
-		U32 outCarTemp	: 8;
-		U32 inCarTemp	: 8;
-		U32 Reserved1   : 32;
-	}id_08B;
+		U8 NumOfBMU;
+		U8 PackgeN;
+		U8 NBMUVolt1H;
+		U8 NBMUVolt1L;
+		U8 NBMUVolt2H;
+		U8 NBMUVolt2L;
+		U8 NBMUVolt3H;
+		U8 NBMUVolt3L;
+	} ID_180028F3;
+	struct	//报文名称：BCTDT1  反馈温度信息数据帧  ID：0x180028F4
+	{
+		U8 NumOfBMU;
+		U8 PackgeN;
+		U8 NBMUTempe1;
+		U8 NBMUTempe2;
+		U8 NBMUTempe3;
+		U8 NBMUTempe4;
+		U8 NBMUTempe5;
+		U8 NBMUTempe6;
+	} ID_180028F4;
 
-	struct /*另一块中控屏*/
+	/*---------------- 电机 -----------------------*/
+	struct  //整车信息（仪表发送）
 	{
-		U32 CarACstate	: 8; /* 前除霜 0x90-on; 0x40-后除霜 */
-		U32 WindSpeed	: 8; /* 风量级别 1-8级:0x10-0x80；空调开关 0x40-on */
-		U32 outCarTemp	: 8;
-		U32 inCarTemp	: 8;
-		U32 Reserved1	: 32;
-	}id_485;
+		U8 VelStatusInfo;
+		U8 MaxTempeOfBat;
+		U8 SingleLowestVolt;
+		U8 SingleHighestVolt;
+		U8 Reserved1;
+		U8 Reserved2;
+		U8 Reserved3;
+		U8 Reserved4;
+	} ID_1882BBAB;
 
-} car1_can_signal_t;
-typedef  struct {//HAVAL_2012_1P5T_MT_2WD
-	 struct  
-	{
-		/* b63 -b0 */
-		U32		ABS_WssRLEdgesSum:16;
-		U32		ABS_WssRREdgesSum:16;	
-			
-		U32		ABS_ABSFault:1;
-		U32		ABS_EBDFault:1;	
-		U32		ABS_VehicleSpeedValidSignal:1;
-		U32		ABS_VehicleSpeed:13;
-		U32   ABS_ABSControlActive:1;
-		U32   Reserved:15;
-	}id_265;
-	struct  
-	{	
-		/* b63 -b0*/
-		U32   Reserved1: 32;
-		U32		Reserved2:	8;
-		U32   ECM_EngSpd:16;
-		U32		Reserved3:8;	
-	}id_111;
-	 struct 
-	{
-		/* b63 -b0*/
-		U32 	ECM_Fuelconsumption:16;
-		U32		Reserved1:8;
-		U32		ECM_Fuelconsumption_H:8;
-		U32		ECM_Fuelconsumption_L:8;
-		U32		ECM_ThrtlCmdPos:8;
-		U32   ECM_CruiseCtrlAct:2;
-		U32		Reserved2:1;
-		U32		ECM_CAN_BRK_SW:1;
-		U32		ECM_ThrtlCmdPosFail:1;		
-		U32		ECM_BaroPressureFail:1;
-		U32		ECM_CAN_BRK_LAMP:1;	
-		U32		ECM_ECMImmoAuthRes:1;
-		U32		ECM_MILSts:1;	
-		U32		ECM_OBDWarmUp:1;	
-		U32		Reserved3:1;
-		U32		ECM_EngStatus:2;
-		U32		Reserved4:2;
-		U32		ECM_EngineSVSSignal:1;
-	}id_271;
-	 struct 
-	{
-		/* b63 -b0*/
-		U32		BCM_LFTirePressure:8;	
-		U32		BCM_RFTirePressure:8;
-		U32		BCM_LeftFrontTireTemp:8;	
-		U32		BCM_RightFrontTireTemp:8;	
-		U32		BCM_LRTirePressure:8;
-		U32		BCM_RRTirePressure:8;		
-		U32		BCM_LeftRearTireTemp:8;	
-		U32		BCM_RightRearTireTemp:8;	
-	}id_095;
-	struct 
-	{
-		/* b63 -b0*/
-		U32		BCM_PosLmpSts:1;	
-		U32		BCM_LHPosLmpFailSts:1;
-		U32		BCM_RHPosLmpFailSts:1;	
-		U32		BCM_LicPlateLmpFailSts:1;	
-		U32		BCM_DRLSts:2;
-		U32		BCM_DRLFailSts:2;		
-		U32		BCM_FrontFogLmpSts:2;	
-		U32		BCM_RearFogLmpSts:1;
-		U32		BCM_HighBeamSts:1;
-		U32		BCM_LowBeamSts:1;
-		U32		BCM_LeftTurnSignalCmd:1;	
-		U32		BCM_RightTurnSignalCmd:1;	
-		U32		BCM_BrakeLmpFailSts:1;
-		U32		BCM_RearLidSts:1;		
-		U32		BCM_DriverDoorSts:1;	
-		U32		BCM_LRDoorSts:1;	
-		U32		BCM_PassengerDoorSts:1;	
-		U32		BCM_RRDoorSts:1;
-		U32		BCM_KeyInsertionSts:1;	
-		U32		BCM_WindShieldWiperAct:1;	
-		U32		BCM_BrakePedSts:1;
-		U32		BCM_BrakePedFailSts:1;		
-		U32		BCM_BattVolt:7;	
-		U32		BCM_RearFogLmpFailSts:1;	
-		U32		BCM_BacklightDutyCycle:7;	
-		U32		BCM_RLSFailSts:2;
-		U32		BCM_ParkBrakeSts:1;	
-		U32		BCM_ParkBrakeFailSts:2;	
-		U32		BCM_ReversGearSts:2;
-		U32		BCM_HoodSts:1;		
-		U32		BCM_ReversGearFailSts:2;	
-		U32		BCM_LFTireIndSts:2;	
-		U32		BCM_RFTireIndSts:2;	
-		U32		BCM_LRTireIndSts:2;
-		U32		BCM_RRTireIndSts:2;	
-		U32		BCM_TPMSFailureInd:2;	
-		U32		BCM_TPWarningInd:2;
-		U32		BCM_TPFastLeakageInd:2;		
-	}id_311;
-	struct 
-	{
-		/* b63 -b0*/
-		U32		ECM_FuelCutOffActive:1;	
-		U32		ECM_AccEffPosSts:1;
-		U32		ECM_AccActualPosSts:1;	
-		U32		Reserved1:1;
-		U32		Reserved0:1;	
-		U32		ECM_EngineSVSSignal:1;
-		U32		Reserverd2:2;		
-		U32		ECM_CAN_N_IDL:16;	
-		U32		ECM_EngCoolantTemp:8;	
-		U32		ECM_AccActualPos:8;	
-		U32		ECM_TgtCruiseVehSpd:8;
-		U32		Reserverd3:16;	
-	}id_371;
-	struct 
-	{
-		/* b63 -b0*/
-		U32		ABM_PsngrSeatBeltSts:1;	
-		U32		ABM_DrSeatBeltSts:1;
-		U32		ABM_AirBagFault:1;	
-		U32   Reserved1:5;
-		U32   Reserved2:24;
-		U32   Reserved3:32;
-	}id_351;
-	struct
-	{
-		U32 Reserved1						: 7;
-		U32 VehTotalMileageValid:	1;
-		U32 VehTotalMileage			: 24;
-		U32 Reserved2						: 32;
-	}id_345;
-	struct
-	{
-		U8 config[8];
-	}id_7a6;
+	struct {
+		U8 u8MotorContStatus; /* 电机控制器基本状态 */
+		U8 u8TickSignal; /* 生命（心跳）信号  */
+		U16 u16MotorTorque; /* 电机实际转矩   */
+		U16 u16MotorSpeed; /* 电机实际转速   */
+		U8 u8VehicleSpeed; /* 车速    */
+		U8 u8Gear; /* 档位   */
+	} ID_1002FF1E; /* 电机运行数据一 */
 
-	struct
-	{
-		U32 reserved1:24;
-		U32 reserved2:8;
-		U32 reserved3:8;
-		U32 reserved4:3;
-		U32 ESP_ERR:1;
-		U32 reserved5:1;
-		U32 reserved6:1;
-		U32 reserved7:1;
-		U32 reserved8:1;
-		U32 reserved9:8;	
-		U32 reserved10:1;																
-		U32 ESP_OFF		:	1;
-		U32 ESP_NML	:	1;
-		U32 reserved11				:	1;
-		U32 reserved12	:	4;
+	struct {
+		U16 u16DMCBusVol; /* 电机控制器（DMC）母线电压 */
+		U16 u16DMCBusCurr; /* 电机控制器（DMC）母线电流  */
+		U8 u8DMCTemp; /* 电机控制器温度   */
+		U8 u8MotorTemp; /* 电机温度   */
+		U8 u8DMCWarnCode; /* 电机控制器故障代码    */
+		U8 u8DMCVerNum; /* 电机控制器版本号   */
+	} ID_1003FF1E; /* 电机运行数据二 */
 
-	}id_211;
-	
-	struct
-	{
-		U32 CarACstate	: 8; /* 空调开关 0x10-on; 0x90-吹前档玻璃 */
-		U32 WindSpeed	: 8; /* 风量级别 1-8级:0x10-0x80 */
-		U32 outCarTemp	: 8;
-		U32 inCarTemp	: 8;
-		U32 Reserved1   : 32;
-	}id_08B;
+	struct {
+		U8 u8ThrottleOpening; /* 油门开度 */
+		U8 u8BrakePedalOpening; /*  制动踏板开度   */
+		U8 u8ChargeDischargeState; /* 充放电状态    */
+		U8 RemoteMonitoringNationalStandardStalls; /* 远程监控国标档位  */
+		U8 Reserved1;
+		U8 Reserved2;
+		U8 Reserved3;
+		U8 Reserved4;
+	} ID_1004FF1E; /* 电机运行数据三 */
 
-	struct /*另一块中控屏*/
-	{
-		U32 CarACstate	: 8; /* 前除霜 0x90-on; 0x40-后除霜 */
-		U32 WindSpeed	: 8; /* 风量级别 1-8级:0x10-0x80；空调开关 0x40-on */
-		U32 outCarTemp	: 8;
-		U32 inCarTemp	: 8;
-		U32 Reserved1   : 32;
-	}id_485;
-} car2_can_signal_t;
-typedef  struct {//HAVAL_2015_1P5T_6AT_2WD
-	 struct  
-	{
-		/* b63 -b0 */
-		U32		ABS_WssRLEdgesSum:16;
-		U32		ABS_WssRREdgesSum:16;	
-			
-		U32		ABS_ABSFault:1;
-		U32		ABS_EBDFault:1;	
-		U32		ABS_VehicleSpeedValidSignal:1;
-		U32		ABS_VehicleSpeed:13;
-		U32   ABS_ABSControlActive:1;
-		U32   Reserved:15;
-	}id_265;
-	struct  
-	{	
-		/* b63 -b0*/
-		U32   Reserved1: 32;
-		U32		Reserved2:	8;
-		U32   ECM_EngSpd:16;
-		U32		Reserved3:1;
-		U32		ECM_EngSpdValid:1;
-		U32		Reserved4:6;	
-	}id_111;
-	 struct 
-	{
-		/* b63 -b0*/
-		U32 	ECM_Fuelconsumption:16;
-		U32		Reserved1:8;
-		U32		ECM_Fuelconsumption_H:8;
-		U32		ECM_Fuelconsumption_L:8;
-		U32		ECM_ThrtlCmdPos:8;
-		U32   ECM_CruiseCtrlAct:2;
-		U32		Reserved2:1;
-		
-		U32		ECM_CAN_BRK_SW:1;
-		U32		ECM_ThrtlCmdPosFail:1;		
-		U32		ECM_BaroPressureFail:1;
-		U32		ECM_CAN_BRK_LAMP:1;	
-		U32		ECM_ECMImmoAuthRes:1;
-		U32		ECM_MILSts:1;	
-		U32		ECM_OBDWarmUp:1;	
-		U32		Reserved3:1;
-		U32		ECM_EngStatus:2;
-		U32		Reserved4:2;
-		U32		ECM_EngineSVSSignal:1;
-	}id_271;
-	 struct 
-	{
-		/* b63 -b0*/
-		U32		BCM_LFTirePressure:8;	
-		U32		BCM_RFTirePressure:8;
-		U32		BCM_LeftFrontTireTemp:8;	
-		U32		BCM_RightFrontTireTemp:8;	
-		U32		BCM_LRTirePressure:8;
-		U32		BCM_RRTirePressure:8;		
-		U32		BCM_LeftRearTireTemp:8;	
-		U32		BCM_RightRearTireTemp:8;	
-	}id_095;
-	struct 
-	{
-		/* b63 -b0*/
-		U32		BCM_PosLmpSts:1;	
-		U32		BCM_LHPosLmpFailSts:1;
-		U32		BCM_RHPosLmpFailSts:1;	
-		U32		BCM_LicPlateLmpFailSts:1;	
-		U32		BCM_DRLSts:2;
-		U32		BCM_DRLFailSts:2;		
-		U32		BCM_FrontFogLmpSts:2;	
-		U32		BCM_RearFogLmpSts:1;
-		U32		BCM_HighBeamSts:1;
-		U32		BCM_LowBeamSts:1;
-		U32		BCM_LeftTurnSignalCmd:1;	
-		U32		BCM_RightTurnSignalCmd:1;	
-		U32		BCM_BrakeLmpFailSts:1;
-		U32		BCM_RearLidSts:1;		
-		U32		BCM_DriverDoorSts:1;	
-		U32		BCM_LRDoorSts:1;	
-		U32		BCM_PassengerDoorSts:1;	
-		U32		BCM_RRDoorSts:1;
-		U32		BCM_KeyInsertionSts:1;	
-		U32		BCM_WindShieldWiperAct:1;	
-		U32		BCM_BrakePedSts:1;
-		U32		BCM_BrakePedFailSts:1;		
-		U32		BCM_BattVolt:7;	
-		U32		BCM_RearFogLmpFailSts:1;	
-		U32		BCM_BacklightDutyCycle:7;	
-		U32		BCM_RLSFailSts:2;
-		U32		BCM_ParkBrakeSts:1;	
-		U32		BCM_ParkBrakeFailSts:2;	
-		U32		BCM_ReversGearSts:2;
-		U32		BCM_HoodSts:1;		
-		U32		BCM_ReversGearFailSts:2;	
-		U32		BCM_LFTireIndSts:2;	
-		U32		BCM_RFTireIndSts:2;	
-		U32		BCM_LRTireIndSts:2;
-		U32		BCM_RRTireIndSts:2;	
-		U32		BCM_TPMSFailureInd:2;	
-		U32		BCM_TPWarningInd:2;
-		U32		BCM_TPFastLeakageInd:2;		
-	}id_311;
-	struct 
-	{
-		/* b63 -b0*/
-		U32		ECM_FuelCutOffActive:1;	
-		U32		ECM_AccEffPosSts:1;
-		U32		ECM_AccActualPosSts:1;	
-		U32		Reserved1:1;
-		U32		Reserved0:1;	
-		U32		ECM_EngineSVSSignal:1;
-		U32		Reserverd2:2;	
-		U32		ECM_CAN_N_IDL:16;	
-		U32		ECM_EngCoolantTemp:8;	
-		U32		ECM_AccActualPos:8;	
-		U32		ECM_TgtCruiseVehSpd:8;
-		U32		Reserverd3:1;
-		U32		ECM_EngCoolantTempValid:1;	
-		U32		Reserverd4:14;	
-	}id_371;
-	struct 
-	{
-		/* b63 -b0*/
-		U32		ABM_PsngrSeatBeltSts:1;	
-		U32		ABM_DrSeatBeltSts:1;
-		U32		ABM_AirBagFault:1;	
-		U32   Reserved1:5;
-		U32   Reserved2:24;
-		U32   Reserved3:32;
-	}id_351;
-	struct{
-		/*63-0*/
-		U32 RearRadarLeftSensorSegNum:	3;
-		U32 RearRadarLeftSensorSegFlash:	1;
-		U32 RearRadarLeftMidSensorSegNum:	3;
-		U32 RearRadarLeftMidSensorSegFlash:	1;
-		U32 RearRadarRightMidSensorSegNum:	3;
-		U32 RearRadarRightMidSensorSegFlash:	1;
-		U32 RearRadarRightSensorSegNum:	3;
-		U32 RearRadarRightSensorSegFlash:	1;
-		U32 RearRadarDiag:	1;
-		U32 RearRadarWarning:	1;
-		U32 RearRadarsoundlevel:	3;
-		U32 RearRadarReserved1:2;
-		U32 RadarFailure:	1;
-		U32 FrontRadarLeftSensorSegNum:	3;
-		U32 FrontRadarLeftSensorSegFlash:	1;
-		U32 FrontRadarLeftMidSensorSegNum:	3;
-		U32 FrontRadarLeftMidSensorSegFlash:	1;
-		U32 FrontRadarRightMidSensorSegNum:	3;
-		U32 FrontRadarRightMidSensorSegFlash:	1;
-		U32 FrontRadarRightSensorSegNum:	3;
-		U32 FrontRadarRightSensorSegFlash:	1;
-		U32 FrontRadarDiag:	1;
-		U32 FrontRadarWarning:	1;
-		U32 FrontRadarsoundlevel:	3;
-		U32 FrontRadarReserved:	3;
-		U32 RearRadarReserved2:16;
-	}id_3df;
-	struct
-	{
-		U32 Reserved1						: 7;
-		U32 VehTotalMileageValid:	1;
-		U32 VehTotalMileage			: 24;
-		U32 Reserved2						: 32;
-	}id_345;
-	struct
-	{
-		//b63-b0
-		U32 gear			:8;/* first byte */
-		U32 reserved	    :8; 
-		U32 SnowModeLED		:3; 
-		U32 reserved2	    :13; 
-		U32 reserved3	    :32;
-	}id_221;
-	struct
-	{
-		U8 config[8];
-	}id_7a6;
-	struct
-	{
-		U32 reserved1;
-		U32 reserved2;
-	}id_116;
-	
-	struct
-	{
-		U32 reserved1:24;
-		U32 reserved2:8;
-		U32 reserved3:8;
-		U32 reserved4:3;
-		U32 ESP_ERR:1;
-		U32 reserved5:1;
-		U32 reserved6:1;
-		U32 reserved7:1;
-		U32 reserved8:1;
-		U32 reserved9:8;	
-		U32 reserved10:1;																
-		U32 ESP_OFF		:	1;
-		U32 ESP_NML	:	1;
-		U32 reserved11				:	1;
-		U32 reserved12	:	4;
+	/*---------------- 气泵控制器 -----------------------*/
+#if 0 //这个不需要仪表接收
+	struct {
+		U8 u8APMStartStopInstruction; /*气泵启停指令*/
+		U8 Reserved1;
+		U8 Reserved2;
+		U8 Reserved3;
+		U8 Reserved4;
+		U8 Reserved5;
+		U8 Reserved6;
+		U8 Reserved7;
+	}CANID_0x18FF1103;
+#endif
+	struct {
+		U8 u8APMotorSpeedLow; /* 气泵电机转速低位 */
+		U8 u8APMotorSpeedHigh; /* 气泵电机转速高位  */
+		U8 u8ControllerBusVotLow; /* 预留   */
+		U8 u8ControllerBusVotHigh; /* 预留   */
+		U8 u8ControllerCurrent; /* 预留   */
+		U8 u8APControllerTemp; /*  控制器温度（此处给出的是泵体温度）*/
+		U8 u8APTickSignal; /*  心跳信号 */
+		U8 u8APControllerStatus; /* 控制器基本状态   */
+	} ID_1429289B; /* 气泵电机运行数据一 */
 
-	}id_211;
+	struct {
+		U8 u8APMControlerTemp; /*气泵控制器温度*/
+		U8 Reserved1;
+		U8 Reserved2;
+		U8 Reserved3;
+		U8 Reserved4;
+		U8 Reserved5;
+		U8 Reserved6;
+		U8 Reserved7;
+	} ID_142A289B; /* 气泵电机运行数据二*/
 
-	struct  
-	{	
-		/* b63 -b0*/
-		U32   Reserved1 : 24;
-		U32   HDC       : 2;
-		U32   reserved2	: 2;
-		U32   HDC_ERROR	: 1;
-		U32	  Reserved3 : 3;
-		U32	  Reserved4 : 32;	
-	}id_242;
+	struct {
+		U8 Reserved1; /*气泵控制器温度*/
+		U8 FrontGasStorePreValue;  //前储气筒气压值 0.01MPa/Bit,最大100
+		U8 BehindGasStorePreValue; //Byte3 后储气筒气压值
+		U8 Reserved2;
+		U8 Reserved3;
+		U8 Reserved4;
+		U8 Reserved5;
+		U8 Reserved6;
+	} ID_18AB9B28; /* 仪表专用通讯指令*/
 
-	struct  
-	{	
-		/* b63 -b0*/
-		U32   Reserved1 		: 18;
-		U32   PEPS_TurnOFFpwr	: 1;
-		U32   PEPS_TakeAwayKey	: 1;
-		U32   PEPS_CheckNoKey	: 1;
-		U32   reserved2			: 11;                              
-		
-		U32	  PEPS_TurnGearPN	: 1;
-		U32	  Reserved3 		: 3;
-		U32	  PEPS_ERROR 		: 1;	
-		U32	  Reserved4 		: 7;	
-		U32	  PEPS_ERROR1 		: 1;	
-		U32	  Reserved5 		: 19;	
-	}id_0A5;
+	/*---------------- 仪表与远程监控终端 -----------------------*/
+	struct {
+		U8 TotalMileageL; /*气泵控制器温度*/
+		U8 TotalMileageM;  //前储气筒气压值 0.01MPa/Bit,最大100
+		U8 TotalMileageH; //Byte3 后储气筒气压值
+		U8 Reserved1;
+		U8 Reserved2;
+		U8 Reserved3;
+		U8 Reserved4;
+		U8 Reserved5;
+	} ID_18FFA017; /* LCD_CANBUS1*/
 
-	struct
-	{
-		U32 ALS			: 1;
-		U32 Reserved1	: 7;
-		U32 Reserved2	: 24;
-		U32 Reserved3	: 32;
-	}id_365;
+	/*---------------- DC-DC电源 -----------------------*/
+	struct {
+		U8 u8DCDCSysStatus; /* DC-DC系统状态 */
+		U8 u8DCDCTemp; /* DCDC模块温度  */
+		U16 u16DCDCVolOutput; /* DCDC输出电压   */
+		U16 u16DCDCCurrOutput; /* DCDC输出电流   */
+		U8 u8DCDCWarnCode; /* DCDC故障代码   */
+		U8 u8DCDCCANVerCode; /* DCDC CAN通讯协议版本号   */
+	} ID_1828272B; /* DC-DC_msg1 */
 
-	struct
-	{
-		U32 CarACstate	: 8; /* 空调开关 0x10-on; 0x90-吹前档玻璃 */
-		U32 WindSpeed	: 8; /* 风量级别 1-8级:0x10-0x80 */
-		U32 outCarTemp	: 8;
-		U32 inCarTemp	: 8;
-		U32 Reserved1   : 32;
-	}id_08B;
+	/*---------------- 油泵控制器 -----------------------*/
+	struct {
+		U8 u8DMYTDMotorSpeedLow; /* 油泵电机转速低位 */
+		U8 u8DMYTDMotorSpeedHigh; /* 油泵电机转速高位 */
+		U8 u8DMYTDBusVolLow; /* 控制器母线电压低位 */
+		U8 u8DMYTDBusVolHigh; /* 控制器母线电压高位 */
+		U8 u8DMYTDCurrent; /* 控制器电流 */
+		U8 u8DMYTDTemp; /*  控制器温度（此处给出的是泵体温度）*/
+		U8 u8DMYTDTickSignal; /*  心跳信号 */
+		U8 u8DMYTDStatus; /* 控制器基本状态   */
+	} ID_142A2895; /* 油泵发送信息 */
 
-	struct /*另一块中控屏*/
-	{
-		U32 CarACstate	: 8; /* 前除霜 0x90-on; 0x40-后除霜 */
-		U32 WindSpeed	: 8; /* 风量级别 1-8级:0x10-0x80；空调开关 0x40-on */
-		U32 outCarTemp	: 8;
-		U32 inCarTemp	: 8;
-		U32 Reserved1   : 32;
-	}id_485;
-} car3_can_signal_t;
-typedef  struct {//HAVAL_2011_2P0T_MT_2WD
-	 struct  
-	{
-		/* b63 -b0 */
-		U32		ABS_WssRLEdgesSum:16;
-		U32		ABS_WssRREdgesSum:16;	
-			
-		U32		ABS_ABSFault:1;
-		U32		ABS_EBDFault:1;	
-		U32		ABS_VehicleSpeedValidSignal:1;
-		U32		ABS_VehicleSpeed:13;
-		U32   ABS_ABSControlActive:1;
-		U32   Reserved:15;
-	}id_265;
-	 struct 
-	{
-		/* b63 -b0*/
-		U32 	ECM_Fuelconsumption:16;
-		U32		Reserved1:8;
-		U32		ECM_Fuelconsumption_H:8;
-		U32		ECM_Fuelconsumption_L:8;
-		U32		ECM_ThrtlCmdPos:8;
-		U32   ECM_CruiseCtrlAct:2;
-		U32		Reserved2:1;
-		U32		ECM_CAN_BRK_SW:1;
-		U32		ECM_ThrtlCmdPosFail:1;		
-		U32		ECM_BaroPressureFail:1;
-		U32		ECM_CAN_BRK_LAMP:1;	
-		U32		ECM_ECMImmoAuthRes:1;
-		U32		ECM_MILSts:1;	
-		U32		ECM_OBDWarmUp:1;	
-		U32		Reserved3:1;
-		U32		ECM_EngStatus:2;
-		U32		Reserved4:2;
-		U32		ECM_EngineSVSSignal:1;
-	}id_271;
-	 struct 
-	{
-		/* b63 -b0*/
-		U32		BCM_LFTirePressure:8;	
-		U32		BCM_RFTirePressure:8;
-		U32		BCM_LeftFrontTireTemp:8;	
-		U32		BCM_RightFrontTireTemp:8;	
-		U32		BCM_LRTirePressure:8;
-		U32		BCM_RRTirePressure:8;		
-		U32		BCM_LeftRearTireTemp:8;	
-		U32		BCM_RightRearTireTemp:8;	
-	}id_095;
-	struct 
-	{
-		/* b63 -b0*/
-		U32		BCM_PosLmpSts:1;	
-		U32		BCM_LHPosLmpFailSts:1;
-		U32		BCM_RHPosLmpFailSts:1;	
-		U32		BCM_LicPlateLmpFailSts:1;	
-		U32		BCM_DRLSts:2;
-		U32		BCM_DRLFailSts:2;		
-		U32		BCM_FrontFogLmpSts:2;	
-		U32		BCM_RearFogLmpSts:1;
-		U32		BCM_HighBeamSts:1;
-		U32		BCM_LowBeamSts:1;
-		U32		BCM_LeftTurnSignalCmd:1;	
-		U32		BCM_RightTurnSignalCmd:1;	
-		U32		BCM_BrakeLmpFailSts:1;
-		U32		BCM_RearLidSts:1;		
-		U32		BCM_DriverDoorSts:1;	
-		U32		BCM_LRDoorSts:1;	
-		U32		BCM_PassengerDoorSts:1;	
-		U32		BCM_RRDoorSts:1;
-		U32		BCM_KeyInsertionSts:1;	
-		U32		BCM_WindShieldWiperAct:1;	
-		U32		BCM_BrakePedSts:1;
-		U32		BCM_BrakePedFailSts:1;		
-		U32		BCM_BattVolt:7;	
-		U32		BCM_RearFogLmpFailSts:1;	
-		U32		BCM_BacklightDutyCycle:7;	
-		U32		BCM_RLSFailSts:2;
-		U32		BCM_ParkBrakeSts:1;	
-		U32		BCM_ParkBrakeFailSts:2;	
-		U32		BCM_ReversGearSts:2;
-		U32		BCM_HoodSts:1;		
-		U32		BCM_ReversGearFailSts:2;	
-		U32		BCM_LFTireIndSts:2;	
-		U32		BCM_RFTireIndSts:2;	
-		U32		BCM_LRTireIndSts:2;
-		U32		BCM_RRTireIndSts:2;	
-		U32		BCM_TPMSFailureInd:2;	
-		U32		BCM_TPWarningInd:2;
-		U32		BCM_TPFastLeakageInd:2;		
-	}id_311;
-	struct 
-	{
-		/* b63 -b0*/
-		U32		ABM_PsngrSeatBeltSts:1;	
-		U32		ABM_DrSeatBeltSts:1;
-		U32		ABM_AirBagFault:1;	
-		U32   Reserved1:5;
-		U32   Reserved2:24;
-		U32   Reserved3:32;
-	}id_351;
-	struct
-	{
-		U32 Reserved1						: 7;
-		U32 VehTotalMileageValid:	1;
-		U32 VehTotalMileage			: 24;
-		U32 Reserved2						: 32;
-	}id_345;
-	struct
-	{
-		U8 config[8];
-	}id_7a6;
-	
-	struct
-	{
-		U32 reserved1:24;
-		U32 reserved2:8;
-		U32 reserved3:8;
-		U32 reserved4:3;
-		U32 ESP_ERR:1;
-		U32 reserved5:1;
-		U32 reserved6:1;
-		U32 reserved7:1;
-		U32 reserved8:1;
-		U32 reserved9:8;	
-		U32 reserved10:1;																
-		U32 ESP_OFF		:	1;
-		U32 ESP_NML	:	1;
-		U32 reserved11				:	1;
-		U32 reserved12	:	4;
-	}id_211;
-
-	struct
-	{
-		U32 CarACstate	: 8; /* 空调开关 0x10-on; 0x90-吹前档玻璃 */
-		U32 WindSpeed	: 8; /* 风量级别 1-8级:0x10-0x80 */
-		U32 outCarTemp	: 8;
-		U32 inCarTemp	: 8;
-		U32 Reserved1   : 32;
-	}id_08B;
-
-	struct /*另一块中控屏*/
-	{
-		U32 CarACstate	: 8; /* 前除霜 0x90-on; 0x40-后除霜 */
-		U32 WindSpeed	: 8; /* 风量级别 1-8级:0x10-0x80；空调开关 0x40-on */
-		U32 outCarTemp	: 8;
-		U32 inCarTemp	: 8;
-		U32 Reserved1   : 32;
-	}id_485;
-} car4_can_signal_t;
-typedef  struct {//HAVAL_2013_1P5T_MT_4WD
-	 struct  
-	{
-		/* b63 -b0 */
-		U32		ABS_WssRLEdgesSum:16;
-		U32		ABS_WssRREdgesSum:16;	
-			
-		U32		ABS_ABSFault:1;
-		U32		ABS_EBDFault:1;	
-		U32		ABS_VehicleSpeedValidSignal:1;
-		U32		ABS_VehicleSpeed:13;
-		U32   ABS_ABSControlActive:1;
-		U32   Reserved:15;
-	}id_265;
-	struct  
-	{	
-		/* b63 -b0*/
-		U32   Reserved1: 32;
-		U32		Reserved2:	8;
-		U32   ECM_EngSpd:16;
-		U32		Reserved3:8;	
-	}id_111;
-	 struct 
-	{
-		/* b63 -b0*/
-		U32 	ECM_Fuelconsumption:16;
-		U32		Reserved1:8;
-		U32		ECM_Fuelconsumption_H:8;
-		U32		ECM_Fuelconsumption_L:8;
-		U32		ECM_ThrtlCmdPos:8;
-		U32   ECM_CruiseCtrlAct:2;
-		U32		Reserved2:1;
-		U32		ECM_CAN_BRK_SW:1;
-		U32		ECM_ThrtlCmdPosFail:1;		
-		U32		ECM_BaroPressureFail:1;
-		U32		ECM_CAN_BRK_LAMP:1;	
-		U32		ECM_ECMImmoAuthRes:1;
-		U32		ECM_MILSts:1;	
-		U32		ECM_OBDWarmUp:1;	
-		U32		Reserved3:1;
-		U32		ECM_EngStatus:2;	
-		U32		Reserved4:2;
-		U32		ECM_EngineSVSSignal:1;
-	}id_271;
-	 struct 
-	{
-		/* b63 -b0*/
-		U32		BCM_LFTirePressure:8;	
-		U32		BCM_RFTirePressure:8;
-		U32		BCM_LeftFrontTireTemp:8;	
-		U32		BCM_RightFrontTireTemp:8;	
-		U32		BCM_LRTirePressure:8;
-		U32		BCM_RRTirePressure:8;		
-		U32		BCM_LeftRearTireTemp:8;	
-		U32		BCM_RightRearTireTemp:8;	
-	}id_095;
-	struct 
-	{
-		/* b63 -b0*/
-		U32		BCM_PosLmpSts:1;	
-		U32		BCM_LHPosLmpFailSts:1;
-		U32		BCM_RHPosLmpFailSts:1;	
-		U32		BCM_LicPlateLmpFailSts:1;	
-		U32		BCM_DRLSts:2;
-		U32		BCM_DRLFailSts:2;		
-		U32		BCM_FrontFogLmpSts:2;	
-		U32		BCM_RearFogLmpSts:1;
-		U32		BCM_HighBeamSts:1;
-		U32		BCM_LowBeamSts:1;
-		U32		BCM_LeftTurnSignalCmd:1;	
-		U32		BCM_RightTurnSignalCmd:1;	
-		U32		BCM_BrakeLmpFailSts:1;
-		U32		BCM_RearLidSts:1;		
-		U32		BCM_DriverDoorSts:1;	
-		U32		BCM_LRDoorSts:1;	
-		U32		BCM_PassengerDoorSts:1;	
-		U32		BCM_RRDoorSts:1;
-		U32		BCM_KeyInsertionSts:1;	
-		U32		BCM_WindShieldWiperAct:1;	
-		U32		BCM_BrakePedSts:1;
-		U32		BCM_BrakePedFailSts:1;		
-		U32		BCM_BattVolt:7;	
-		U32		BCM_RearFogLmpFailSts:1;	
-		U32		BCM_BacklightDutyCycle:7;	
-		U32		BCM_RLSFailSts:2;
-		U32		BCM_ParkBrakeSts:1;	
-		U32		BCM_ParkBrakeFailSts:2;	
-		U32		BCM_ReversGearSts:2;
-		U32		BCM_HoodSts:1;		
-		U32		BCM_ReversGearFailSts:2;	
-		U32		BCM_LFTireIndSts:2;	
-		U32		BCM_RFTireIndSts:2;	
-		U32		BCM_LRTireIndSts:2;
-		U32		BCM_RRTireIndSts:2;	
-		U32		BCM_TPMSFailureInd:2;	
-		U32		BCM_TPWarningInd:2;
-		U32		BCM_TPFastLeakageInd:2;		
-	}id_311;
-	struct 
-	{
-		/* b63 -b0*/
-		U32		ECM_FuelCutOffActive:1;	
-		U32		ECM_AccEffPosSts:1;
-		U32		ECM_AccActualPosSts:1;	
-		U32		Reserved1:1;
-		U32		Reserved0:1;	
-		U32		ECM_EngineSVSSignal:1;
-		U32		Reserverd2:2;	
-		U32		ECM_CAN_N_IDL:16;	
-		U32		ECM_EngCoolantTemp:8;	
-		U32		ECM_AccActualPos:8;	
-		U32		ECM_TgtCruiseVehSpd:8;
-		U32		Reserverd3:16;	
-	}id_371;
-	struct 
-	{
-		/* b63 -b0*/
-		U32		ABM_PsngrSeatBeltSts:1;	
-		U32		ABM_DrSeatBeltSts:1;
-		U32		ABM_AirBagFault:1;	
-		U32   Reserved1:5;
-		U32   Reserved2:24;
-		U32   Reserved3:32;
-	}id_351;
-	
-	struct{
-		/*63-0*/
-		U32 RearRadarLeftSensorSegNum:	3;
-		U32 RearRadarLeftSensorSegFlash:	1;
-		U32 RearRadarLeftMidSensorSegNum:	3;
-		U32 RearRadarLeftMidSensorSegFlash:	1;
-		U32 RearRadarRightMidSensorSegNum:	3;
-		U32 RearRadarRightMidSensorSegFlash:	1;
-		U32 RearRadarRightSensorSegNum:	3;
-		U32 RearRadarRightSensorSegFlash:	1;
-		U32 RearRadarDiag:	1;
-		U32 RearRadarWarning:	1;
-		U32 RearRadarsoundlevel:	3;
-		U32 RearRadarReserved1:2;
-		U32 RadarFailure:	1;
-		U32 FrontRadarLeftSensorSegNum:	3;
-		U32 FrontRadarLeftSensorSegFlash:	1;
-		U32 FrontRadarLeftMidSensorSegNum:	3;
-		U32 FrontRadarLeftMidSensorSegFlash:	1;
-		U32 FrontRadarRightMidSensorSegNum:	3;
-		U32 FrontRadarRightMidSensorSegFlash:	1;
-		U32 FrontRadarRightSensorSegNum:	3;
-		U32 FrontRadarRightSensorSegFlash:	1;
-		U32 FrontRadarDiag:	1;
-		U32 FrontRadarWarning:	1;
-		U32 FrontRadarsoundlevel:	3;
-		U32 FrontRadarReserved:	3;
-		U32 RearRadarReserved2:16;
-	}id_3df;
-	struct
-	{
-		U32 Reserved1						: 7;
-		U32 VehTotalMileageValid:	1;
-		U32 VehTotalMileage			: 24;
-		U32 Reserved2						: 32;
-	}id_345;
-	struct
-	{
-		U8 config[8];
-	}id_7a6;
-	struct
-	{
-		U32 reserved1;
-		U32 reserved2;
-	}id_251;
-	struct
-	{
-		U32 reserved1:24;
-		U32 reserved2:8;
-		U32 reserved3:8;
-		U32 reserved4:3;
-		U32 ESP_ERR:1;
-		U32 reserved5:1;
-		U32 reserved6:1;
-		U32 reserved7:1;
-		U32 reserved8:1;
-		U32 reserved9:8;	
-		U32 reserved10:1;																
-		U32 ESP_OFF		:	1;
-		U32 ESP_NML	:	1;
-		U32 reserved11				:	1;
-		U32 reserved12	:	4;
-	}id_211;
-	struct
-	{
-		U32 ALS			: 1;
-		U32 Reserved1	: 7;
-		U32 Reserved2	: 24;
-		U32 Reserved3	: 32;
-	}id_365;
-
-	struct  
-	{	
-		/* b63 -b0*/
-		U32   Reserved1 		: 18;
-		U32   PEPS_TurnOFFpwr	: 1;
-		U32   PEPS_TakeAwayKey	: 1;
-		U32   PEPS_CheckNoKey	: 1;
-		U32   reserved2			: 11;
-		U32	  PEPS_TurnGearPN	: 1;
-		U32	  Reserved3 		: 3;
-		U32	  PEPS_ERROR 		: 1;	
-		U32	  Reserved4 		: 7;	
-		U32	  PEPS_ERROR1 		: 1;	
-		U32	  Reserved5 		: 19;	
-	}id_0A5;
-
-	struct
-	{
-		U32 CarACstate	: 8; /* 空调开关 0x10-on; 0x90-吹前档玻璃 */
-		U32 WindSpeed	: 8; /* 风量级别 1-8级:0x10-0x80 */
-		U32 outCarTemp	: 8;
-		U32 inCarTemp	: 8;
-		U32 Reserved1   : 32;
-	}id_08B;
-
-	struct /*另一块中控屏*/
-	{
-		U32 CarACstate	: 8; /* 前除霜 0x90-on; 0x40-后除霜 */
-		U32 WindSpeed	: 8; /* 风量级别 1-8级:0x10-0x80；空调开关 0x40-on */
-		U32 outCarTemp	: 8;
-		U32 inCarTemp	: 8;
-		U32 Reserved1   : 32;
-	}id_485;
-}car5_can_signal_t;
-/*
- typedef struct 
-{
-	U8 USD_data[8];	
-}UDS_id_766;
-*/
-
+} can_signal_t;
 
 /*******************************************************************************/
-typedef void(* pCanAnalyse)(can_msg_t *msg,can_pro_way_e way);
-
+typedef void (*pCanAnalyse)(can_msg_t *msg, can_pro_way_e way);
 
 void app_init_can(void);
 
@@ -1291,32 +347,29 @@ void app_can_sent_task(void);
 
 void app_can_lost_time_cnt_100ms(void);
 
-extern car0_can_signal_t can0;
-extern car1_can_signal_t can1;
-extern car2_can_signal_t can2;
-extern car3_can_signal_t can3;
-extern car4_can_signal_t can4;
-extern car5_can_signal_t can5;
+extern can_signal_t can0;
 
-extern U16 can_id_095_lost_timecnt;
-extern U16 can_id_111_lost_timecnt;
-extern U16 can_id_131_lost_timecnt;
-extern U16 can_id_265_lost_timecnt;
-extern U16 can_id_271_lost_timecnt;
-extern U16 can_id_311_lost_timecnt;
-extern U16 can_id_351_lost_timecnt;
-extern U16 can_id_371_lost_timecnt;
-extern U16 can_id_7E7_lost_timecnt;
-extern U16 can_id_3df_lost_timecnt;
-extern U16 can_id_251_lost_timecnt;
-extern U16 can_id_116_lost_timecnt;
-extern U16 can_id_211_lost_timecnt;
-extern U16 can_id_242_lost_timecnt;
-extern U16 can_id_0A5_lost_timecnt;
-extern U16 can_id_365_lost_timecnt;
-extern U16 can_id_08B_lost_timecnt;
-extern U16 can_id_485_lost_timecnt;
-
-
+extern U16 can_id_18AA28F3_lost_timecnt;
+extern U16 can_id_1818D0F3_lost_timecnt;
+extern U16 can_id_1819D0F3_lost_timecnt;
+extern U16 can_id_181AD0F3_lost_timecnt;
+extern U16 can_id_181BD0F3_lost_timecnt;
+extern U16 can_id_181CD0F3_lost_timecnt;
+extern U16 can_id_181DD0F3_lost_timecnt;
+extern U16 can_id_181ED0F3_lost_timecnt;
+extern U16 can_id_181FD0F3_lost_timecnt;
+extern U16 can_id_1800F328_lost_timecnt;
+extern U16 can_id_180028F3_lost_timecnt;
+extern U16 can_id_180028F4_lost_timecnt;
+extern U16 can_id_1882BBAB_lost_timecnt;
+extern U16 can_id_1002FF1E_lost_timecnt;
+extern U16 can_id_1003FF1E_lost_timecnt;
+extern U16 can_id_1004FF1E_lost_timecnt;
+extern U16 can_id_1429289B_lost_timecnt;
+extern U16 can_id_142A289B_lost_timecnt;
+extern U16 can_id_18AB9B28_lost_timecnt;
+extern U16 can_id_18FFA017_lost_timecnt;
+extern U16 can_id_1828272B_lost_timecnt;
+extern U16 can_id_142A2895_lost_timecnt;
 
 #endif

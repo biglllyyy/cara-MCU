@@ -14,7 +14,7 @@ void app_tpms_init(void)
 }
 
 void app_tpms_task(void)
-{
+{/*
 	if(ON == g_u8IgnSts)
 	{
 		if(can_id_095_lost_timecnt<CAN_LOST_TIME)
@@ -95,4 +95,4 @@ void app_tpms_task(void)
 		memset(&uart_special_data.specialInfo.Tpms,0,sizeof(uart_special_data.specialInfo.Tpms));
 		memset(&uart_special_data.specialInfo.Ttms,0,sizeof(uart_special_data.specialInfo.Ttms));
 	}
-}
+*/}

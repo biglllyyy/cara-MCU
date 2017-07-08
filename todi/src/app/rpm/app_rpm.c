@@ -26,7 +26,7 @@ void app_process_rpm_task(void)
 	U16 temp_value = 0;
 	static U16 temp_value_bak=0;
 	
-	if(can_id_111_lost_timecnt>CAN_LOST_TIME)/*CAN丢失时间大于2.5s，转速为0*/
+	if(can_id_1002FF1E_lost_timecnt>CAN_LOST_TIME)/*CAN丢失时间大于2.5s，转速为0*/
 	{
 		g_rpm=rpm_src=temp_value_bak=0;
 		return;

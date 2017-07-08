@@ -19,7 +19,7 @@ void app_gear_init(void)
 }
 
 void app_gear_pro_100ms(void)
-{
+{/*
 	switch(IPconfig.protocol)
 	{
 		case HAVAL_2013_2P4L_AT_2WD:
@@ -111,22 +111,22 @@ void app_gear_pro_100ms(void)
 					case 8://M
 						switch(can3.id_221.gear)
 						{
-							case 0x28:/* M1 */
+							case 0x28: M1
 								uart_general_data.generalInfo.gear=10;
 								break;
-							case 0x48:/* M2 */
+							case 0x48: M2
 								uart_general_data.generalInfo.gear=11;
 								break;
-							case 0x68:/* M3 */
+							case 0x68: M3
 								uart_general_data.generalInfo.gear=12;
 								break;
-							case 0x88:/* M4 */
+							case 0x88: M4
 								uart_general_data.generalInfo.gear=13;
 								break;
-							case 0xa8:/* M5 */
+							case 0xa8: M5
 								uart_general_data.generalInfo.gear=14;
 								break;
-							case 0xC8:/* M6 */
+							case 0xC8: M6
 								uart_general_data.generalInfo.gear=15;
 								break;
 						}
@@ -163,4 +163,4 @@ void app_gear_pro_100ms(void)
 			}
 			break;
 	}
-}
+*/}

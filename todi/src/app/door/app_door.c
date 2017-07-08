@@ -31,7 +31,7 @@ U8 app_get_door_open_sts(void)//获取车门的状态
 }
 
 void app_get_door_sts_100ms(void)
-{
+{/*
 	switch(IPconfig.protocol)
 	{
 		case HAVAL_2013_2P4L_AT_2WD:
@@ -228,4 +228,4 @@ void app_get_door_sts_100ms(void)
 			}
 			break; 
 	}
-}
+*/}

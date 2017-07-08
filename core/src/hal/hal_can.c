@@ -81,7 +81,7 @@ void hal_can_init(U8 chn)
         /* CAN bus setting */
         IO_CAN0.CTRLR.hword = 0x0041;		/* BTR/BRPE Write Enable */
 #if (MCLK_FRQ == 4000000)
-        IO_CAN0.BTR.hword   = MCLK_8M_BTR_500K;		/* 500kbps */
+        IO_CAN0.BTR.hword   = MCLK_8M_BTR_250K;		/* 500kbps change the Baud rate to 250K by niujianlong*/
 #elif(MCLK_FRQ == 8000000)
         IO_CAN0.BTR.hword   = MCLK_8M_BTR_500K;
 #endif

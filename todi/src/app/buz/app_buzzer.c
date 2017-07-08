@@ -774,6 +774,7 @@ static void app_buz_light_on(U16 action)
 static U8 get_radar_sound_level(void)
 {
 	U8 radar_level_temp;
+	#if 0
 	switch(IPconfig.protocol)                               
 		{                                                     
 			case HAVAL_2013_2P4L_AT_2WD:                            
@@ -883,6 +884,7 @@ static U8 get_radar_sound_level(void)
 				
 				break;                                 
 		}
+	#endif
 		return radar_level_temp;
 }
 /*
@@ -1212,6 +1214,7 @@ static void app_buz_spd_120kmph(U16 action)
 */
 static void app_buz_fast_leakagestates(U16 action)
 {
+#if 0
 	static U16 state = 0;
     U16 new_state = 0;
 		
@@ -1301,6 +1304,7 @@ static void app_buz_fast_leakagestates(U16 action)
     	default:
     	    break;
     }
+#endif
 }
 
 /*ESP¹Ø±Õ±¨¾¯*/

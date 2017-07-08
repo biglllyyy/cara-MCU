@@ -5,41 +5,40 @@
 #include "hal_can.h"
 
 #define    CAN_CHN			0
-#define    ID_RECV_NUM_ALL	22
-#define    ID_SENT_NUM_ALL  4
+#define    ID_RECV_NUM_ALL	19
+#define    ID_SENT_NUM_ALL  5
 #define    ID_PROCESS_ALL	(ID_RECV_NUM_ALL + ID_SENT_NUM_ALL)
 
 /*ip receive*/
 #define    PC_T0_MCU_ID		  	0x7E7
-#define    ID_REC_1_265			0x265
-#define    ID_REC_2_111			0x111
-#define    ID_REC_3_271			0x271
-#define    ID_REC_4_131			0x131
-#define    ID_REC_5_095			0x095
-#define    ID_REC_6_311			0x311
-#define    ID_REC_7_371			0x371
-#define    ID_REC_8_351			0x351
-#define    ID_REC_9_3DF         0x3df
-#define    ID_REC_10_345		0x345
-#define    ID_REC_11_221		0x221
-#define    ID_REC_12_7A6		0x7A6
-#define    ID_REC_13_251 		0x251
-#define	   ID_REC_14_116		0x116
-#define    ID_REC_15_211		0x211
-#define    ID_REC_16_242		0x242
-#define    ID_REC_17_0A5		0x0A5
-#define    ID_REC_18_766		0x766
-#define    ID_REC_19_365		0x365
-#define    ID_REC_20_08B		0x08B
-#define    ID_REC_21_485		0x485
+#define    ID_REC_1_18AA28F3    0x18AA28F3
+#define    ID_REC_2_1818D0F3    0x1818D0F3
+#define    ID_REC_3_1819D0F3    0x1819D0F3
+#define    ID_REC_4_181AD0F3    0x181AD0F3
+#define    ID_REC_5_181BD0F3    0x181BD0F3
+#define    ID_REC_6_181CD0F3    0x181CD0F3
+#define    ID_REC_7_181DD0F3    0x181DD0F3
+#define    ID_REC_8_181ED0F3    0x181ED0F3
+#define    ID_REC_9_181FD0F3    0x181FD0F3
+#define    ID_REC_10_180028F3    0x180028F3
+#define    ID_REC_11_180028F4    0x180028F4
+#define    ID_REC_12_1002FF1E    0x1002FF1E
+#define    ID_REC_13_1003FF1E    0x1003FF1E
+#define    ID_REC_14_1004FF1E    0x1004FF1E
+#define    ID_REC_15_1429289B    0x1429289B
+#define    ID_REC_16_142A289B    0x142A289B
+#define    ID_REC_17_1828272B    0x1828272B
+#define    ID_REC_18_142A2895    0x142A2895
+
 
 
 
 /* ip sent */
-#define      MCU_TO_PC_ID		0x7EF 
-#define 	 ID_SEND_1_345		0x345
-#define		 ID_SEND_2_766		0x766
-#define		 ID_SEND_3_7A6		0x7A6
+#define    MCU_TO_PC_ID			 0x7EF
+#define    ID_SEND_1_1800F328    0x1800F328
+#define    ID_SEND_2_1882BBAB    0x1882BBAB
+#define    ID_SEND_3_18AB9B28    0x18AB9B28
+#define    ID_SEND_4_18FFA017    0x18FFA017
 
 
 #endif

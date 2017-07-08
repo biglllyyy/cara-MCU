@@ -149,6 +149,7 @@ U8   ap_cal_aver_temp(U8 temp)
 }
 void app_pro_temp_task(void)
 {
+#if 0
 	U8 temp;
 	temp=temp_src;
 	switch(IPconfig.protocol)
@@ -305,4 +306,5 @@ void app_pro_temp_task(void)
 			g_temp=temp;
 			break;
 	}
+	#endif
 }

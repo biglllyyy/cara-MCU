@@ -46,6 +46,7 @@ void app_init_led(void)
 /* 气囊 */
 void led_airbag_ctl(void)
 {
+#if 0
 	switch(IPconfig.protocol)
 	{
 		case HAVAL_2013_2P4L_AT_2WD:
@@ -152,10 +153,12 @@ void led_airbag_ctl(void)
 			}
 			break;
 	}
+	#endif
 }
  
 void led_turn_ctl(void)
 {
+#if 0
 	switch(IPconfig.protocol)                               
 	{                                                     
 		case HAVAL_2013_2P4L_AT_2WD:                            
@@ -328,11 +331,13 @@ void led_turn_ctl(void)
 			}                                             
 			break;                                          
 	}
+	#endif
 }
 
 /* 后雾灯 */
 void led_rearfoglamp_ctl(void)
 {
+#if 0
 	switch(IPconfig.protocol)                               
 	{                                                     
 		case HAVAL_2013_2P4L_AT_2WD:                            
@@ -480,12 +485,14 @@ void led_rearfoglamp_ctl(void)
 				}
 			}                                             
 			break;                                            
-	}                                                     
+	}  
+	#endif
 }
 
 /* 前雾灯 */
 void led_frontfoglamp_ctl(void)
 {
+#if 0
 	switch(IPconfig.protocol)                               
 	{                                                     
 		case HAVAL_2013_2P4L_AT_2WD:                            
@@ -723,12 +730,14 @@ void led_frontfoglamp_ctl(void)
 				}
 			}                                             
 			break;                                           
-	}                                                     
+	}  
+	#endif
 }
 
 /* 远光灯 */
 void led_highbeam_ctl(void)
 {
+#if 0
 	switch(IPconfig.protocol)                               
 	{                                                     
 		case HAVAL_2013_2P4L_AT_2WD:                            
@@ -876,44 +885,45 @@ void led_highbeam_ctl(void)
 				}
 			}                                             
 			break;                                              
-	}                                                     
+	}  
+	#endif
 }
 
 /* 安全带 */
 void led_safetybelt_ctl(void)
 {
-	if(ON == g_u8IgnSts)
+	/*if(ON == g_u8IgnSts)
 	{
 		if(can_id_351_lost_timecnt<CAN_LOST_TIME)//副安全带 CAN控制
 		{
-			switch(IPconfig.protocol)                               
-			{                                                     
-				case HAVAL_2013_2P4L_AT_2WD:                            
-					mid_led_ctl(LED_SAFETYBELTSIDE,(LED_STS_e)(can0.id_351.ABM_PsngrSeatBeltSts));                                            
-					break;                                            
-				case HAVAL_2013_1P5T_MT_2WD:                            
-					mid_led_ctl(LED_SAFETYBELTSIDE,(LED_STS_e)(can1.id_351.ABM_PsngrSeatBeltSts));                                             
-					break;                                            
-				case HAVAL_2012_1P5T_MT_2WD:                            
-					mid_led_ctl(LED_SAFETYBELTSIDE,(LED_STS_e)(can2.id_351.ABM_PsngrSeatBeltSts));                                             
-					break;    
-				case HAVAL_2015_1P5T_MT_2WD: 
-				case HAVAL_2015_1P5T_6AT_2WD:                           
-					mid_led_ctl(LED_SAFETYBELTSIDE,(LED_STS_e)(can3.id_351.ABM_PsngrSeatBeltSts));                                        
-					break;  
-				case HAVAL_2011_2P0T_MT_2WD:                            
-					mid_led_ctl(LED_SAFETYBELTSIDE,(LED_STS_e)(can4.id_351.ABM_PsngrSeatBeltSts));                                             
-					break; 
-				case HAVAL_2013_1P5T_MT_4WD:                            
-					mid_led_ctl(LED_SAFETYBELTSIDE,(LED_STS_e)(can5.id_351.ABM_PsngrSeatBeltSts));                                             
-					break;                                          
-			}      
+			switch(IPconfig.protocol)
+			{
+				case HAVAL_2013_2P4L_AT_2WD:
+					mid_led_ctl(LED_SAFETYBELTSIDE,(LED_STS_e)(can0.id_351.ABM_PsngrSeatBeltSts));
+					break;
+				case HAVAL_2013_1P5T_MT_2WD:
+					mid_led_ctl(LED_SAFETYBELTSIDE,(LED_STS_e)(can1.id_351.ABM_PsngrSeatBeltSts));
+					break;
+				case HAVAL_2012_1P5T_MT_2WD:
+					mid_led_ctl(LED_SAFETYBELTSIDE,(LED_STS_e)(can2.id_351.ABM_PsngrSeatBeltSts));
+					break;
+				case HAVAL_2015_1P5T_MT_2WD:
+				case HAVAL_2015_1P5T_6AT_2WD:
+					mid_led_ctl(LED_SAFETYBELTSIDE,(LED_STS_e)(can3.id_351.ABM_PsngrSeatBeltSts));
+					break;
+				case HAVAL_2011_2P0T_MT_2WD:
+					mid_led_ctl(LED_SAFETYBELTSIDE,(LED_STS_e)(can4.id_351.ABM_PsngrSeatBeltSts));
+					break;
+				case HAVAL_2013_1P5T_MT_4WD:
+					mid_led_ctl(LED_SAFETYBELTSIDE,(LED_STS_e)(can5.id_351.ABM_PsngrSeatBeltSts));
+					break;
+			}
 		}
 		else
 		{
 			mid_led_ctl(LED_SAFETYBELTSIDE,LED_ON);
 		}
-		
+
 		if(OFF==mid_get_io_sts(&pin_io_in[PIN_IN_MAIN_BELT]))//主安全带 PIN脚4控制,低有效
 		{
 			uart_special_data.specialInfo.LedWarning.first.bit.SeatbeltsNotFastened=1;
@@ -927,14 +937,14 @@ void led_safetybelt_ctl(void)
 	{
 		mid_led_ctl(LED_SAFETYBELTSIDE,LED_OFF);
 		uart_special_data.specialInfo.LedWarning.first.bit.SeatbeltsNotFastened=0;
-	}
+	}*/
 }
 
 /* 手刹 */
 void led_braking_ctl(void)
 {
 	switch(IPconfig.protocol)                               
-	{                                                     
+	{/*
 		case HAVAL_2013_2P4L_AT_2WD:                            
 			if(ON == g_u8IgnSts)
 			{
@@ -1110,14 +1120,14 @@ void led_braking_ctl(void)
 				uart_special_data.specialInfo.LedWarning.third.bit.BrakingFault=1;
 			}                                             
 			break;                                    
-	}                                                     
+	*/}
 }
 
 /* 发动机报警 */
 void led_engine_failure_ctl(void)
 {
 	switch(IPconfig.protocol)
-	{
+	{/*
 		case HAVAL_2013_2P4L_AT_2WD:
 			if(ON == g_u8IgnSts)
 			{
@@ -1221,7 +1231,7 @@ void led_engine_failure_ctl(void)
 				uart_special_data.specialInfo.LedWarning.third.bit.EngineError=0;
 			}
 			break;
-	}
+	*/}
 }
 
 /* 燃油报警 */
@@ -1261,7 +1271,7 @@ void led_120km_warning_ctrl(void)//超速报警的判断放在界面去做
 
 /* ABS报警 */
 void led_abs_failure_ctrl(void)
-{
+{/*
 	if(ON == g_u8IgnSts)
 	{
 		if(can_id_265_lost_timecnt<CAN_LOST_TIME)
@@ -1298,7 +1308,7 @@ void led_abs_failure_ctrl(void)
 	{
 		uart_special_data.specialInfo.LedWarning.first.bit.ABSError=0;
 	}
-}
+*/}
 
 /* 油压报警 */
 void led_oil_press_ctrl(void)
@@ -1325,7 +1335,7 @@ void led_oil_press_ctrl(void)
 
 /* 发动机保养 */
 void led_engine_maintain_ctrl(void)
-{
+{/*
 	switch(IPconfig.protocol)
 	{
 		case HAVAL_2013_2P4L_AT_2WD:
@@ -1432,11 +1442,11 @@ void led_engine_maintain_ctrl(void)
 			}
 			break;
 	}
-}
+*/}
 
 /* 自动大灯 */
 void led_lamp_auto_light_ctrl(void)
-{
+{/*
 	switch(IPconfig.protocol)
 	{
 		case HAVAL_2013_2P4L_AT_2WD:
@@ -1543,11 +1553,11 @@ void led_lamp_auto_light_ctrl(void)
 			}
 			break;
 	}
-}
+*/}
 
 /* 定速巡航 */
 void led_cruise_ctrl(void)
-{
+{/*
 	switch(IPconfig.protocol)
 	{
 		case HAVAL_2013_2P4L_AT_2WD:
@@ -1762,10 +1772,10 @@ void led_cruise_ctrl(void)
 			}
 			break;
 	}
-}
+*/}
 
 void led_atm_warning_ctrl(void)
-{
+{/*
 	switch(IPconfig.protocol)
 	{
 		case HAVAL_2013_2P4L_AT_2WD:
@@ -1819,7 +1829,7 @@ void led_atm_warning_ctrl(void)
 			}
 			break;
 		case HAVAL_2015_1P5T_MT_2WD: 
-			/*手动挡的车，没有自动变速箱故障*/
+			手动挡的车，没有自动变速箱故障
 			uart_special_data.specialInfo.LedWarning.second.bit.ATMWarning=0;
 			break;
 		case HAVAL_2015_1P5T_6AT_2WD:
@@ -1860,11 +1870,11 @@ void led_atm_warning_ctrl(void)
 			}
 			break;
 	}
-}
+*/}
 
 /* 胎压报警 */
 void led_tpms_warning_ctrl(void)
-{
+{/*
 	if(ON == g_u8IgnSts)
 	{
 		if(can_id_311_lost_timecnt<CAN_LOST_TIME)
@@ -1984,11 +1994,11 @@ void led_tpms_warning_ctrl(void)
 	{
 		uart_special_data.specialInfo.LedWarning.first.bit.TpmsWarning=0;
 	}
-}
+*/}
 
 /* 胎压出错 */
 void led_tpms_failure_ctrl(void)
-{
+{/*
 	if(ON == g_u8IgnSts)
 	{
 		if(can_id_311_lost_timecnt<CAN_LOST_TIME)
@@ -2103,11 +2113,11 @@ void led_tpms_failure_ctrl(void)
 	{
 		uart_special_data.specialInfo.LedWarning.second.bit.TpmsError=0;
 	}
-}
+*/}
 
 
 void led_light_main_switch_and_position_ctl(void)
-{
+{/*
 	switch(IPconfig.protocol)                               
 	{                                                     
 		case HAVAL_2013_2P4L_AT_2WD:                            
@@ -2280,10 +2290,10 @@ void led_light_main_switch_and_position_ctl(void)
 			}                            
 			break;                                         
 	}                                                     
-}
+*/}
 
 void led_engine_guard_ctl(void)
-{
+{/*
 	switch(IPconfig.protocol)                               
 	{                                                     
 		case HAVAL_2013_2P4L_AT_2WD:                            
@@ -2316,8 +2326,8 @@ void led_engine_guard_ctl(void)
 				uart_special_data.specialInfo.LedWarning.second.bit.EngineSecurity=0;
 			}                                     
 			break;
-		case HAVAL_2015_1P5T_MT_2WD:/*已验证:CAN上有报警信号 0:ON*/ 
-		case HAVAL_2015_1P5T_6AT_2WD:/*已验证:CAN上有报警信号 0:ON*/                      
+		case HAVAL_2015_1P5T_MT_2WD:已验证:CAN上有报警信号 0:ON
+		case HAVAL_2015_1P5T_6AT_2WD:已验证:CAN上有报警信号 0:ON
 			if((OFF==mid_get_io_sts(&pin_io_in[PIN_IN_ENGINE_GUARD]))||(can3.id_271.ECM_ECMImmoAuthRes==0))
 			{
 				uart_special_data.specialInfo.LedWarning.second.bit.EngineSecurity=1;
@@ -2337,7 +2347,7 @@ void led_engine_guard_ctl(void)
 				uart_special_data.specialInfo.LedWarning.second.bit.EngineSecurity=0;
 			}                                
 			break;  
-		case HAVAL_2013_1P5T_MT_4WD:/*仪表邮寄中，待测*/
+		case HAVAL_2013_1P5T_MT_4WD:仪表邮寄中，待测
 			if((OFF==mid_get_io_sts(&pin_io_in[PIN_IN_ENGINE_GUARD]))||(can5.id_271.ECM_ECMImmoAuthRes==0))
 			{
 				uart_special_data.specialInfo.LedWarning.second.bit.EngineSecurity=1;
@@ -2348,7 +2358,7 @@ void led_engine_guard_ctl(void)
 			}                 
 			break;                                         
 	}
-}
+*/}
 
 void led_guard_ctl(void)
 {
@@ -2520,7 +2530,7 @@ void led_charging_ctl(void)
 
 /* 四驱灯 */
 void led_4WD_ctl(void)
-{
+{/*
 	static U8 timecnt=0;
 	switch(IPconfig.protocol)                               
 	{                                                     
@@ -2573,18 +2583,18 @@ void led_4WD_ctl(void)
 			}                                            
 			break;                                       
 	}   
-}
+*/}
 
 
 
 /* ESP,电子稳定系统 */
 void led_ESP_ctl(void)
-{
+{/*
 	switch(IPconfig.protocol)                               
 	{                                                     
 		case HAVAL_2013_2P4L_AT_2WD: 
-			/* 实车抓的包中无 ID211,此灯的ID待测 */
-		/*  
+			 实车抓的包中无 ID211,此灯的ID待测
+
 			if(ON == g_u8IgnSts)
 			{ 
 				if(can_id_211_lost_timecnt<50)
@@ -2600,7 +2610,7 @@ void led_ESP_ctl(void)
 			{
 				uart_special_data.specialInfo.LedWarning.second.bit.ESP=0;
 			}    
-		*/
+
 			break; 
 		case HAVAL_2013_1P5T_MT_2WD:    
 			if(ON == g_u8IgnSts)
@@ -2699,7 +2709,7 @@ void led_ESP_ctl(void)
 				uart_special_data.specialInfo.LedWarning.second.bit.ESP=0;
 			}   
 			break;  
-		/*2015_1P5T_MT和6AT只是在档位上有区别，其他信号一样，所以共用can3*/
+		2015_1P5T_MT和6AT只是在档位上有区别，其他信号一样，所以共用can3
 		case HAVAL_2015_1P5T_MT_2WD: 
 		case HAVAL_2015_1P5T_6AT_2WD:                 							
 			if(ON == g_u8IgnSts)
@@ -2766,11 +2776,11 @@ void led_ESP_ctl(void)
 			}    
 			break;  
 	}   
-}
+*/}
 
 /*陡坡缓降指示灯*/
 void led_HDC_ctl(void)
-{
+{/*
 	switch(IPconfig.protocol)                               
 	{                                                     
 		case HAVAL_2013_2P4L_AT_2WD:                            
@@ -2788,7 +2798,7 @@ void led_HDC_ctl(void)
 			{ 
 				if(can_id_242_lost_timecnt<CAN_LOST_TIME)
 				{
-					/*陡坡缓降系统无故障*/
+					陡坡缓降系统无故障
 					if(0 == can3.id_242.HDC_ERROR)
 					{
 						uart_special_data.specialInfo.Radar.fifth.bit.HDC_ERROR = 0;
@@ -2819,12 +2829,12 @@ void led_HDC_ctl(void)
 			             
 			break;                                         
 	}
-}
+*/}
 
 
 /*  PESP 指示灯 */
 void led_PEPS_ctl(void)
-{
+{/*
 	U8 PEPS_Err1 = 0;
 	U8 PEPS_Err2 = 0;
 	U8 PEPS_Err3 = 0;
@@ -2867,14 +2877,14 @@ void led_PEPS_ctl(void)
 						uart_special_data.specialInfo.Peps.first.bit.PEPS_CheckNoKey = 0;
 					}					
 				}
-				else /* CAN 信号丢失*/
+				else  CAN 信号丢失
 				{
 					uart_special_data.specialInfo.Peps.first.bit.PEPS_TurnGearPN = 0;
 					uart_special_data.specialInfo.Peps.first.bit.PEPS_ERROR = 0;
 					uart_special_data.specialInfo.Peps.first.bit.PEPS_CheckNoKey = 0;	
 				}
 			}
-			else /*熄火状态*/
+			else 熄火状态
 			{
 				if(lin_pid_0x42_lost_timecnt<LIN_LOST_TIME)
 				{
@@ -2908,7 +2918,7 @@ void led_PEPS_ctl(void)
 						uart_special_data.specialInfo.Peps.first.bit.PEPS_CheckNoKey = 0;
 					}					
 				}
-				else/*LIN 信号丢失*/
+				elseLIN 信号丢失
 				{
 					uart_special_data.specialInfo.Peps.first.bit.PEPS_TurnGearPN = 0;
 					uart_special_data.specialInfo.Peps.first.bit.PEPS_ERROR = 0;
@@ -2953,14 +2963,14 @@ void led_PEPS_ctl(void)
 						uart_special_data.specialInfo.Peps.first.bit.PEPS_CheckNoKey = 0;
 					}					
 				}
-				else /* CAN 信号丢失*/
+				else  CAN 信号丢失
 				{
 					uart_special_data.specialInfo.Peps.first.bit.PEPS_TurnGearPN = 0;
 					uart_special_data.specialInfo.Peps.first.bit.PEPS_ERROR = 0;
 					uart_special_data.specialInfo.Peps.first.bit.PEPS_CheckNoKey = 0;	
 				}
 			}
-			else /*熄火状态*/
+			else 熄火状态
 			{
 				if(lin_pid_0x42_lost_timecnt<LIN_LOST_TIME)
 				{
@@ -2994,7 +3004,7 @@ void led_PEPS_ctl(void)
 						uart_special_data.specialInfo.Peps.first.bit.PEPS_CheckNoKey = 0;
 					}					
 				}
-				else/*LIN 信号丢失*/
+				elseLIN 信号丢失
 				{
 					uart_special_data.specialInfo.Peps.first.bit.PEPS_TurnGearPN = 0;
 					uart_special_data.specialInfo.Peps.first.bit.PEPS_ERROR = 0;
@@ -3038,14 +3048,14 @@ void led_PEPS_ctl(void)
 						uart_special_data.specialInfo.Peps.first.bit.PEPS_CheckNoKey = 0;
 					}					
 				}
-				else /* CAN 信号丢失*/
+				else  CAN 信号丢失
 				{
 					uart_special_data.specialInfo.Peps.first.bit.PEPS_TurnGearPN = 0;
 					uart_special_data.specialInfo.Peps.first.bit.PEPS_ERROR = 0;
 					uart_special_data.specialInfo.Peps.first.bit.PEPS_CheckNoKey = 0;	
 				}
 			}
-			else /*熄火状态*/
+			else 熄火状态
 			{
 				if(lin_pid_0x42_lost_timecnt<LIN_LOST_TIME)
 				{
@@ -3079,7 +3089,7 @@ void led_PEPS_ctl(void)
 						uart_special_data.specialInfo.Peps.first.bit.PEPS_CheckNoKey = 0;
 					}					
 				}
-				else/*LIN 信号丢失*/
+				elseLIN 信号丢失
 				{
 					uart_special_data.specialInfo.Peps.first.bit.PEPS_TurnGearPN = 0;
 					uart_special_data.specialInfo.Peps.first.bit.PEPS_ERROR = 0;
@@ -3088,11 +3098,11 @@ void led_PEPS_ctl(void)
 			}              
 			break;                                         
 	}
-}
+*/}
 
 /* SnowMode LED */
 void led_snow_mode_ctl(void)
-{
+{/*
 	switch(IPconfig.protocol)                               
 	{                                                     
 		case HAVAL_2013_2P4L_AT_2WD:                            
@@ -3108,7 +3118,7 @@ void led_snow_mode_ctl(void)
 		case HAVAL_2015_1P5T_6AT_2WD:                           
 			if(ON == g_u8IgnSts && can_id_221_lost_timecnt<CAN_LOST_TIME)
 			{
-				/*CAN报文中 b47,b46,b45位，有且只有b45位为1时灯亮*/
+				CAN报文中 b47,b46,b45位，有且只有b45位为1时灯亮
 				if(1 == can3.id_221.SnowModeLED)
 				{					
 					uart_special_data.specialInfo.SpecialLED.first.bit.SnowModeLED = 1;
@@ -3132,18 +3142,18 @@ void led_snow_mode_ctl(void)
 		default: 
 			break;
 	}   
-}
+*/}
 
 
 /* ALS LED */
 void led_ALS_ctl(void)
-{
+{/*
 	switch(IPconfig.protocol)                               
 	{                                                     
 		case HAVAL_2013_2P4L_AT_2WD:                            
 			if(ON == g_u8IgnSts)
 			{
-				/*只要收到CAN信号就有该报警,CAN信号丢失该报警也不会取消*/
+				只要收到CAN信号就有该报警,CAN信号丢失该报警也不会取消
 				if(1 == can0.id_365.ALS)
 				{					
 					uart_special_data.specialInfo.SpecialLED.first.bit.ALS = 1;
@@ -3161,7 +3171,7 @@ void led_ALS_ctl(void)
 		case HAVAL_2013_1P5T_MT_2WD:                            
 			if(ON == g_u8IgnSts)
 			{
-				/*只要收到CAN信号就有该报警,CAN信号丢失该报警也不会取消*/
+				只要收到CAN信号就有该报警,CAN信号丢失该报警也不会取消
 				if(1 == can1.id_365.ALS)
 				{					
 					uart_special_data.specialInfo.SpecialLED.first.bit.ALS = 1;
@@ -3183,7 +3193,7 @@ void led_ALS_ctl(void)
 		case HAVAL_2015_1P5T_6AT_2WD:                           
 			if(ON == g_u8IgnSts)
 			{
-				/*只要收到CAN信号就有该报警,CAN信号丢失该报警也不会取消*/
+				只要收到CAN信号就有该报警,CAN信号丢失该报警也不会取消
 				if(1 == can3.id_365.ALS)
 				{					
 					uart_special_data.specialInfo.SpecialLED.first.bit.ALS = 1;
@@ -3204,7 +3214,7 @@ void led_ALS_ctl(void)
 		case HAVAL_2013_1P5T_MT_4WD:                            
 			if(ON == g_u8IgnSts)
 			{
-				/*只要收到CAN信号就有该报警,CAN信号丢失该报警也不会取消*/
+				只要收到CAN信号就有该报警,CAN信号丢失该报警也不会取消
 				if(1 == can5.id_365.ALS)
 				{					
 					uart_special_data.specialInfo.SpecialLED.first.bit.ALS = 1;
@@ -3222,7 +3232,7 @@ void led_ALS_ctl(void)
 		default: 
 			break;
 	}   
-}
+*/}
 
 
 

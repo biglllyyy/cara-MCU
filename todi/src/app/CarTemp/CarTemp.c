@@ -32,7 +32,7 @@ void app_CarTemp_init(){
 }
 
 /*两块中控屏，如果任一ID的数据正确，则取正确的数据*/
-static void app_get_outCar_temp(){
+static void app_get_outCar_temp(){/*
 	if(can_id_08B_lost_timecnt < 50 || \
 		can_id_485_lost_timecnt< 50)
 	{
@@ -123,12 +123,12 @@ static void app_get_outCar_temp(){
 	}
 	else
 	{
-		/*默认发0xff，让UI显示--.-℃*/
+		默认发0xff，让UI显示--.-℃
 		outCarTemp = 0xFF; 
 	}
-}
+*/}
 
-static void app_get_inCar_temp(){	
+static void app_get_inCar_temp(){/*
 	
 	if(can_id_08B_lost_timecnt < 50 || \
 		can_id_485_lost_timecnt)
@@ -220,10 +220,10 @@ static void app_get_inCar_temp(){
 	}
 	else
 	{
-		/*默认发0xff，让UI显示--.-℃*/
+		默认发0xff，让UI显示--.-℃
 		inCarTemp = 0xFF; 
 	}
-}
+*/}
 
 void app_get_CarTemp_5000ms(){
 

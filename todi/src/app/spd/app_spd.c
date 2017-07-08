@@ -37,18 +37,18 @@ void  app_set_spd(U16 spd)
 	s_g_u16_speed_src = spd;
 }
 static void app_cal_fact_speed(void)
-{
+{/*
 	U16 g_u16Spd = 0;
 	if(g_u8IgnSts == ON)
 	{
-		/*根据CAN数据和系数0.05625计算实际车速，并四舍五入*/
+		根据CAN数据和系数0.05625计算实际车速，并四舍五入
 		//g_u8Spd = ((U32)s_g_u16_speed_src*90+800)/1600;
 		g_u16Spd = ((U32)s_g_u16_speed_src*90+800)/1600;
 		if(g_u16Spd > 0xff)
 			g_u8Spd = 0xff;
 		else
 			g_u8Spd = g_u16Spd;
-		if(can_id_265_lost_timecnt>CAN_LOST_TIME)/*CAN丢失时间超2.5s,车速为0*/
+		if(can_id_265_lost_timecnt>CAN_LOST_TIME)CAN丢失时间超2.5s,车速为0
 		{
 			g_u8Spd=0;
 		}
@@ -58,7 +58,7 @@ static void app_cal_fact_speed(void)
 		s_g_u16_speed_src=0;
 		g_u8Spd=0;
 	}
-}
+*/}
 static void app_cal_disp_speed(void)
 {
 	static  struct

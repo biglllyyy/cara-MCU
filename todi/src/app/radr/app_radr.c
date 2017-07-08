@@ -10,7 +10,7 @@ void app_radar_init(void)
 }
 
 void app_radar_ctl(void)
-{
+{/*
 	if(ON == g_u8IgnSts)
 	{
 		if(can_id_3df_lost_timecnt<CAN_LOST_TIME)
@@ -1247,4 +1247,4 @@ void app_radar_ctl(void)
 	{
 		memset(&uart_special_data.specialInfo.Radar,0,sizeof(uart_special_data.specialInfo.Radar));
 	}
-}
+*/}

@@ -71,29 +71,25 @@ can_signal_t can5= {0};
 #endif
 //UDS_id_766  uds766;
 
-U16 can_id_18AA28F3_lost_timecnt = 0xffff;
-U16 can_id_1818D0F3_lost_timecnt = 0xffff;
-U16 can_id_1819D0F3_lost_timecnt = 0xffff;
-U16 can_id_181AD0F3_lost_timecnt = 0xffff;
-U16 can_id_181BD0F3_lost_timecnt = 0xffff;
-U16 can_id_181CD0F3_lost_timecnt = 0xffff;
-U16 can_id_181DD0F3_lost_timecnt = 0xffff;
-U16 can_id_181ED0F3_lost_timecnt = 0xffff;
-U16 can_id_181FD0F3_lost_timecnt = 0xffff;
-U16 can_id_1800F328_lost_timecnt = 0xffff;
-U16 can_id_180028F3_lost_timecnt = 0xffff;
-U16 can_id_180028F4_lost_timecnt = 0xffff;
-U16 can_id_1882BBAB_lost_timecnt = 0xffff;
-U16 can_id_1002FF1E_lost_timecnt = 0xffff;
-U16 can_id_1003FF1E_lost_timecnt = 0xffff;
-U16 can_id_1004FF1E_lost_timecnt = 0xffff;
-U16 can_id_18FF1103_lost_timecnt = 0xffff;
-U16 can_id_1429289B_lost_timecnt = 0xffff;
-U16 can_id_142A289B_lost_timecnt = 0xffff;
-U16 can_id_18AB9B28_lost_timecnt = 0xffff;
-U16 can_id_18FFA017_lost_timecnt = 0xffff;
-U16 can_id_1828272B_lost_timecnt = 0xffff;
-U16 can_id_142A2895_lost_timecnt = 0xffff;
+U16 can_id_100017EF_lost_timecnt = 0xffff;
+U16 can_id_1801FBEF_lost_timecnt = 0xffff;
+U16 can_id_1811FBEF_lost_timecnt = 0xffff;
+U16 can_id_18FF08F2_lost_timecnt = 0xffff;
+U16 can_id_10F8159E_lost_timecnt = 0xffff;
+U16 can_id_10F8169E_lost_timecnt = 0xffff;
+U16 can_id_18F8179E_lost_timecnt = 0xffff;
+U16 can_id_18F8189E_lost_timecnt = 0xffff;
+U16 can_id_18F8199E_lost_timecnt = 0xffff;
+U16 can_id_18F81A9E_lost_timecnt = 0xffff;
+U16 can_id_18FF12F7_lost_timecnt = 0xffff;
+U16 can_id_18FF0AF8_lost_timecnt = 0xffff;
+U16 can_id_18FF0BF8_lost_timecnt = 0xffff;
+U16 can_id_18FF0CF9_lost_timecnt = 0xffff;
+U16 can_id_18FF0DF9_lost_timecnt = 0xffff;
+U16 can_id_1801EFA9_lost_timecnt = 0xffff;
+U16 can_id_104C1000_lost_timecnt = 0xffff;
+
+
 
 U16 can_id_7E7_lost_timecnt=0xffff;
 
@@ -101,24 +97,25 @@ U16 can_id_7E7_lost_timecnt=0xffff;
 extern led_check_t led_check;
 /* function declare */
 static void can_id_7E7_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_18AA28F3_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_1818D0F3_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_1819D0F3_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_181AD0F3_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_181BD0F3_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_181CD0F3_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_181DD0F3_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_181ED0F3_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_181FD0F3_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_180028F3_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_180028F4_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_1002FF1E_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_1003FF1E_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_1004FF1E_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_1429289B_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_142A289B_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_1828272B_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_142A2895_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_100017EF_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_1801FBEF_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_1811FBEF_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_18FF08F2_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_10F8159E_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_10F8169E_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_18F8179E_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_18F8189E_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_18F8199E_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_18F81A9E_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_18FF12F7_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_18FF0AF8_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_18FF0BF8_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_18FF0CF9_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_18FF0DF9_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_1801EFA9_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_104C1000_analyse(can_msg_t *msg, can_pro_way_e way);
+
+
 
 static void app_can_process(can_msg_t *msg, can_pro_way_e way);
 
@@ -156,59 +153,56 @@ void app_init_can(void) {
 	can_chip_mode_switch(&io_can_stb, &io_can_en, NORMAL_MODE);
 	/* receive id bound,add your code here,the id need to be received */
 	app_bound_id(PC_T0_MCU_ID, 8, STAND_ID, 1, PERIOD_MS(100));
-	app_bound_id(ID_REC_1_18AA28F3, 8, EXTERN_ID, 2, CAN_ID_18AA28F3_PERIOD);
-	app_bound_id(ID_REC_2_1818D0F3, 8, EXTERN_ID, 3, CAN_ID_1818D0F3_PERIOD);
-	app_bound_id(ID_REC_3_1819D0F3, 8, EXTERN_ID, 4, CAN_ID_1819D0F3_PERIOD);
-	app_bound_id(ID_REC_4_181AD0F3, 8, EXTERN_ID, 5, CAN_ID_181AD0F3_PERIOD);
-	app_bound_id(ID_REC_5_181BD0F3, 8, EXTERN_ID, 6, CAN_ID_181BD0F3_PERIOD);
-	app_bound_id(ID_REC_6_181CD0F3, 8, EXTERN_ID, 7, CAN_ID_181CD0F3_PERIOD);
-	app_bound_id(ID_REC_7_181DD0F3, 8, EXTERN_ID, 8, CAN_ID_181DD0F3_PERIOD);
-	app_bound_id(ID_REC_8_181ED0F3, 8, EXTERN_ID, 9, CAN_ID_181ED0F3_PERIOD);
-	app_bound_id(ID_REC_9_181FD0F3, 8, EXTERN_ID, 10, CAN_ID_181FD0F3_PERIOD);
-	app_bound_id(ID_REC_10_180028F3, 8, EXTERN_ID, 11, CAN_ID_180028F3_PERIOD);
-	app_bound_id(ID_REC_11_180028F4, 8, EXTERN_ID, 12, CAN_ID_180028F4_PERIOD);
-	app_bound_id(ID_REC_12_1002FF1E, 8, EXTERN_ID, 13, CAN_ID_1002FF1E_PERIOD);
-	app_bound_id(ID_REC_13_1003FF1E, 8, EXTERN_ID, 14, CAN_ID_1003FF1E_PERIOD);
-	app_bound_id(ID_REC_14_1004FF1E, 8, EXTERN_ID, 15, CAN_ID_1004FF1E_PERIOD);
-	app_bound_id(ID_REC_15_1429289B, 8, EXTERN_ID, 16, CAN_ID_1429289B_PERIOD);
-	app_bound_id(ID_REC_16_142A289B, 8, EXTERN_ID, 17, CAN_ID_142A289B_PERIOD);
-	app_bound_id(ID_REC_17_1828272B, 8, EXTERN_ID, 18, CAN_ID_1828272B_PERIOD);
-	app_bound_id(ID_REC_18_142A2895, 8, EXTERN_ID, 19, CAN_ID_142A2895_PERIOD);
+	
+	app_bound_id(ID_REC_01_100017EF, 8, EXTERN_ID, 2,  ID_100017EF_period);
+	app_bound_id(ID_REC_02_1801FBEF, 8, EXTERN_ID, 3,  ID_1801FBEF_period);
+	app_bound_id(ID_REC_03_1811FBEF, 8, EXTERN_ID, 4,  ID_1811FBEF_period);
+	app_bound_id(ID_REC_04_18FF08F2, 8, EXTERN_ID, 5,  ID_18FF08F2_period);
+	app_bound_id(ID_REC_05_10F8159E, 8, EXTERN_ID, 6,  ID_10F8159E_Period);
+	app_bound_id(ID_REC_06_10F8169E, 8, EXTERN_ID, 7,  ID_10F8169E_Period);
+	app_bound_id(ID_REC_07_18F8179E, 8, EXTERN_ID, 8,  ID_18F8179E_Period);
+	app_bound_id(ID_REC_08_18F8189E, 8, EXTERN_ID, 9,  ID_18F8189E_Period);
+	app_bound_id(ID_REC_09_18F8199E, 8, EXTERN_ID, 10, ID_18F8199E_Period);
+	app_bound_id(ID_REC_10_18F81A9E, 8, EXTERN_ID, 11, ID_18F81A9E_Period);
+	app_bound_id(ID_REC_11_18FF12F7, 8, EXTERN_ID, 12, ID_18FF12F7_Period);
+	app_bound_id(ID_REC_12_18FF0AF8, 8, EXTERN_ID, 13, ID_18FF0AF8_Period);
+	app_bound_id(ID_REC_13_18FF0BF8, 8, EXTERN_ID, 14, ID_18FF0BF8_Period);
+	app_bound_id(ID_REC_14_18FF0CF9, 8, EXTERN_ID, 15, ID_18FF0CF9_Period);
+	app_bound_id(ID_REC_15_18FF0DF9, 8, EXTERN_ID, 16, ID_18FF0DF9_Period);
+	app_bound_id(ID_REC_16_1801EFA9, 8, EXTERN_ID, 17, ID_1801EFA9_Period);
+	app_bound_id(ID_REC_17_104C1000, 8, EXTERN_ID, 18, ID_104C1000_Period);
+	
+	
 
 	/* sent id bound,add your code here */
-	app_bound_id(MCU_TO_PC_ID, 8, STAND_ID, (ID_RECV_NUM_ALL + 1),
-			PERIOD_MS(100));
-	app_bound_id(ID_SEND_1_1800F328, 8, EXTERN_ID, (ID_RECV_NUM_ALL + 2),
-			CAN_ID_1800F328_PERIOD);
-	app_bound_id(ID_SEND_2_1882BBAB, 8, EXTERN_ID, (ID_RECV_NUM_ALL + 3),
-			CAN_ID_1882BBAB_PERIOD);
-	app_bound_id(ID_SEND_3_18AB9B28, 8, EXTERN_ID, (ID_RECV_NUM_ALL + 4),
-			CAN_ID_18AB9B28_PERIOD);
-	app_bound_id(ID_SEND_4_18FFA017, 8, EXTERN_ID, (ID_RECV_NUM_ALL + 4),
-			CAN_ID_18FFA017_PERIOD);
+	app_bound_id(MCU_TO_PC_ID, 8, STAND_ID, (ID_RECV_NUM_ALL + 1),PERIOD_MS(100));
+	app_bound_id(ID_SEND_1_1801EF17, 8, EXTERN_ID, (ID_RECV_NUM_ALL + 2),ID_1801EF17_Period);
+	app_bound_id(ID_SEND_2_1802EF17, 8, EXTERN_ID, (ID_RECV_NUM_ALL + 3),ID_1802EF17_Period);
+	
 
 	/* register the can id process function */
 	can_rx_pro = app_can_process;
 	/*register the can id process */
-	can_rx_handle[0] = can_id_7E7_analyse;
-	can_rx_handle[1] = can_id_18AA28F3_analyse;
-	can_rx_handle[2] = can_id_1818D0F3_analyse;
-	can_rx_handle[3] = can_id_1819D0F3_analyse;
-	can_rx_handle[4] = can_id_181AD0F3_analyse;
-	can_rx_handle[5] = can_id_181BD0F3_analyse;
-	can_rx_handle[6] = can_id_181CD0F3_analyse;
-	can_rx_handle[7] = can_id_181DD0F3_analyse;
-	can_rx_handle[8] = can_id_181ED0F3_analyse;
-	can_rx_handle[9] = can_id_181FD0F3_analyse;
-	can_rx_handle[10] = can_id_180028F3_analyse;
-	can_rx_handle[11] = can_id_180028F4_analyse;
-	can_rx_handle[12] = can_id_1002FF1E_analyse;
-	can_rx_handle[13] = can_id_1003FF1E_analyse;
-	can_rx_handle[14] = can_id_1004FF1E_analyse;
-	can_rx_handle[15] = can_id_1429289B_analyse;
-	can_rx_handle[16] = can_id_142A289B_analyse;
-	can_rx_handle[17] = can_id_1828272B_analyse;
-	can_rx_handle[18] = can_id_142A2895_analyse;
+	
+	can_rx_handle[0]  = can_id_7E7_analyse;
+	can_rx_handle[1]  = can_id_100017EF_analyse;
+	can_rx_handle[2]  = can_id_1801FBEF_analyse;
+	can_rx_handle[3]  = can_id_1811FBEF_analyse;
+	can_rx_handle[4]  = can_id_18FF08F2_analyse;
+	can_rx_handle[5]  = can_id_10F8159E_analyse;
+	can_rx_handle[6]  = can_id_10F8169E_analyse;
+	can_rx_handle[7]  = can_id_18F8179E_analyse;
+	can_rx_handle[8]  = can_id_18F8189E_analyse;
+	can_rx_handle[9]  = can_id_18F8199E_analyse;
+	can_rx_handle[10] = can_id_18F81A9E_analyse;
+	can_rx_handle[11] = can_id_18FF12F7_analyse;
+	can_rx_handle[12] = can_id_18FF0AF8_analyse;
+	can_rx_handle[13] = can_id_18FF0BF8_analyse;
+	can_rx_handle[14] = can_id_18FF0CF9_analyse;
+	can_rx_handle[15] = can_id_18FF0DF9_analyse;
+	can_rx_handle[16] = can_id_1801EFA9_analyse;
+	can_rx_handle[17] = can_id_104C1000_analyse;
+	
 
 	mid_can_init(CAN_CHN, CAN_CHIP);
 

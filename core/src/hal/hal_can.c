@@ -20,7 +20,7 @@ static U8 Error_State_0=0x00;
 /* set parameter for CAN received data */
 
 extern void can_msg_parse(can_msg_t *can_msg);
-static void can_receive_object_init(U8 chn,U8 num,CAN_ID_FORMAT_e format,U32 id,U8 dlc);
+static void can_receive_object_init(U8 chn,U8 num,CAN_ID_FORMAT_e format,U32 id,U8 dlc,U32 id_mask);
 static void can_sent_object_init(U8 chn,U8 num,CAN_ID_FORMAT_e format,U32 id,U8 dlc);
 
 static U8 cntRecv = 0, cntSend = 0;
@@ -72,7 +72,7 @@ void hal_can_init(U8 chn)
 
         for(i = 0; i<cntRecv; i++)
         {
-          can_receive_object_init(chn,can_msg[i].buffer_num,can_msg[i].format,can_msg[i].id,can_msg[i].dlc);  //from msgbox 1 rec 
+          can_receive_object_init(chn,can_msg[i].buffer_num,can_msg[i].format,can_msg[i].id,can_msg[i].dlc,can_msg[i].id_mask);  //from msgbox 1 rec 
         }
 		for(i= cntRecv;i<cntRecv+cntSend;i++)
 		{
@@ -114,7 +114,7 @@ dlc : data len
 
 **************************************************************************
 */
-void can_receive_object_init(U8 chn,U8 num,CAN_ID_FORMAT_e format,U32 id,U8 dlc)
+void can_receive_object_init(U8 chn,U8 num,CAN_ID_FORMAT_e format,U32 id,U8 dlc,U32 id_mask)
 {
     switch(chn)
     {
@@ -138,7 +138,7 @@ void can_receive_object_init(U8 chn,U8 num,CAN_ID_FORMAT_e format,U32 id,U8 dlc)
 		IO_CAN0.IF2MSK.word = 0xFFFFFFFF;				/*MXtd=1 MDir=1 res=1 MID28-MID18 all=1
 														MID17-MID0 all=0*/
 		IO_CAN0.IF2MSK.bit.MXtd = 1;    /* extened frame */
-        IO_CAN0.IF2ARB.word = 0xC0000000|(id & 0x1FFFFFFF);	/*MsgVal=1 Xtd=1 Dir=0 ID(28-18)=1 TestMode Only*/
+        IO_CAN0.IF2ARB.word = 0xC0000000|(id & id_mask);	/*MsgVal=1 Xtd=1 Dir=0 ID(28-18)=1 TestMode Only*/
 	}
 
         /*MCTR*/

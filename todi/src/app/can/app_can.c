@@ -119,11 +119,12 @@ static void can_id_104C1000_analyse(can_msg_t *msg, can_pro_way_e way);
 
 static void app_can_process(can_msg_t *msg, can_pro_way_e way);
 
-static void app_bound_id(U32 id, U8 dlc, CAN_ID_FORMAT_e format, U8 msg_buf,
+static void app_bound_id(U32 id,U32 id_mask, U8 dlc, CAN_ID_FORMAT_e format, U8 msg_buf,
 		U16 period) {
 
 	if ((msg_buf_num <= ID_PROCESS_ALL) && (msg_buf >= 1)) {
 		can_msg[msg_buf_num].id = id;
+		can_msg[msg_buf_num].id_mask= id_mask;
 		can_msg[msg_buf_num].dlc = dlc;
 		can_msg[msg_buf_num].format = format;
 		can_msg[msg_buf_num].buffer_num = msg_buf;
@@ -152,32 +153,32 @@ void app_init_can(void) {
 	app_init_variable();
 	can_chip_mode_switch(&io_can_stb, &io_can_en, NORMAL_MODE);
 	/* receive id bound,add your code here,the id need to be received */
-	app_bound_id(PC_T0_MCU_ID, 8, STAND_ID, 1, PERIOD_MS(100));
+	app_bound_id(PC_T0_MCU_ID, 0xfff, 8, STAND_ID, 1, PERIOD_MS(100));
 	
-	app_bound_id(ID_REC_01_100017EF, 8, EXTERN_ID, 2,  ID_100017EF_period);
-	app_bound_id(ID_REC_02_1801FBEF, 8, EXTERN_ID, 3,  ID_1801FBEF_period);
-	app_bound_id(ID_REC_03_1811FBEF, 8, EXTERN_ID, 4,  ID_1811FBEF_period);
-	app_bound_id(ID_REC_04_18FF08F2, 8, EXTERN_ID, 5,  ID_18FF08F2_period);
-	app_bound_id(ID_REC_05_10F8159E, 8, EXTERN_ID, 6,  ID_10F8159E_Period);
-	app_bound_id(ID_REC_06_10F8169E, 8, EXTERN_ID, 7,  ID_10F8169E_Period);
-	app_bound_id(ID_REC_07_18F8179E, 8, EXTERN_ID, 8,  ID_18F8179E_Period);
-	app_bound_id(ID_REC_08_18F8189E, 8, EXTERN_ID, 9,  ID_18F8189E_Period);
-	app_bound_id(ID_REC_09_18F8199E, 8, EXTERN_ID, 10, ID_18F8199E_Period);
-	app_bound_id(ID_REC_10_18F81A9E, 8, EXTERN_ID, 11, ID_18F81A9E_Period);
-	app_bound_id(ID_REC_11_18FF12F7, 8, EXTERN_ID, 12, ID_18FF12F7_Period);
-	app_bound_id(ID_REC_12_18FF0AF8, 8, EXTERN_ID, 13, ID_18FF0AF8_Period);
-	app_bound_id(ID_REC_13_18FF0BF8, 8, EXTERN_ID, 14, ID_18FF0BF8_Period);
-	app_bound_id(ID_REC_14_18FF0CF9, 8, EXTERN_ID, 15, ID_18FF0CF9_Period);
-	app_bound_id(ID_REC_15_18FF0DF9, 8, EXTERN_ID, 16, ID_18FF0DF9_Period);
-	app_bound_id(ID_REC_16_1801EFA9, 8, EXTERN_ID, 17, ID_1801EFA9_Period);
-	app_bound_id(ID_REC_17_104C1000, 8, EXTERN_ID, 18, ID_104C1000_Period);
+	app_bound_id(ID_REC_01_100017EF, 0x1FFFFFFF, 8, EXTERN_ID, 2,  ID_100017EF_period);
+	app_bound_id(ID_REC_02_1801FBEF, 0x1FFFFFFF, 8, EXTERN_ID, 3,  ID_1801FBEF_period);
+	app_bound_id(ID_REC_03_1811FBEF, 0x1FFFFFFF, 8, EXTERN_ID, 4,  ID_1811FBEF_period);
+	app_bound_id(ID_REC_04_18FF08F2, 0x1FFFFFFF, 8, EXTERN_ID, 5,  ID_18FF08F2_period);
+	app_bound_id(ID_REC_05_10F8159E, 0x1FFFFFFF, 8, EXTERN_ID, 6,  ID_10F8159E_Period);
+	app_bound_id(ID_REC_06_10F8169E, 0x1FFFFFFF, 8, EXTERN_ID, 7,  ID_10F8169E_Period);
+	app_bound_id(ID_REC_07_18F8179E, 0x1FFFFFFF, 8, EXTERN_ID, 8,  ID_18F8179E_Period);
+	app_bound_id(ID_REC_08_18F8189E, 0x1FFFFFFF, 8, EXTERN_ID, 9,  ID_18F8189E_Period);
+	app_bound_id(ID_REC_09_18F8199E, 0x1FFFFFFF, 8, EXTERN_ID, 10, ID_18F8199E_Period);
+	app_bound_id(ID_REC_10_18F81A9E, 0x1FFFFFFF, 8, EXTERN_ID, 11, ID_18F81A9E_Period);
+	app_bound_id(ID_REC_11_18FF12F7, 0x1FFFFFFF, 8, EXTERN_ID, 12, ID_18FF12F7_Period);
+	app_bound_id(ID_REC_12_18FF0AF8, 0x1FFFFFFF, 8, EXTERN_ID, 13, ID_18FF0AF8_Period);
+	app_bound_id(ID_REC_13_18FF0BF8, 0x1FFFFFFF, 8, EXTERN_ID, 14, ID_18FF0BF8_Period);
+	app_bound_id(ID_REC_14_18FF0CF9, 0x1FFFFFFF, 8, EXTERN_ID, 15, ID_18FF0CF9_Period);
+	app_bound_id(ID_REC_15_18FF0DF9, 0x1FFFFFFF, 8, EXTERN_ID, 16, ID_18FF0DF9_Period);
+	app_bound_id(ID_REC_16_1801EFA9, 0x1FFFFFFF, 8, EXTERN_ID, 17, ID_1801EFA9_Period);
+	app_bound_id(ID_REC_17_104C1000, 0x1FFFF000, 8, EXTERN_ID, 18, ID_104C1000_Period);
 	
 	
 
 	/* sent id bound,add your code here */
-	app_bound_id(MCU_TO_PC_ID, 8, STAND_ID, (ID_RECV_NUM_ALL + 1),PERIOD_MS(100));
-	app_bound_id(ID_SEND_1_1801EF17, 8, EXTERN_ID, (ID_RECV_NUM_ALL + 2),ID_1801EF17_Period);
-	app_bound_id(ID_SEND_2_1802EF17, 8, EXTERN_ID, (ID_RECV_NUM_ALL + 3),ID_1802EF17_Period);
+	app_bound_id(MCU_TO_PC_ID, 0xfff, 8, STAND_ID, (ID_RECV_NUM_ALL + 1),PERIOD_MS(100));
+	app_bound_id(ID_SEND_1_1801EF17, 0x1FFFFFFF, 8, EXTERN_ID, (ID_RECV_NUM_ALL + 2),ID_1801EF17_Period);
+	app_bound_id(ID_SEND_2_1802EF17, 0x1FFFFFFF, 8, EXTERN_ID, (ID_RECV_NUM_ALL + 3),ID_1802EF17_Period);
 	
 
 	/* register the can id process function */
@@ -238,11 +239,11 @@ static void can_id_7E7_analyse(can_msg_t *msg, can_pro_way_e way) {
 	}
 }
 
-static void can_id_18AA28F3_analyse(can_msg_t *msg, can_pro_way_e way) {
+static void can_id_100017EF_analyse(can_msg_t *msg, can_pro_way_e way) {
 	switch (way) {
 	case CAN_PARSE:
-		data_copy((U8*) &can0.ID_18AA28F3, (U8*) &msg->data[0], msg->dlc);
-		can_id_18AA28F3_lost_timecnt = 0;
+		data_copy((U8*) &can0.ID_100017EF[0], (U8*) &msg->data[0], msg->dlc);
+		can_id_100017EF_lost_timecnt = 0;
 		break;
 	case CAN_LOST:
 		break;
@@ -250,11 +251,11 @@ static void can_id_18AA28F3_analyse(can_msg_t *msg, can_pro_way_e way) {
 		break;
 	}
 }
-static void can_id_1818D0F3_analyse(can_msg_t *msg, can_pro_way_e way) {
+static void can_id_1801FBEF_analyse(can_msg_t *msg, can_pro_way_e way) {
 	switch (way) {
 	case CAN_PARSE:
-		data_copy((U8*) &can0.ID_1818D0F3, (U8*) &msg->data[0], msg->dlc);
-		can_id_1818D0F3_lost_timecnt = 0;
+		data_copy((U8*) &can0.ID_1801FBEF[0], (U8*) &msg->data[0], msg->dlc);
+		can_id_1801FBEF_lost_timecnt = 0;
 		break;
 	case CAN_LOST:
 		break;
@@ -262,11 +263,11 @@ static void can_id_1818D0F3_analyse(can_msg_t *msg, can_pro_way_e way) {
 		break;
 	}
 }
-static void can_id_1819D0F3_analyse(can_msg_t *msg, can_pro_way_e way) {
+static void can_id_1811FBEF_analyse(can_msg_t *msg, can_pro_way_e way) {
 	switch (way) {
 	case CAN_PARSE:
-		data_copy((U8*) &can0.ID_1819D0F3, (U8*) &msg->data[0], msg->dlc);
-		can_id_1819D0F3_lost_timecnt = 0;
+		data_copy((U8*) &can0.ID_1811FBEF[0], (U8*) &msg->data[0], msg->dlc);
+		can_id_1811FBEF_lost_timecnt = 0;
 		break;
 	case CAN_LOST:
 		break;
@@ -274,11 +275,11 @@ static void can_id_1819D0F3_analyse(can_msg_t *msg, can_pro_way_e way) {
 		break;
 	}
 }
-static void can_id_181AD0F3_analyse(can_msg_t *msg, can_pro_way_e way) {
+static void can_id_18FF08F2_analyse(can_msg_t *msg, can_pro_way_e way) {
 	switch (way) {
 	case CAN_PARSE:
-		data_copy((U8*) &can0.ID_181AD0F3, (U8*) &msg->data[0], msg->dlc);
-		can_id_181AD0F3_lost_timecnt = 0;
+		data_copy((U8*) &can0.ID_18FF08F2[0], (U8*) &msg->data[0], msg->dlc);
+		can_id_18FF08F2_lost_timecnt = 0;
 		break;
 	case CAN_LOST:
 		break;
@@ -286,11 +287,11 @@ static void can_id_181AD0F3_analyse(can_msg_t *msg, can_pro_way_e way) {
 		break;
 	}
 }
-static void can_id_181BD0F3_analyse(can_msg_t *msg, can_pro_way_e way) {
+static void can_id_10F8159E_analyse(can_msg_t *msg, can_pro_way_e way) {
 	switch (way) {
 	case CAN_PARSE:
-		data_copy((U8*) &can0.ID_181BD0F3, (U8*) &msg->data[0], msg->dlc);
-		can_id_181BD0F3_lost_timecnt = 0;
+		data_copy((U8*) &can0.ID_10F8159E[0], (U8*) &msg->data[0], msg->dlc);
+		can_id_10F8159E_lost_timecnt = 0;
 		break;
 	case CAN_LOST:
 		break;
@@ -298,11 +299,11 @@ static void can_id_181BD0F3_analyse(can_msg_t *msg, can_pro_way_e way) {
 		break;
 	}
 }
-static void can_id_181CD0F3_analyse(can_msg_t *msg, can_pro_way_e way) {
+static void can_id_10F8169E_analyse(can_msg_t *msg, can_pro_way_e way) {
 	switch (way) {
 	case CAN_PARSE:
-		data_copy((U8*) &can0.ID_181CD0F3, (U8*) &msg->data[0], msg->dlc);
-		can_id_181CD0F3_lost_timecnt = 0;
+		data_copy((U8*) &can0.ID_10F8169E[0], (U8*) &msg->data[0], msg->dlc);
+		can_id_10F8169E_lost_timecnt = 0;
 		break;
 	case CAN_LOST:
 		break;
@@ -310,11 +311,11 @@ static void can_id_181CD0F3_analyse(can_msg_t *msg, can_pro_way_e way) {
 		break;
 	}
 }
-static void can_id_181DD0F3_analyse(can_msg_t *msg, can_pro_way_e way) {
+static void can_id_18F8179E_analyse(can_msg_t *msg, can_pro_way_e way) {
 	switch (way) {
 	case CAN_PARSE:
-		data_copy((U8*) &can0.ID_181DD0F3, (U8*) &msg->data[0], msg->dlc);
-		can_id_181DD0F3_lost_timecnt = 0;
+		data_copy((U8*) &can0.ID_18F8179E[0], (U8*) &msg->data[0], msg->dlc);
+		can_id_18F8179E_lost_timecnt = 0;
 		break;
 	case CAN_LOST:
 		break;
@@ -322,11 +323,11 @@ static void can_id_181DD0F3_analyse(can_msg_t *msg, can_pro_way_e way) {
 		break;
 	}
 }
-static void can_id_181ED0F3_analyse(can_msg_t *msg, can_pro_way_e way) {
+static void can_id_18F8189E_analyse(can_msg_t *msg, can_pro_way_e way) {
 	switch (way) {
 	case CAN_PARSE:
-		data_copy((U8*) &can0.ID_181ED0F3, (U8*) &msg->data[0], msg->dlc);
-		can_id_181ED0F3_lost_timecnt = 0;
+		data_copy((U8*) &can0.ID_18F8189E[0], (U8*) &msg->data[0], msg->dlc);
+		can_id_18F8189E_lost_timecnt = 0;
 		break;
 	case CAN_LOST:
 		break;
@@ -334,11 +335,11 @@ static void can_id_181ED0F3_analyse(can_msg_t *msg, can_pro_way_e way) {
 		break;
 	}
 }
-static void can_id_181FD0F3_analyse(can_msg_t *msg, can_pro_way_e way) {
+static void can_id_18F8199E_analyse(can_msg_t *msg, can_pro_way_e way) {
 	switch (way) {
 	case CAN_PARSE:
-		data_copy((U8*) &can0.ID_181FD0F3, (U8*) &msg->data[0], msg->dlc);
-		can_id_181FD0F3_lost_timecnt = 0;
+		data_copy((U8*) &can0.ID_18F8199E[0], (U8*) &msg->data[0], msg->dlc);
+		can_id_18F8199E_lost_timecnt = 0;
 		break;
 	case CAN_LOST:
 		break;
@@ -346,11 +347,11 @@ static void can_id_181FD0F3_analyse(can_msg_t *msg, can_pro_way_e way) {
 		break;
 	}
 }
-static void can_id_180028F3_analyse(can_msg_t *msg, can_pro_way_e way) {
+static void can_id_18F81A9E_analyse(can_msg_t *msg, can_pro_way_e way) {
 	switch (way) {
 	case CAN_PARSE:
-		data_copy((U8*) &can0.ID_180028F3, (U8*) &msg->data[0], msg->dlc);
-		can_id_180028F3_lost_timecnt = 0;
+		data_copy((U8*) &can0.ID_18F81A9E[0], (U8*) &msg->data[0], msg->dlc);
+		can_id_18F81A9E_lost_timecnt = 0;
 		break;
 	case CAN_LOST:
 		break;
@@ -358,11 +359,11 @@ static void can_id_180028F3_analyse(can_msg_t *msg, can_pro_way_e way) {
 		break;
 	}
 }
-static void can_id_180028F4_analyse(can_msg_t *msg, can_pro_way_e way) {
+static void can_id_18FF12F7_analyse(can_msg_t *msg, can_pro_way_e way) {
 	switch (way) {
 	case CAN_PARSE:
-		data_copy((U8*) &can0.ID_180028F4, (U8*) &msg->data[0], msg->dlc);
-		can_id_180028F4_lost_timecnt = 0;
+		data_copy((U8*) &can0.ID_18FF12F7[0], (U8*) &msg->data[0], msg->dlc);
+		can_id_18FF12F7_lost_timecnt = 0;
 		break;
 	case CAN_LOST:
 		break;
@@ -370,11 +371,11 @@ static void can_id_180028F4_analyse(can_msg_t *msg, can_pro_way_e way) {
 		break;
 	}
 }
-static void can_id_1002FF1E_analyse(can_msg_t *msg, can_pro_way_e way) {
+static void can_id_18FF0AF8_analyse(can_msg_t *msg, can_pro_way_e way) {
 	switch (way) {
 	case CAN_PARSE:
-		data_copy((U8*) &can0.ID_1002FF1E, (U8*) &msg->data[0], msg->dlc);
-		can_id_1002FF1E_lost_timecnt = 0;
+		data_copy((U8*) &can0.ID_18FF0AF8[0], (U8*) &msg->data[0], msg->dlc);
+		can_id_18FF0AF8_lost_timecnt = 0;
 		break;
 	case CAN_LOST:
 		break;
@@ -382,11 +383,11 @@ static void can_id_1002FF1E_analyse(can_msg_t *msg, can_pro_way_e way) {
 		break;
 	}
 }
-static void can_id_1003FF1E_analyse(can_msg_t *msg, can_pro_way_e way) {
+static void can_id_18FF0BF8_analyse(can_msg_t *msg, can_pro_way_e way) {
 	switch (way) {
 	case CAN_PARSE:
-		data_copy((U8*) &can0.ID_1003FF1E, (U8*) &msg->data[0], msg->dlc);
-		can_id_1003FF1E_lost_timecnt = 0;
+		data_copy((U8*) &can0.ID_18FF0BF8[0], (U8*) &msg->data[0], msg->dlc);
+		can_id_18FF0BF8_lost_timecnt = 0;
 		break;
 	case CAN_LOST:
 		break;
@@ -394,11 +395,11 @@ static void can_id_1003FF1E_analyse(can_msg_t *msg, can_pro_way_e way) {
 		break;
 	}
 }
-static void can_id_1004FF1E_analyse(can_msg_t *msg, can_pro_way_e way) {
+static void can_id_18FF0CF9_analyse(can_msg_t *msg, can_pro_way_e way) {
 	switch (way) {
 	case CAN_PARSE:
-		data_copy((U8*) &can0.ID_1004FF1E, (U8*) &msg->data[0], msg->dlc);
-		can_id_1004FF1E_lost_timecnt = 0;
+		data_copy((U8*) &can0.ID_18FF0CF9[0], (U8*) &msg->data[0], msg->dlc);
+		can_id_18FF0CF9_lost_timecnt = 0;
 		break;
 	case CAN_LOST:
 		break;
@@ -406,11 +407,11 @@ static void can_id_1004FF1E_analyse(can_msg_t *msg, can_pro_way_e way) {
 		break;
 	}
 }
-static void can_id_1429289B_analyse(can_msg_t *msg, can_pro_way_e way) {
+static void can_id_18FF0DF9_analyse(can_msg_t *msg, can_pro_way_e way) {
 	switch (way) {
 	case CAN_PARSE:
-		data_copy((U8*) &can0.ID_1429289B, (U8*) &msg->data[0], msg->dlc);
-		can_id_1429289B_lost_timecnt = 0;
+		data_copy((U8*) &can0.ID_18FF0DF9[0], (U8*) &msg->data[0], msg->dlc);
+		can_id_18FF0DF9_lost_timecnt = 0;
 		break;
 	case CAN_LOST:
 		break;
@@ -418,11 +419,11 @@ static void can_id_1429289B_analyse(can_msg_t *msg, can_pro_way_e way) {
 		break;
 	}
 }
-static void can_id_142A289B_analyse(can_msg_t *msg, can_pro_way_e way) {
+static void can_id_1801EFA9_analyse(can_msg_t *msg, can_pro_way_e way) {
 	switch (way) {
 	case CAN_PARSE:
-		data_copy((U8*) &can0.ID_142A289B, (U8*) &msg->data[0], msg->dlc);
-		can_id_142A289B_lost_timecnt = 0;
+		data_copy((U8*) &can0.ID_1801EFA9[0], (U8*) &msg->data[0], msg->dlc);
+		can_id_1801EFA9_lost_timecnt = 0;
 		break;
 	case CAN_LOST:
 		break;
@@ -430,11 +431,11 @@ static void can_id_142A289B_analyse(can_msg_t *msg, can_pro_way_e way) {
 		break;
 	}
 }
-static void can_id_1828272B_analyse(can_msg_t *msg, can_pro_way_e way) {
+static void can_id_104C1000_analyse(can_msg_t *msg, can_pro_way_e way) {
 	switch (way) {
 	case CAN_PARSE:
-		data_copy((U8*) &can0.ID_1828272B, (U8*) &msg->data[0], msg->dlc);
-		can_id_1828272B_lost_timecnt = 0;
+		data_copy((U8*) &can0.ID_104C1000[0], (U8*) &msg->data[0], msg->dlc);
+		can_id_104C1000_lost_timecnt = 0;
 		break;
 	case CAN_LOST:
 		break;
@@ -442,18 +443,7 @@ static void can_id_1828272B_analyse(can_msg_t *msg, can_pro_way_e way) {
 		break;
 	}
 }
-static void can_id_142A2895_analyse(can_msg_t *msg, can_pro_way_e way) {
-	switch (way) {
-	case CAN_PARSE:
-		data_copy((U8*) &can0.ID_142A2895, (U8*) &msg->data[0], msg->dlc);
-		can_id_142A2895_lost_timecnt = 0;
-		break;
-	case CAN_LOST:
-		break;
-	default:
-		break;
-	}
-}
+
 
 //MCU is big endian
 union {
@@ -604,130 +594,104 @@ void app_can_lost_time_cnt_100ms(void) {
 	static U8 g_u8IgnSts_bak = OFF;
 
 	if ((ON == g_u8IgnSts) && (OFF == g_u8IgnSts_bak)) {
-		can_id_18AA28F3_lost_timecnt = 0xffff;
-		can_id_1818D0F3_lost_timecnt = 0xffff;
-		can_id_1819D0F3_lost_timecnt = 0xffff;
-		can_id_181AD0F3_lost_timecnt = 0xffff;
-		can_id_181BD0F3_lost_timecnt = 0xffff;
-		can_id_181CD0F3_lost_timecnt = 0xffff;
-		can_id_181DD0F3_lost_timecnt = 0xffff;
-		can_id_181ED0F3_lost_timecnt = 0xffff;
-		can_id_181FD0F3_lost_timecnt = 0xffff;
-		can_id_1800F328_lost_timecnt = 0xffff;
-		can_id_180028F3_lost_timecnt = 0xffff;
-		can_id_180028F4_lost_timecnt = 0xffff;
-		can_id_1882BBAB_lost_timecnt = 0xffff;
-		can_id_1002FF1E_lost_timecnt = 0xffff;
-		can_id_1003FF1E_lost_timecnt = 0xffff;
-		can_id_1004FF1E_lost_timecnt = 0xffff;
-		can_id_18FF1103_lost_timecnt = 0xffff;
-		can_id_1429289B_lost_timecnt = 0xffff;
-		can_id_142A289B_lost_timecnt = 0xffff;
-		can_id_18AB9B28_lost_timecnt = 0xffff;
-		can_id_18FFA017_lost_timecnt = 0xffff;
-		can_id_1828272B_lost_timecnt = 0xffff;
-		can_id_142A2895_lost_timecnt = 0xffff;
-
+		
+		can_id_100017EF_lost_timecnt = 0xffff;
+		can_id_1801FBEF_lost_timecnt = 0xffff;
+		can_id_1811FBEF_lost_timecnt = 0xffff;
+		can_id_18FF08F2_lost_timecnt = 0xffff;
+		can_id_10F8159E_lost_timecnt = 0xffff;
+		can_id_10F8169E_lost_timecnt = 0xffff;
+		can_id_18F8179E_lost_timecnt = 0xffff;
+		can_id_18F8189E_lost_timecnt = 0xffff;
+		can_id_18F8199E_lost_timecnt = 0xffff;
+		can_id_18F81A9E_lost_timecnt = 0xffff;
+		can_id_18FF12F7_lost_timecnt = 0xffff;
+		can_id_18FF0AF8_lost_timecnt = 0xffff;
+		can_id_18FF0BF8_lost_timecnt = 0xffff;
+		can_id_18FF0CF9_lost_timecnt = 0xffff;
+		can_id_18FF0DF9_lost_timecnt = 0xffff;
+		can_id_1801EFA9_lost_timecnt = 0xffff;
+		can_id_104C1000_lost_timecnt = 0xffff;
+		
 		memset(&can0, 0, sizeof(can0));
 
 		g_u8IgnSts_bak = g_u8IgnSts;
 	} else if ((OFF == g_u8IgnSts) && (ON == g_u8IgnSts_bak)) {
-		can_id_18AA28F3_lost_timecnt = 0;
-		can_id_1818D0F3_lost_timecnt = 0;
-		can_id_1819D0F3_lost_timecnt = 0;
-		can_id_181AD0F3_lost_timecnt = 0;
-		can_id_181BD0F3_lost_timecnt = 0;
-		can_id_181CD0F3_lost_timecnt = 0;
-		can_id_181DD0F3_lost_timecnt = 0;
-		can_id_181ED0F3_lost_timecnt = 0;
-		can_id_181FD0F3_lost_timecnt = 0;
-		can_id_1800F328_lost_timecnt = 0;
-		can_id_180028F3_lost_timecnt = 0;
-		can_id_180028F4_lost_timecnt = 0;
-		can_id_1882BBAB_lost_timecnt = 0;
-		can_id_1002FF1E_lost_timecnt = 0;
-		can_id_1003FF1E_lost_timecnt = 0;
-		can_id_1004FF1E_lost_timecnt = 0;
-		can_id_18FF1103_lost_timecnt = 0;
-		can_id_1429289B_lost_timecnt = 0;
-		can_id_142A289B_lost_timecnt = 0;
-		can_id_18AB9B28_lost_timecnt = 0;
-		can_id_18FFA017_lost_timecnt = 0;
-		can_id_1828272B_lost_timecnt = 0;
-		can_id_142A2895_lost_timecnt = 0;
+		
+		can_id_100017EF_lost_timecnt = 0;
+		can_id_1801FBEF_lost_timecnt = 0;
+		can_id_1811FBEF_lost_timecnt = 0;
+		can_id_18FF08F2_lost_timecnt = 0;
+		can_id_10F8159E_lost_timecnt = 0;
+		can_id_10F8169E_lost_timecnt = 0;
+		can_id_18F8179E_lost_timecnt = 0;
+		can_id_18F8189E_lost_timecnt = 0;
+		can_id_18F8199E_lost_timecnt = 0;
+		can_id_18F81A9E_lost_timecnt = 0;
+		can_id_18FF12F7_lost_timecnt = 0;
+		can_id_18FF0AF8_lost_timecnt = 0;
+		can_id_18FF0BF8_lost_timecnt = 0;
+		can_id_18FF0CF9_lost_timecnt = 0;
+		can_id_18FF0DF9_lost_timecnt = 0;
+		can_id_1801EFA9_lost_timecnt = 0;
+		can_id_104C1000_lost_timecnt = 0;
+		
 
 		memset(&can0, 0, sizeof(can0));
 
 		g_u8IgnSts_bak = g_u8IgnSts;
 	} else {
-		if (can_id_18AA28F3_lost_timecnt < 0xffff) {
-			can_id_18AA28F3_lost_timecnt++;
+		if (can_id_100017EF_lost_timecnt < 0xffff) {
+			can_id_100017EF_lost_timecnt++;
 		}
-		if (can_id_1818D0F3_lost_timecnt < 0xffff) {
-			can_id_1818D0F3_lost_timecnt++;
+		if (can_id_1801FBEF_lost_timecnt < 0xffff) {
+			can_id_1801FBEF_lost_timecnt++;
 		}
-		if (can_id_1819D0F3_lost_timecnt < 0xffff) {
-			can_id_1819D0F3_lost_timecnt++;
+		if (can_id_1811FBEF_lost_timecnt < 0xffff) {
+			can_id_1811FBEF_lost_timecnt++;
 		}
-		if (can_id_181AD0F3_lost_timecnt < 0xffff) {
-			can_id_181AD0F3_lost_timecnt++;
+		if (can_id_18FF08F2_lost_timecnt < 0xffff) {
+			can_id_18FF08F2_lost_timecnt++;
 		}
-		if (can_id_181BD0F3_lost_timecnt < 0xffff) {
-			can_id_181BD0F3_lost_timecnt++;
+		if (can_id_10F8159E_lost_timecnt < 0xffff) {
+			can_id_10F8159E_lost_timecnt++;
 		}
-		if (can_id_181CD0F3_lost_timecnt < 0xffff) {
-			can_id_181CD0F3_lost_timecnt++;
+		if (can_id_10F8169E_lost_timecnt < 0xffff) {
+			can_id_10F8169E_lost_timecnt++;
 		}
-		if (can_id_181DD0F3_lost_timecnt < 0xffff) {
-			can_id_181DD0F3_lost_timecnt++;
+		if (can_id_18F8179E_lost_timecnt < 0xffff) {
+			can_id_18F8179E_lost_timecnt++;
 		}
-		if (can_id_181ED0F3_lost_timecnt < 0xffff) {
-			can_id_181ED0F3_lost_timecnt++;
+		if (can_id_18F8189E_lost_timecnt < 0xffff) {
+			can_id_18F8189E_lost_timecnt++;
 		}
-		if (can_id_181FD0F3_lost_timecnt < 0xffff) {
-			can_id_181FD0F3_lost_timecnt++;
+		if (can_id_18F8199E_lost_timecnt < 0xffff) {
+			can_id_18F8199E_lost_timecnt++;
 		}
-		if (can_id_1800F328_lost_timecnt < 0xffff) {
-			can_id_1800F328_lost_timecnt++;
+		if (can_id_18F81A9E_lost_timecnt < 0xffff) {
+			can_id_18F81A9E_lost_timecnt++;
 		}
-		if (can_id_180028F3_lost_timecnt < 0xffff) {
-			can_id_180028F3_lost_timecnt++;
+		if (can_id_18FF12F7_lost_timecnt < 0xffff) {
+			can_id_18FF12F7_lost_timecnt++;
 		}
-		if (can_id_180028F4_lost_timecnt < 0xffff) {
-			can_id_180028F4_lost_timecnt++;
+		if (can_id_18FF0AF8_lost_timecnt < 0xffff) {
+			can_id_18FF0AF8_lost_timecnt++;
 		}
-		if (can_id_1882BBAB_lost_timecnt < 0xffff) {
-			can_id_1882BBAB_lost_timecnt++;
+		if (can_id_18FF0BF8_lost_timecnt < 0xffff) {
+			can_id_18FF0BF8_lost_timecnt++;
 		}
-		if (can_id_1002FF1E_lost_timecnt < 0xffff) {
-			can_id_1002FF1E_lost_timecnt++;
+		if (can_id_18FF0CF9_lost_timecnt < 0xffff) {
+			can_id_18FF0CF9_lost_timecnt++;
 		}
-		if (can_id_1003FF1E_lost_timecnt < 0xffff) {
-			can_id_1003FF1E_lost_timecnt++;
+		if (can_id_18FF0DF9_lost_timecnt < 0xffff) {
+			can_id_18FF0DF9_lost_timecnt++;
 		}
-		if (can_id_1004FF1E_lost_timecnt < 0xffff) {
-			can_id_1004FF1E_lost_timecnt++;
+		if (can_id_1801EFA9_lost_timecnt < 0xffff) {
+			can_id_1801EFA9_lost_timecnt++;
 		}
-		if (can_id_18FF1103_lost_timecnt < 0xffff) {
-			can_id_18FF1103_lost_timecnt++;
+		if (can_id_104C1000_lost_timecnt < 0xffff) {
+			can_id_104C1000_lost_timecnt++;
 		}
-		if (can_id_1429289B_lost_timecnt < 0xffff) {
-			can_id_1429289B_lost_timecnt++;
-		}
-		if (can_id_142A289B_lost_timecnt < 0xffff) {
-			can_id_142A289B_lost_timecnt++;
-		}
-		if (can_id_18AB9B28_lost_timecnt < 0xffff) {
-			can_id_18AB9B28_lost_timecnt++;
-		}
-		if (can_id_18FFA017_lost_timecnt < 0xffff) {
-			can_id_18FFA017_lost_timecnt++;
-		}
-		if (can_id_1828272B_lost_timecnt < 0xffff) {
-			can_id_1828272B_lost_timecnt++;
-		}
-		if (can_id_142A2895_lost_timecnt < 0xffff) {
-			can_id_142A2895_lost_timecnt++;
-		}
+		
 	}
 }

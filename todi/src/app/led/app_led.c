@@ -1312,7 +1312,7 @@ void led_abs_failure_ctrl(void)
 
 /* 油压报警 */
 void led_oil_press_ctrl(void)
-{
+{/*
 	if(OFF == g_u8IgnSts)
 	{
 		uart_special_data.specialInfo.LedWarning.first.bit.OilPressWarning = 0;
@@ -1330,7 +1330,7 @@ void led_oil_press_ctrl(void)
 			uart_special_data.specialInfo.LedWarning.first.bit.OilPressWarning = 1;
 		}		
 	}
-
+*/
 }
 
 /* 发动机保养 */
@@ -2361,7 +2361,7 @@ void led_engine_guard_ctl(void)
 */}
 
 void led_guard_ctl(void)
-{
+{/*
 	if(OFF == g_u8IgnSts)
 	{
 		uart_special_data.specialInfo.LedWarning.second.bit.BurglarAlarm=0;
@@ -2379,13 +2379,13 @@ void led_guard_ctl(void)
 			uart_special_data.specialInfo.LedWarning.second.bit.BurglarAlarm = 1;
 		}
 	}
-
+*/
 }
 
 /* 驻车灯 */
 void led_parking_ctl(void)
 {
-	switch(IPconfig.protocol)                               
+	/*switch(IPconfig.protocol)
 	{                                                     
 		case HAVAL_2013_2P4L_AT_2WD:                            
 			if(ON == g_u8IgnSts)
@@ -2490,12 +2490,12 @@ void led_parking_ctl(void)
 				}
 			}                                             
 			break;                                       
-	}                                                     
+	}                      */
 }
 
 /* 电池电量低 */
 void led_charging_ctl(void)
-{
+{/*
 	static U32 t1 = 0;
 	static U8 t1_flag = 0;
 	static U32 t_pass = 0;
@@ -2512,20 +2512,21 @@ void led_charging_ctl(void)
 		uart_special_data.specialInfo.LedWarning.second.bit.ChargeLamp = 0;
 		t1_flag = 0;
 		return;
-	}
-	if(ON == g_u8IgnSts) /* IGNON且过了3秒后，开始判断是否亮灯 */
-	{
-		t_pass = hal_timer_passed(t1);
-		if((mid_get_io_sts(&pin_io_in[PIN_IN_CHARGE]) == ON) || (t_pass <= 300))
-		{
-			uart_special_data.specialInfo.LedWarning.second.bit.ChargeLamp = 0;
-			return;
-		}
-		if((t_pass > 300) && (mid_get_io_sts(&pin_io_in[PIN_IN_CHARGE]) == OFF))
-		{
-			uart_special_data.specialInfo.LedWarning.second.bit.ChargeLamp = 1;
-		}		
-	}
+	}*/
+//	if(ON == g_u8IgnSts) /* IGNON且过了3秒后，开始判断是否亮灯 */
+//	{
+//		t_pass = hal_timer_passed(t1);
+//		if((mid_get_io_sts(&pin_io_in[PIN_IN_CHARGE]) == ON) || (t_pass <= 300))
+//		{
+//			uart_special_data.specialInfo.LedWarning.second.bit.ChargeLamp = 0;
+//			return;
+//		}
+//		if((t_pass > 300) && (mid_get_io_sts(&pin_io_in[PIN_IN_CHARGE]) == OFF))
+//		{
+//			uart_special_data.specialInfo.LedWarning.second.bit.ChargeLamp = 1;
+//		}
+//	}
+	
 }
 
 /* 四驱灯 */

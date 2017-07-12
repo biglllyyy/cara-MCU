@@ -14,7 +14,7 @@
 static Bms_Data_Struct bms_data =
 { 0 };
 
-void bms_tem_get_data(void)
+void bms_get_data(void)
 {
 	U16 u16temp = 0;
 	U16 buf1 = 0;
@@ -144,11 +144,11 @@ void bms_tem_get_data(void)
 	bms_data.Reversed5 = 5;
 
 }
-void bms_tem_send_data(void)
+void bms_send_data(void)
 {
 
 	U16 temp = 0;
-	U8 maindata[BMS_TEM_DATA_LENGTH + 6] =
+	U8 maindata[BMS_DATA_LENGTH + 6] =
 	{ 0 };
 
 	maindata[0] = FRAME_HEAD; /* load frame head */

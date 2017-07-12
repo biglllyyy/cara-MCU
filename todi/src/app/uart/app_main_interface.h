@@ -166,7 +166,7 @@ typedef struct
 
 } Main_Interface_Data_Struct;
 
-Main_Interface_Data_Struct main_interface_data;
+extern Main_Interface_Data_Struct main_interface_data;
 
 void main_interface_get_data(void);
 void main_interface_send_data(void);

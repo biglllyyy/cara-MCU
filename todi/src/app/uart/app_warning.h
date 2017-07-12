@@ -145,7 +145,7 @@ typedef union
 	unsigned char byte;
 } Data_Struct;
 
-WarningDataStruct warning_data;
+extern WarningDataStruct warning_data;
 void warning_get_data(void);
 void warning_send_data(void);
 #endif

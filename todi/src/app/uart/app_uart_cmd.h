@@ -2,6 +2,8 @@
 #define APP_UART_CMD_H
 
 #include "comm_typedef.h"
+#include "uart_queue.h"
+
 #define default_value 0
 
 #define GOLDEN_RATIO_PRIME_32  (0x9e370001UL)
@@ -532,6 +534,12 @@ unsigned char get_uart_Overspeed(void);
 
 
 
+//add for 206
+#define    MAXMENUNUM  8
+#define    A20_MCU_DATA_LENTH			3//这里是设置队列buffer缓存，必须设置大于所需字节
+
+#define   A20_MCU_DATA_BUF_LENGTH      (A20_MCU_DATA_LENTH+7)
+
 /*add for zhongkun 206*/
 typedef enum
 {
@@ -552,6 +560,12 @@ typedef enum
 	MENU_HIGH_PRESSURE, //13, 高压系统信息
 } FRAME_TYPES;
 
+void app_farme_sent_task(void);
+void app_frame_get_task20(void);
+void app_uart_data_init(void);
+void uart_data_parse(UartQueue *p);
+U8   app_frame_sent_sub(void);
+void app_main_farme_sent_task(void);
 
 
 #endif // APP_UART_CMD_H

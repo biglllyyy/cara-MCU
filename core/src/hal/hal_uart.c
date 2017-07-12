@@ -490,7 +490,8 @@ __interrupt void uart1_rx_interrupt(void)
 #endif
             if (uart_en_queue(&uart_recv_queue, ch))//入队列错误
             {
-                uart_de_queue(&uart_recv_queue);//先让一个数据出列
+                //uart_de_queue(&uart_recv_queue);//先让一个数据出列
+                drop_first_cmd(&uart_recv_queue);
                 uart_en_queue(&uart_recv_queue, ch);//把刚才的数据重新入队列
             }
         }

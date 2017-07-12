@@ -35,13 +35,5 @@ STATE-2=todi\src\app\uart\app_tm.h:11
 STATE-3=todi\src\app\uart\app_tm.c:28
 STATE-4=todi\src\app\uart\app_air_pump.c:20
 STATE-5=todi\src\app\uart\app_info.h:47
-STATE-6=todi\src\app\uart\app_BMS_Tem.h:14
-STATE-7=todi\src\app\uart\app_BMS_Vol.h:13
-STATE-8=todi\src\app\uart\app_main_interface.c:89
-STATE-9=todi\src\app\uart\app_warning.c:59
-STATE-10=todi\src\app\uart\app_BMS_Tem.c:24
-STATE-11=todi\src\app\uart\app_uart_cmd.c:835
-STATE-12=todi\src\app\uart\app_uart_cmd.h:564
-STATE-13=C:\Softune6\LIB\911\INCLUDE\stddef.h:15
-Count=13
+Count=5
 

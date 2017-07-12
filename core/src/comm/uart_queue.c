@@ -20,13 +20,14 @@ S16 uart_en_queue(UartQueue *queue, CHAR ch)
     S16 result = -1;
     do
     {
+		queue->queue[queue->rear] = ch;
         if(((queue->rear + 1) % (queue->queue_size)) == queue->front)//¶ÓÁÐÂú
         {
             break;
         }
 
         queue->rear = (queue->rear + 1) % (queue->queue_size);
-        queue->queue[queue->rear] = ch;
+        
         result = 0;
     }
     while(0);
@@ -47,10 +48,10 @@ S16 uart_de_queue(UartQueue *queue)
         {
             break;
         }
-
+		ch = queue->queue[queue->front];
         queue->front = (queue->front + 1) % (queue->queue_size);
-
-        ch = queue->queue[queue->front];
+		
+        
 
     }
     while(0);

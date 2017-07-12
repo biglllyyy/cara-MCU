@@ -574,7 +574,7 @@ void app_frame_get_task(void)
  */
 void app_frame_sent_task(void)
 {
-	if(get_uart_first_frame()==ENABLE)
+	if(1/*get_uart_first_frame()==ENABLE*/)
 	{
 
 		app_main_farme_sent_task();

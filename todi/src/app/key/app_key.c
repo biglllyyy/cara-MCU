@@ -131,7 +131,7 @@ void app_key_init(void)
 void app_key_scan_task_100ms(void)
 {
 	U8 i;
-	if(g_u8IgnSts==ON)
+	if(/*g_u8IgnSts==*/ON)  //for 206 for test
 	{
 		//¶ÁIO×´Ì¬
 		key[PIN_LEFT_KEY].status_in_from_pin=(key_status_e)(pin_filter_in[PIN_IN_KEY2].result&0x01);

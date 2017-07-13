@@ -44,6 +44,7 @@ typedef enum
 typedef struct
 {
     U32  		 	id;
+	U32				id_mask;
     CAN_ID_FORMAT_e format;
     U8           	dlc;
     U8           	data[8];

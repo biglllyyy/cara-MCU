@@ -119,7 +119,7 @@ void app_power_manager_task10(void)
 {
     static U8 ig_sts_bak = 0;
 
-    g_u8IgnSts = mid_get_io_filtered(pin_filter_in, PIN_IN_IGN);	/*获取滤波后IGN输入*/
+    g_u8IgnSts = mid_get_io_filtered(pin_filter_in, PIN_IN_WAKEUP3);	/*获取滤波后IGN输入*/
 
 	/* 模拟IGN OFF，仅调试用 */
 	/* 

@@ -531,4 +531,27 @@ unsigned char get_uart_close_lcd_req(void);
 unsigned char get_uart_Overspeed(void);
 
 
+
+/*add for zhongkun 206*/
+typedef enum
+{
+	NULL_TYPE,			//00, NULL
+	CAR_INFO_TYPE,		//01，通用信息帧；
+	WARNING_TYPE,               //02, 报警信息帧;
+	MENU_BATMANAGE_TYPE,	//03，电池管理系统界面；
+	MENU_BATSTATUS_TYPE,	//04，电池状态信息界面；
+	MENU_BATTEMPERATURE_TYPE,   //05，电池状态信息界面；
+	MENU_MOTOR_TYPE,		//06，电机控制器信息界面；
+	MENU_AIRPUMP_TYPE,		//07，气泵控制器信息界面；
+	MENU_OILPUMP_TYPE,		//08，油泵控制器信息界面；
+	MENU_DCDC_TYPE,		//09，DC-DC电源信息界面；
+	//MENU_TIME_TYPE,             //10，空调系统信息界面；
+	MENU_FRONT_MOUDLE,	//10，仪表诊断信息界面
+	MENU_MIDDLE_MOUDLE,	//11，仪表诊断信息界面
+	MENU_BACK_MOUDLE,	//12，仪表诊断信息界面
+	MENU_HIGH_PRESSURE, //13, 高压系统信息
+} FRAME_TYPES;
+
+
+
 #endif // APP_UART_CMD_H

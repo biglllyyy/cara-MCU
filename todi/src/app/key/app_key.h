@@ -3,7 +3,7 @@
 
 #include "comm_typedef.h"
 
-#define KEY_NUM_MAX 3
+#define KEY_NUM_MAX 4
 #define CONST_TIME_200MS 2//单位:100ms
 #define CONST_TIME_10S 100//单位:100ms
 #define CONST_SHORT_PRESSED_TIME	3//单位:100ms
@@ -13,6 +13,17 @@
 #define LEFT  			0	
 #define RIGHT				1
 #define CONFIRM			2
+
+enum
+{
+	PIN_LEFT_KEY = 0,
+	PIN_RIGHT_KEY,
+	PIN_OK_KEY,
+	//add by niujianlong for new board
+	PIN_CANCEL_KEY,
+	PIN_KEY_ALL
+};
+
 
 typedef enum
 {

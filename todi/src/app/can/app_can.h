@@ -7,336 +7,258 @@
 
 #define		CAN_LOST_TIME			25
 
-typedef enum {
-	/*BMS CAN ID*/
-	CAN_ID_18AA28F3,
-	CAN_ID_1818D0F3,
-	CAN_ID_1819D0F3,
-	CAN_ID_181AD0F3,
-	CAN_ID_181BD0F3,
-	CAN_ID_181CD0F3,
-	CAN_ID_181DD0F3,
-	CAN_ID_181ED0F3,
-	CAN_ID_181FD0F3,
-	/*BMS Interaction*/
-	CAN_ID_1800F328,  //send
-	CAN_ID_180028F3,
-	CAN_ID_180028F4,
-	/*电机*/
-	CAN_ID_1882BBAB,  //send
-	CAN_ID_1002FF1E,
-	CAN_ID_1003FF1E,
-	CAN_ID_1004FF1E,
-	/*气泵*/
-	//CAN_ID_18FF1103,
-	CAN_ID_1429289B,
-	CAN_ID_142A289B,
-	CAN_ID_18AB9B28, //send
-	/*仪表与远程通讯*/
-	CAN_ID_18FFA017,  //send
-	/*DC-DC电源*/
-	CAN_ID_1828272B,
-	/*油泵控制器*/
-	CAN_ID_142A2895,
+
+typedef union {
+
+    struct {
+        U8 bit1 : 2;
+        U8 bit2 : 2;
+        U8 bit3 : 2;
+        U8 bit4 : 2;
+    }bits;
+    U8 byte;
+} DATA_DOUBLE;
+
+typedef union {
+
+    struct {
+        U8 bit1 : 1;
+        U8 bit2 : 1;
+        U8 bit3 : 1;
+        U8 bit4 : 1;
+        U8 bit5 : 1;
+        U8 bit6 : 1;
+        U8 bit7 : 1;
+        U8 bit8 : 1;
+    }bits;
+    U8 byte;
+} DATA_BIT;
+
+
+typedef enum
+{
+	ID_7e7,
+	ID_100017EF, //VCU2ICU01
+	ID_1801FBEF, //
+	ID_1811FBEF, //
+	ID_18FF08F2, //
+	ID_10F8159E, //BMS STATUS 1
+	ID_10F8169E, //BMS STATUS 2
+	ID_18F8179E, //BMS STATUS 3
+	ID_18F8189E, //BMS STATUS 4
+	ID_18F8199E, //BMS STATUS 5
+	ID_18F81A9E, //BMS STATUS 6
+	ID_18FF12F7, //DCDC21
+	ID_18FF0AF8, //OILDCAC21
+	ID_18FF0BF8, //OILDCAC22
+	ID_18FF0CF9, //AIRDCAC21
+	ID_18FF0DF9, //AIRDCAC22
+	ID_1801EFA9, //ICS01
+	ID_104C1000, //电池电压 100帧报文0x104C19A4-0x104C1A07 16帧电池温度0x104C1A18-0x104C1A24
 	CAN_ID_ALL
 } MSG_ID_TYPE;
 
-typedef enum {
-	CAN_ID_18AA28F3_PERIOD = 2000, /*Period:2000ms*/
-	CAN_ID_1818D0F3_PERIOD = 1000, /*Period:1000ms*/
-	CAN_ID_1819D0F3_PERIOD = 1000, /*Period:1000ms*/
-	CAN_ID_181AD0F3_PERIOD = 1000, /*Period:1000ms*/
-	CAN_ID_181BD0F3_PERIOD = 1000, /*Period:1000ms*/
-	CAN_ID_181CD0F3_PERIOD = 1000, /*Period:1000ms*/
-	CAN_ID_181DD0F3_PERIOD = 1000, /*Period:1000ms*/
-	CAN_ID_181ED0F3_PERIOD = 1000, /*Period:1000ms*/
-	CAN_ID_181FD0F3_PERIOD = 1000, /*Period:1000ms*/
-	CAN_ID_1800F328_PERIOD = 100, /*Period:100ms*/
-	CAN_ID_180028F3_PERIOD = 100, /*Period:100ms*/
-	CAN_ID_180028F4_PERIOD = 100, /*Period:100ms*/
-	CAN_ID_1882BBAB_PERIOD = 100, /*Period:100ms*/
-	CAN_ID_1002FF1E_PERIOD = 100, /*Period:100ms*/
-	CAN_ID_1003FF1E_PERIOD = 100, /*Period:100ms*/
-	CAN_ID_1004FF1E_PERIOD = 100, /*Period:100ms*/
-	CAN_ID_1429289B_PERIOD = 100, /*Period:100ms*/
-	CAN_ID_142A289B_PERIOD = 100, /*Period:100ms*/
-	CAN_ID_18AB9B28_PERIOD = 100, /*Period:100ms*/
-	CAN_ID_18FFA017_PERIOD = 100, /*Period:100ms*/
-	CAN_ID_1828272B_PERIOD = 100, /*Period:100ms*/
-	CAN_ID_142A2895_PERIOD = 100, /*Period:100ms*/
+typedef enum
+{
+	//received frame
+	ID_100017EF_period = 100, //VCU2ICU01
+	ID_1801FBEF_period = 500, //
+	ID_1811FBEF_period = 500, //
+	ID_18FF08F2_period = 500, //
+	ID_10F8159E_Period = 100, //BMS STATUS 1
+	ID_10F8169E_Period = 100, //BMS STATUS 2
+	ID_18F8179E_Period = 1000, //BMS STATUS 3
+	ID_18F8189E_Period = 1000, //BMS STATUS 4
+	ID_18F8199E_Period = 1000, //BMS STATUS 5
+	ID_18F81A9E_Period = 1000, //BMS STATUS 6
+	ID_18FF12F7_Period = 500, //DCDC21
+	ID_18FF0AF8_Period = 500, //OILDCAC21
+	ID_18FF0BF8_Period = 500, //OILDCAC22
+	ID_18FF0CF9_Period = 500, //AIRDCAC21
+	ID_18FF0DF9_Period = 500, //AIRDCAC22
+	ID_1801EFA9_Period = 100, //ICS01
+	ID_104C1000_Period = 1000,
+	//send frame
+	ID_1801EF17_Period = 100,
+	ID_1802EF17_Period = 500,
+	
 } CAN_ID_PERIOD;
 
-typedef struct {
+typedef struct
+{
 	/*can msg receive*/
-	struct {
-		U8 u8ParamType; /* 1--参数类型（1） */
-		U8 u8BattBoxCnt; /* 电池箱体个数（单位:1个） */
-		U8 u8BattSubControlCnt; /* 电池管理系统从控单元个数（单位:1个） */
-		U8 u8BSTotalStringHigh; /* 电池系统总串数（高字节） */
-		U8 u8BSTotalStringLow; /* 电池系统总串数（低字节） */
-		U8 u8BMSNumberHigh; /* 电池管理系统编号高字节 */
-		U8 u8BMSNumberLow; /* 电池管理系统编号低字节 */
-		U8 u8RelayStatus; /* 放电继电器状态  */
-	} ID_18AA28F3; /* BMS -LCD01 */
-#if 0
-	struct  //参数报文名称：BMS -LCD01
-	{
-		U8 DataType2;
-		U8 NumOfBUM;
-		U8 NumOfBatterySingle;
-		U8 NumOfBatteryTemperatureDetect;
-		U8 Reserved1;
-		U8 Reserved2;
-		U8 Reserved3;
-		U8 Reserved4;
-	}ID_18AA28F3_datatype2;
-#endif
-	struct {
-		U8 u8TotalVolHigh;
-		U8 u8TotalVolLow;
-		U8 u8TotalCurrHigh;
-		U8 u8TotalCurrLow;
-		U8 u8SOC;
-		U8 u8BattSysLife; /* 电池管理系统的 LIFE(0~255)  */
-		U8 u8BattStatusFlag1; /* 电池 Status_Flag1  */
-		U8 u8BattStatusFlag2; /* 电池 Status_Flag2  */
-	} ID_1818D0F3; /* BMS -CAN2_B1 */
-	struct {
-		U8 u8HighestVolHigh; /* 最高单体电池电压高字节   */
-		U8 u8HighestVolLow; /* 最高单体电池电压高字节   */
-		U8 u8LowestVolHigh; /* 最低单体电池电压高字节   */
-		U8 u8LowestVolLow; /* 最低单体电池电压低字节   */
-		U8 u8HighestTemp; /* 电池最高温度   */
-		U8 u8LowestTemp; /* 电池最低温度   */
-		U8 u8BattStatusFlag3; /* 电池 Status_Flag3  */
-		U8 u8RelayStatusFlag3; /* 继电器Status_Flag4  */
-	} ID_1819D0F3; /* BMS -CAN2_B2 */
-	struct {
-		U8 u8HighestVolBoxNum; /* 最高单体电压所在箱号（1~N） */
-		U8 u8HighestVolPosition; /* 最高单体电压所在箱内位置 */
-		U8 u8LowestVolBoxNum; /* 最低单体电压所在箱号（1~N） */
-		U8 u8LowestVolPosition; /* 最低单体电压所在箱内位置 */
-		U8 u8HighestTempBoxNum; /* 最高温度所在箱号（1~N） */
-		U8 u8HighestTempPosition; /* 最高温度所在箱内位置 */
-		U8 u8LowestTempBoxNum; /* 最低温度电压所在箱号（1~N） */
-		U8 u8LowestTempPosition; /* 最低温度所在箱内位置 */
-	} ID_181AD0F3; /* BMS -CAN2_B3 */
-	struct  //报文名称：BMSCAN2_B4
-	{
-		U8 u8BMUCommStatus1to8; /* 1~8号BMU 通讯状态 */
-		U8 u8BMUCommStatus9to16; /* 9~16号BMU 通讯状态 */
-		U8 u8BMUCommStatus17to24; /* 17~24号BMU 通讯状态 */
-		U8 u8BMUCommStatus25to32;/* 25~32号BMU 通讯状态 */
-		U8 Reserved1;
-		U8 Reserved2;
-		U8 Reserved3;
-		U8 Reserved4;
-	} ID_181BD0F3;
-	struct  //报文名称：BMSCAN2_B5
-	{
-		U8 BalancedStatusOf1to8BMU;
-		U8 BalancedStatusOf9to16BMU;
-		U8 BalancedStatusOf17to24BMU;
-		U8 BalancedStatusOf25to32BMU;
-		U8 Reserved1;
-		U8 Reserved2;
-		U8 Reserved3;
-		U8 Reserved4;
-	} ID_181CD0F3;
-	struct  //报文名称：BMSCAN2_B6
-	{
-		U8 ChargingPlug1DCPTemperature;
-		U8 ChargingPlug1DCNTemperature;
-		U8 ChargingPlug2DCPTemperature;
-		U8 ChargingPlug2DCNTemperature;
-		U8 PositiveInsulationResistanceH;
-		U8 PositiveInsulationResistanceL;
-		U8 NegativeInsulationResistanceH;
-		U8 NegativeInsulationResistanceL;
-	} ID_181DD0F3;
-	struct  //报文名称：BMSCAN2_B7
-	{
-		U8 ResidualEnergyH;
-		U8 ResidualEnergyL;
-		U8 Status_Flag5;
-		U8 Status_Flag6;
-		U8 Reserved1;
-		U8 Reserved2;
-		U8 Reserved3;
-		U8 Reserved4;
-	} ID_181ED0F3;
-	struct  //报文名称：BMSCAN2_B8
-	{
-		U8 HighSingleVoltPos;
-		U8 LowSingleVoltPos;
-		U8 MaxTemperPos;
-		U8 MinTemperPos;
-		U8 HighSingleVoltPackNum;
-		U8 LowSingleVoltPackNum;
-		U8 MaxTemperPackNum;
-		U8 MinTemperPackNum;
-	} ID_181FD0F3;
 
-	/*can interactive msg send  */
-
-	struct	//报文名称：LCD_BMS  仪表单体信息请求命令  ID：0x1800F328
-	{
-		U8 NumOfBMU;
-		U8 Reserved1;
-		U8 Reserved2;
-		U8 Reserved3;
-		U8 Reserved4;
-		U8 Reserved5;
-		U8 Reserved6;
-		U8 Reserved7;
-	} ID_1800F328;
-
-	struct	//报文名称：BMS -LCD02  反馈单体电压信息数据帧  ID：0x180028F3
-	{
-		U8 NumOfBMU;
-		U8 PackgeN;
-		U8 NBMUVolt1H;
-		U8 NBMUVolt1L;
-		U8 NBMUVolt2H;
-		U8 NBMUVolt2L;
-		U8 NBMUVolt3H;
-		U8 NBMUVolt3L;
-	} ID_180028F3;
-	struct	//报文名称：BCTDT1  反馈温度信息数据帧  ID：0x180028F4
-	{
-		U8 NumOfBMU;
-		U8 PackgeN;
-		U8 NBMUTempe1;
-		U8 NBMUTempe2;
-		U8 NBMUTempe3;
-		U8 NBMUTempe4;
-		U8 NBMUTempe5;
-		U8 NBMUTempe6;
-	} ID_180028F4;
-
-	/*---------------- 电机 -----------------------*/
-	struct  //整车信息（仪表发送）
-	{
-		U8 VelStatusInfo;
-		U8 MaxTempeOfBat;
-		U8 SingleLowestVolt;
-		U8 SingleHighestVolt;
-		U8 Reserved1;
-		U8 Reserved2;
-		U8 Reserved3;
-		U8 Reserved4;
-	} ID_1882BBAB;
-
-	struct {
-		U8 u8MotorContStatus; /* 电机控制器基本状态 */
-		U8 u8TickSignal; /* 生命（心跳）信号  */
-		U16 u16MotorTorque; /* 电机实际转矩   */
-		U16 u16MotorSpeed; /* 电机实际转速   */
-		U8 u8VehicleSpeed; /* 车速    */
-		U8 u8Gear; /* 档位   */
-	} ID_1002FF1E; /* 电机运行数据一 */
-
-	struct {
-		U16 u16DMCBusVol; /* 电机控制器（DMC）母线电压 */
-		U16 u16DMCBusCurr; /* 电机控制器（DMC）母线电流  */
-		U8 u8DMCTemp; /* 电机控制器温度   */
-		U8 u8MotorTemp; /* 电机温度   */
-		U8 u8DMCWarnCode; /* 电机控制器故障代码    */
-		U8 u8DMCVerNum; /* 电机控制器版本号   */
-	} ID_1003FF1E; /* 电机运行数据二 */
-
-	struct {
-		U8 u8ThrottleOpening; /* 油门开度 */
-		U8 u8BrakePedalOpening; /*  制动踏板开度   */
-		U8 u8ChargeDischargeState; /* 充放电状态    */
-		U8 RemoteMonitoringNationalStandardStalls; /* 远程监控国标档位  */
-		U8 Reserved1;
-		U8 Reserved2;
-		U8 Reserved3;
-		U8 Reserved4;
-	} ID_1004FF1E; /* 电机运行数据三 */
-
-	/*---------------- 气泵控制器 -----------------------*/
-#if 0 //这个不需要仪表接收
-	struct {
-		U8 u8APMStartStopInstruction; /*气泵启停指令*/
-		U8 Reserved1;
-		U8 Reserved2;
-		U8 Reserved3;
-		U8 Reserved4;
-		U8 Reserved5;
-		U8 Reserved6;
-		U8 Reserved7;
-	}CANID_0x18FF1103;
-#endif
-	struct {
-		U8 u8APMotorSpeedLow; /* 气泵电机转速低位 */
-		U8 u8APMotorSpeedHigh; /* 气泵电机转速高位  */
-		U8 u8ControllerBusVotLow; /* 预留   */
-		U8 u8ControllerBusVotHigh; /* 预留   */
-		U8 u8ControllerCurrent; /* 预留   */
-		U8 u8APControllerTemp; /*  控制器温度（此处给出的是泵体温度）*/
-		U8 u8APTickSignal; /*  心跳信号 */
-		U8 u8APControllerStatus; /* 控制器基本状态   */
-	} ID_1429289B; /* 气泵电机运行数据一 */
-
-	struct {
-		U8 u8APMControlerTemp; /*气泵控制器温度*/
-		U8 Reserved1;
-		U8 Reserved2;
-		U8 Reserved3;
-		U8 Reserved4;
-		U8 Reserved5;
-		U8 Reserved6;
-		U8 Reserved7;
-	} ID_142A289B; /* 气泵电机运行数据二*/
-
-	struct {
-		U8 Reserved1; /*气泵控制器温度*/
-		U8 FrontGasStorePreValue;  //前储气筒气压值 0.01MPa/Bit,最大100
-		U8 BehindGasStorePreValue; //Byte3 后储气筒气压值
-		U8 Reserved2;
-		U8 Reserved3;
-		U8 Reserved4;
-		U8 Reserved5;
-		U8 Reserved6;
-	} ID_18AB9B28; /* 仪表专用通讯指令*/
-
-	/*---------------- 仪表与远程监控终端 -----------------------*/
-	struct {
-		U8 TotalMileageL; /*气泵控制器温度*/
-		U8 TotalMileageM;  //前储气筒气压值 0.01MPa/Bit,最大100
-		U8 TotalMileageH; //Byte3 后储气筒气压值
-		U8 Reserved1;
-		U8 Reserved2;
-		U8 Reserved3;
-		U8 Reserved4;
-		U8 Reserved5;
-	} ID_18FFA017; /* LCD_CANBUS1*/
-
-	/*---------------- DC-DC电源 -----------------------*/
-	struct {
-		U8 u8DCDCSysStatus; /* DC-DC系统状态 */
-		U8 u8DCDCTemp; /* DCDC模块温度  */
-		U16 u16DCDCVolOutput; /* DCDC输出电压   */
-		U16 u16DCDCCurrOutput; /* DCDC输出电流   */
-		U8 u8DCDCWarnCode; /* DCDC故障代码   */
-		U8 u8DCDCCANVerCode; /* DCDC CAN通讯协议版本号   */
-	} ID_1828272B; /* DC-DC_msg1 */
-
-	/*---------------- 油泵控制器 -----------------------*/
-	struct {
-		U8 u8DMYTDMotorSpeedLow; /* 油泵电机转速低位 */
-		U8 u8DMYTDMotorSpeedHigh; /* 油泵电机转速高位 */
-		U8 u8DMYTDBusVolLow; /* 控制器母线电压低位 */
-		U8 u8DMYTDBusVolHigh; /* 控制器母线电压高位 */
-		U8 u8DMYTDCurrent; /* 控制器电流 */
-		U8 u8DMYTDTemp; /*  控制器温度（此处给出的是泵体温度）*/
-		U8 u8DMYTDTickSignal; /*  心跳信号 */
-		U8 u8DMYTDStatus; /* 控制器基本状态   */
-	} ID_142A2895; /* 油泵发送信息 */
+	U8 ID_100017EF[8]; //VCU2ICU01
+	U8 ID_1801FBEF[8]; //
+	U8 ID_1811FBEF[8]; //
+	U8 ID_18FF08F2[8]; //
+	U8 ID_10F8159E[8]; //BMS STATUS 1
+	U8 ID_10F8169E[8]; //BMS STATUS 2
+	U8 ID_18F8179E[8]; //BMS STATUS 3
+	U8 ID_18F8189E[8]; //BMS STATUS 4
+	U8 ID_18F8199E[8]; //BMS STATUS 5
+	U8 ID_18F81A9E[8]; //BMS STATUS 6
+	U8 ID_18FF12F7[8]; //DCDC21
+	U8 ID_18FF0AF8[8]; //OILDCAC21
+	U8 ID_18FF0BF8[8]; //OILDCAC22
+	U8 ID_18FF0CF9[8]; //AIRDCAC21
+	U8 ID_18FF0DF9[8]; //AIRDCAC22
+	U8 ID_1801EFA9[8]; //ICS01
+	//U8 ID_104C1000[8]; //BATTERY V and temp
 
 } can_signal_t;
+
+extern DATA_BIT VCU_Status_Flag1; //状态1
+#define  CHARGE      VCU_Status_Flag1.bits.bit1
+#define  DCDC_EN     VCU_Status_Flag1.bits.bit2
+#define  BMS_OFFLINE VCU_Status_Flag1.bits.bit3
+#define  TM_OFFLINE  VCU_Status_Flag1.bits.bit4
+#define  DCAC_EN     VCU_Status_Flag1.bits.bit5
+#define  SPEED_EN    VCU_Status_Flag1.bits.bit6
+#define  BRAJE_EN    VCU_Status_Flag1.bits.bit7
+#define  ELE_BRAKE   VCU_Status_Flag1.bits.bit8
+
+extern U8 VCU_Gear; //档位
+
+extern DATA_BIT VCU_Mode; //整车模式
+
+extern U8 VCU_Life; //整车控制器LIFE
+
+extern DATA_BIT VCU_Status_Flag2;
+#define  READY       VCU_Status_Flag2.bits.bit6
+#define  CHARGE_OVERTIME VCU_Status_Flag2.bits.bit7  
+#define  VCU_FAULT   VCU_Status_Flag2.bits.bit8 
+
+extern U8 VCU_Code; //整车故障码
+
+extern U8 VCU_TM_Brake_percent; //制动踏板开度
+extern U8 VCU_TM_Speed_percent; //加速踏板开度
+
+// VCU2TERMINAL_MOTOR01
+extern U8 TM_Number; //电机个数
+extern U8 TM_Serial; //电机序号
+extern U8 TM_WorkStatus; //TM电机工作状态
+extern U8 TM_Control_Temp; //TM电机控制器温度
+extern U16 TM_Feedback_RPM; //TM电机反馈转速
+extern U16 TM_Feedback_NM; //TM电机反馈扭矩
+// VCU2TERMINAL_MOTOR02
+extern U8 TM_Temp; //TM电机温度
+extern U16 TM_Voltage_DC; //TM电机直流电压
+extern U16 TM_Current_DC; //TM电机直流电流
+
+
+//IRM
+extern U32 IRM_Ohm_Positive; //总正绝缘阻值
+extern U32 IRM_Ohm_Negative; //总负绝缘阻值
+extern U8 IRM_Fault_Level; //设备故障等级
+extern U8 IRM_Insulation_Level; //绝缘等级
+extern U8 IRM_Life; //绝缘LIFE
+
+
+
+extern U8 BMS_Mode; //电池充放电模式
+extern U8 BMS_Status; //电池状态
+extern U8 BAT_Temp_Average; //电池平均温度
+extern U8 BMS_SOC; //SOC
+extern U16 BMS_Current; //电池系统电流
+extern U16 BMS_Voltage; //电池系统内总电压
+extern U8 BMS_Kt; //高压继电器状态
+
+extern U8 BAT_Temp_H_Limit; //最高允许电池单体温度
+extern U8 BAT_Temp_L_Limit; //最低允许电池单体温度
+extern U8 BMS_SOC_L_Limit; //最低允许SOC值
+extern U16 BAT_Current_Discharge_Limit; //最高允许放电电流
+extern U16 BAT_Current_Charge_Limit; //最高允许充电电流
+
+extern U8 BAT_Temp_L; //电池单体最低温度
+extern U8 BAT_Temp_L_Number; //电池单体低温度序号
+extern U8 BAT_Temp_L_Case; //电池单体低温度箱号
+extern U8 BAT_Temp_H; //电池单体最高温度
+extern U8 BAT_Temp_H_Number; //电池单体高温度序号
+extern U8 BAT_Temp_H_Case; //电池单体高温度箱号
+
+extern U8 BAT_Voltage_Fault; //总压故障
+extern U8 BAT_Single_Fault; //单压故障
+extern U8 BAT_Temp_Fault; //温度故障
+extern U8 BAT_Insulation_Fault; //绝缘故障
+extern U8 BAT_Consistency_Fault; //电池一致性故障
+extern U8 BAT_SOC_Fault; //SOC故障
+extern U8 BAT_Current_Fault; //电流故障
+extern U8 BAT_Lock_Fault; //高压互锁故障
+extern U8 BMS_Comm_Fault; //BMS通讯故障
+extern U8 BMS_System_Fault; //BMS系统故障
+
+extern U16 BMS_Ohm; //绝缘阻值
+extern U8 BMS_Number; //单体电压数量
+extern U8 BMS_Temp_Number; //单体温度数量
+extern U8 BMS_System_Unit; //系统数量
+extern U8 BMS_System_Number; //系统号
+
+extern U16 BAT_Single_L; //电池单体低电压
+extern U8 BAT_Single_L_Number; //电池单体低电压位置
+extern U8 BAT_Single_L_Case; //电池单体低电压箱号
+
+extern U16 BAT_Single_H; //电池单体高电压
+extern U8 BAT_Single_H_Number; //电池单体高电压位置
+extern U8 BAT_Single_H_Case; //电池单体高电压箱号
+
+extern U16 BAT_Cell_Voltage[400];
+extern U8 BAT_Cell_Temperature[128];
+
+extern U16 DCDC_Voltage; //DCDC输出电压
+extern U16 DCDC_Current; //DCDC输出电流
+extern U8 DCDC_Status; //DCDC工作状态
+extern U8 DCDC_Output_Cut; //DCDC 输出切断
+extern U8 DCDC_intput_Cut; //DCDC 输入切断
+extern U8 DCDC_Fault_Code; //DCDC故障码
+extern U8 DCDC_Level_Fault; //DCDC故障等级
+extern U8 DCDC_Temp_Warn; //DCDC温度报警
+extern U8 DCDC_Fault_Warn; //DCDC故障报警
+extern U8 DCDC_Temp; //DCDC模块温度
+
+extern U16 OILDCAC_U_Voltage; //DCAC输出U电压
+extern U16 OILDCAC_U_Current; //DCAC输出U电流
+extern U8 OILDCAC_Status; //DCAC工作状态
+extern U8 OILDCAC_Output_Cut; //DCAC 输出切断
+extern U8 OILDCAC_intput_Cut; //DCAC 输入切断
+extern U8 OILDCAC_Fault_Code; //DCAC故障代码
+extern U8 OILDCAC_Level_Fault; //DCAC故障等级
+extern U8 OILDCAC_Temp_Warn; //DCDC温度报警
+extern U8 OILDCAC_Fault_Warn; //DCDC故障报警
+extern U8 OILDCAC_Temp; //DCAC模块温度
+
+extern U16 OILDCAC_V_Voltage; //DCAC输出V电压
+extern U16 OILDCAC_V_Current; //DCAC输出V电流
+extern U16 OILDCAC_W_Voltage; //DCAC输出W电压
+extern U16 OILDCAC_W_Current; //DCAC输出W电流
+
+extern U16 AIRDCAC_U_Voltage; //DCAC输出U电压
+extern U16 AIRDCAC_U_Current; //DCAC输出U电流
+extern U8 AIRDCAC_Status; //DCAC工作状态
+extern U8 AIRDCAC_Output_Cut; //DCAC 输出切断
+extern U8 AIRDCAC_intput_Cut; //DCAC 输入切断
+extern U8 AIRDCAC_Fault_Code; //DCAC故障代码
+extern U8 AIRDCAC_Level_Fault; //DCAC故障等级
+extern U8 AIRDCAC_Temp_Warn; //DCDC温度报警
+extern U8 AIRDCAC_Fault_Warn; //DCDC故障报警
+extern U8 AIRDCAC_Temp; //DCAC模块温度
+
+extern U16 AIRDCAC_V_Voltage; //DCAC输出V电压
+extern U16 AIRDCAC_V_Current; //DCAC输出V电流
+extern U16 AIRDCAC_W_Voltage; //DCAC输出W电压
+extern U16 AIRDCAC_W_Current; //DCAC输出W电流
+
+extern DATA_DOUBLE ICS01_Status1; //高压采集状态1
+extern DATA_DOUBLE ICS01_Status2; //高压采集状态2
+extern DATA_DOUBLE ICS01_Status3; //高压采集状态3
+extern DATA_DOUBLE ICS01_Status4; //高压采集状态4
+
+extern U16 ICS01_Voltage_Front; //前端电压
+extern U16 ICS01_Voltage_Rear; //后端电压
+extern U8 ICS01_LIFE; //LIFE
+
+
+
 
 /*******************************************************************************/
 typedef void (*pCanAnalyse)(can_msg_t *msg, can_pro_way_e way);
@@ -349,27 +271,9 @@ void app_can_lost_time_cnt_100ms(void);
 
 extern can_signal_t can0;
 
-extern U16 can_id_18AA28F3_lost_timecnt;
-extern U16 can_id_1818D0F3_lost_timecnt;
-extern U16 can_id_1819D0F3_lost_timecnt;
-extern U16 can_id_181AD0F3_lost_timecnt;
-extern U16 can_id_181BD0F3_lost_timecnt;
-extern U16 can_id_181CD0F3_lost_timecnt;
-extern U16 can_id_181DD0F3_lost_timecnt;
-extern U16 can_id_181ED0F3_lost_timecnt;
-extern U16 can_id_181FD0F3_lost_timecnt;
-extern U16 can_id_1800F328_lost_timecnt;
-extern U16 can_id_180028F3_lost_timecnt;
-extern U16 can_id_180028F4_lost_timecnt;
-extern U16 can_id_1882BBAB_lost_timecnt;
-extern U16 can_id_1002FF1E_lost_timecnt;
-extern U16 can_id_1003FF1E_lost_timecnt;
-extern U16 can_id_1004FF1E_lost_timecnt;
-extern U16 can_id_1429289B_lost_timecnt;
-extern U16 can_id_142A289B_lost_timecnt;
-extern U16 can_id_18AB9B28_lost_timecnt;
-extern U16 can_id_18FFA017_lost_timecnt;
-extern U16 can_id_1828272B_lost_timecnt;
-extern U16 can_id_142A2895_lost_timecnt;
+
+
+
+
 
 #endif

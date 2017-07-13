@@ -5,6 +5,7 @@
 #include "app_io.h"
 #include "hal_wdg.h"
 #include "app_power.h"
+#include "app_info.h"
 
 extern uint8_t g_u8IgnSts;
 
@@ -101,13 +102,13 @@ static void update_mode_judge(void)
 	
 	if(g_u8_pre_sleep_flag==OFF)
 	{
-		key[CONFIRM].time_cnt=0;
+		key[PIN_OK_KEY].time_cnt=0;
 	}
 	else
 	{
-		key[CONFIRM].status_in_from_pin=(key_status_e)(pin_filter_in[PIN_IN_KEY0].result&0x01);
+		key[PIN_OK_KEY].status_in_from_pin=(key_status_e)(pin_filter_in[PIN_IN_KEY0].result&0x01);
 		
-		if(key[CONFIRM].status_in_from_pin==PRESSED)
+		if(key[PIN_OK_KEY].status_in_from_pin==PRESSED)
 		{
 			if(time_cnt<0xff)
 			{
@@ -133,9 +134,10 @@ void app_key_scan_task_100ms(void)
 	if(g_u8IgnSts==ON)
 	{
 		//¶ÁIO×´Ì¬
-		key[LEFT].status_in_from_pin=(key_status_e)(pin_filter_in[PIN_IN_KEY2].result&0x01);
-		key[RIGHT].status_in_from_pin=(key_status_e)(pin_filter_in[PIN_IN_KEY1].result&0x01);
-		key[CONFIRM].status_in_from_pin=(key_status_e)(pin_filter_in[PIN_IN_KEY0].result&0x01);
+		key[PIN_LEFT_KEY].status_in_from_pin=(key_status_e)(pin_filter_in[PIN_IN_KEY2].result&0x01);
+		key[PIN_RIGHT_KEY].status_in_from_pin=(key_status_e)(pin_filter_in[PIN_IN_KEY1].result&0x01);
+		key[PIN_OK_KEY].status_in_from_pin=(key_status_e)(pin_filter_in[PIN_IN_KEY0].result&0x01);
+		key[PIN_CANCEL_KEY].status_in_from_pin=(key_status_e)(pin_filter_in[PIN_IN_KEY3].result&0x01);
 		
 		//ÅÐ¶Ï°´¼ü×´Ì¬
 		for(i=0;i<KEY_NUM_MAX;i++)
@@ -168,69 +170,74 @@ void app_key_scan_task_100ms(void)
 		{
 			switch(i)
 			{
-				case LEFT:
-					switch(key[LEFT].status_handle)
+				case PIN_LEFT_KEY:
+					switch(key[PIN_LEFT_KEY].status_handle)
 					{
 						case NO_PRESSED:
-							uart_general_data.generalInfo.key0=0;
-							uart_special_data.specialInfo.MainDisp.first.bit.key0_long=0;
+							key_info_value	&= 0xFD;
 							break;
 						case SHORT_PRESSED:
-							uart_general_data.generalInfo.key0=1;
-							uart_special_data.specialInfo.MainDisp.first.bit.key0_long=0;
+							key_info_value	|= 0x02;
 							break;
 						case LONG_PRESSED:
-							uart_general_data.generalInfo.key0=1;
-							uart_special_data.specialInfo.MainDisp.first.bit.key0_long=1;
+							key_info_value	|= 0x02;
 							break;
 						default:
-							uart_general_data.generalInfo.key0=0;
-							uart_special_data.specialInfo.MainDisp.first.bit.key0_long=0;
+							key_info_value	&= 0xFD;
 							break;
 					}
 					break;
-				case RIGHT:
-					switch(key[RIGHT].status_handle)
+				case PIN_RIGHT_KEY:
+					switch(key[PIN_RIGHT_KEY].status_handle)
 					{
 						case NO_PRESSED:
-							uart_general_data.generalInfo.key1=0;
-							uart_special_data.specialInfo.MainDisp.first.bit.key1_long=0;
+							key_info_value	&= 0xFB;
 							break;
 						case SHORT_PRESSED:
-							uart_general_data.generalInfo.key1=1;
-							uart_special_data.specialInfo.MainDisp.first.bit.key1_long=0;
+							key_info_value	|= 0x04;
 							break;
 						case LONG_PRESSED:
-							uart_general_data.generalInfo.key1=1;
-							uart_special_data.specialInfo.MainDisp.first.bit.key1_long=1;
+							key_info_value	|= 0x04;
 							break;
 						default:
-							uart_general_data.generalInfo.key1=0;
-							uart_special_data.specialInfo.MainDisp.first.bit.key1_long=0;
+							key_info_value	&= 0xFB;
 							break;
 					}
 					break;
-				case CONFIRM:
-					switch(key[CONFIRM].status_handle)
+				case PIN_OK_KEY:
+					switch(key[PIN_OK_KEY].status_handle)
 					{
 						case NO_PRESSED:
-							uart_general_data.generalInfo.key2=0;
-							uart_special_data.specialInfo.MainDisp.first.bit.key2_long=0;
+							key_info_value	&= 0xFE;
 							break;
 						case SHORT_PRESSED:
-							uart_general_data.generalInfo.key2=1;
-							uart_special_data.specialInfo.MainDisp.first.bit.key2_long=0;
+							key_info_value	|= 0x01;
 							break;
 						case LONG_PRESSED:
-							uart_general_data.generalInfo.key2=1;
-							uart_special_data.specialInfo.MainDisp.first.bit.key2_long=1;
+							key_info_value	|= 0x01;
 							break;
 						default:
-							uart_general_data.generalInfo.key2=0;
-							uart_special_data.specialInfo.MainDisp.first.bit.key2_long=0;
+							key_info_value	&= 0xFE;
 							break;
 					}
 					break;
+				case PIN_CANCEL_KEY:
+					switch(key[PIN_CANCEL_KEY].status_handle)
+					{
+						case NO_PRESSED:
+							key_info_value	&= ~0x08;
+							break;
+						case SHORT_PRESSED:
+							key_info_value	|= 0x08;
+							break;
+						case LONG_PRESSED:
+							key_info_value	|= 0x08;
+							break;
+						default:
+							key_info_value	&= ~0x08;
+							break;
+					}
+					break;	
 			}
 		}
 		uart_general_data.generalInfo.key3 = 0;             

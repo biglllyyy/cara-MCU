@@ -207,19 +207,22 @@ void app_cfg_io(void)
 void app_cfg_led_out_io(void)
 {
 	
-	mid_io_config(&leds_out[LED_LEFTTURNLIGHT],1,6,IO_GENERAL_OUTPUT,1);
-	mid_io_config(&leds_out[LED_REARFOGLAMP],1,5,IO_GENERAL_OUTPUT,1);
-	mid_io_config(&leds_out[LED_FRONTFOGLAMP],1,4,IO_GENERAL_OUTPUT,1);
-	mid_io_config(&leds_out[LED_HIGHBEAM],1,3,IO_GENERAL_OUTPUT,1);
-	mid_io_config(&leds_out[LED_PARK],1,2,IO_GENERAL_OUTPUT,1);
-	mid_io_config(&leds_out[LED_LIGHTMAINCTL],1,1,IO_GENERAL_OUTPUT,1);
-	mid_io_config(&leds_out[LED_POSITION],1,0,IO_GENERAL_OUTPUT,1);
+	mid_io_config(&leds_out[LED_LEFTTURNLIGHT],1,6,IO_GENERAL_OUTPUT,1);  //led1
+	mid_io_config(&leds_out[LED_REARFOGLAMP],1,5,IO_GENERAL_OUTPUT,1);    //2//2
+	mid_io_config(&leds_out[LED_FRONTFOGLAMP],1,4,IO_GENERAL_OUTPUT,1);//3//3
+	mid_io_config(&leds_out[LED_HIGHBEAM],1,3,IO_GENERAL_OUTPUT,1);//4//4
+	mid_io_config(&leds_out[LED_PARK],1,2,IO_GENERAL_OUTPUT,1);//5
+	mid_io_config(&leds_out[LED_LIGHTMAINCTL],1,1,IO_GENERAL_OUTPUT,1);//6
+	mid_io_config(&leds_out[LED_POSITION],1,0,IO_GENERAL_OUTPUT,1);//7
 
-	mid_io_config(&leds_out[LED_RIGHTTURNLIGHT],13,3,IO_GENERAL_OUTPUT,VALID_HIGH_LEVEL);
-	mid_io_config(&leds_out[LED_RESERVELED1],13,2,IO_GENERAL_OUTPUT,VALID_HIGH_LEVEL);
-	mid_io_config(&leds_out[LED_RESERVELED2],13,1,IO_GENERAL_OUTPUT,VALID_HIGH_LEVEL);
+	mid_io_config(&leds_out[LED_RIGHTTURNLIGHT],12,2,IO_GENERAL_OUTPUT,VALID_HIGH_LEVEL);//8
+	mid_io_config(&leds_out[LED_RESERVELED1],12,1,IO_GENERAL_OUTPUT,VALID_HIGH_LEVEL);//9
+	mid_io_config(&leds_out[LED_RESERVELED2],14,4,IO_GENERAL_OUTPUT,VALID_HIGH_LEVEL);//10
 	
-	mid_io_config(&leds_out[LED_SAFETYBELTSIDE],6,2,IO_GENERAL_OUTPUT,VALID_LOW_LEVEL);
+	mid_io_config(&leds_out[LED_SAFETYBELTSIDE],13,2,IO_GENERAL_OUTPUT,VALID_LOW_LEVEL);//11
+																						//12
+																						//13
+																						//14
 }
 
 
@@ -231,32 +234,40 @@ static void app_init_io_parameter(void)
 		pin_filter_in[index].filter_time = 5;
 		pin_filter_in[index].valid_value = 0;
 	}
-	pin_filter_in[PIN_IN_IGN].valid_value = 1;
-	pin_filter_in[PIN_IN_IGN].filter_time  = 1;
+	pin_filter_in[PIN_IN_WAKEUP1].valid_value = 1;
+	pin_filter_in[PIN_IN_WAKEUP1].filter_time  = 1;
+	pin_filter_in[PIN_IN_WAKEUP2].valid_value = 1;
+	pin_filter_in[PIN_IN_WAKEUP2].filter_time  = 1;
+	pin_filter_in[PIN_IN_WAKEUP3].valid_value = 1;
+	pin_filter_in[PIN_IN_WAKEUP3].filter_time  = 1;
 	pin_filter_in[PIN_IN_KEY0].filter_time = 1;
 	pin_filter_in[PIN_IN_KEY1].filter_time = 1;
 	pin_filter_in[PIN_IN_KEY2].filter_time = 1;
+	pin_filter_in[PIN_IN_KEY3].filter_time = 1;
 }
 
 void app_cfg_io_in(void)
 {
-	mid_io_config(&pin_io_in[PIN_IN_IGN],6,0,IO_INPUT,VALID_LOW_LEVEL);
-	mid_io_config(&pin_io_in[PIN_IN_OIL_PRESS],3,3,IO_INPUT,VALID_LOW_LEVEL);
-	mid_io_config(&pin_io_in[PIN_IN_GUARD],3,4,IO_INPUT,VALID_LOW_LEVEL);
-	mid_io_config(&pin_io_in[PIN_IN_CHARGE],3,6,IO_INPUT,VALID_LOW_LEVEL);
-	mid_io_config(&pin_io_in[PIN_IN_ENGINE_GUARD],3,7,IO_INPUT,VALID_LOW_LEVEL);
-	mid_io_config(&pin_io_in[PIN_IN_MAIN_BELT],5,0,IO_INPUT,VALID_LOW_LEVEL);
-	mid_io_config(&pin_io_in[PIN_IN_ALS_ERROR],5,1,IO_INPUT,VALID_LOW_LEVEL);
-	mid_io_config(&pin_io_in[PIN_IN_BRAKE_WARNING],5,3,IO_INPUT,VALID_LOW_LEVEL);
-	mid_io_config(&pin_io_in[PIN_IN_KEY0],12,0,IO_INPUT,VALID_LOW_LEVEL);
-	mid_io_config(&pin_io_in[PIN_IN_KEY1],3,5,IO_INPUT,VALID_LOW_LEVEL);
-	mid_io_config(&pin_io_in[PIN_IN_KEY2],7,5,IO_INPUT,VALID_LOW_LEVEL);
-	mid_io_config(&pin_io_in[PIN_IN_REVERSE_SIGNAL],9,0,IO_INPUT,VALID_LOW_LEVEL);
-	mid_io_config(&pin_io_in[PIN_IN_REVERSE_RADAR],9,1,IO_INPUT,VALID_LOW_LEVEL);
-	mid_io_config(&pin_io_in[PIN_IN_VIDEO_MPOUT],5,4,IO_INPUT,VALID_LOW_LEVEL);
-	mid_io_config(&pin_io_in[PIN_IN_VIDEO_INTREQ],5,2,IO_INPUT,VALID_LOW_LEVEL);
-	mid_io_config(&pin_io_in[PIN_IN_ARM_LOAD],12,5,IO_INPUT,VALID_LOW_LEVEL); /* 检测ARM是否进入mfg_tool烧录模式引脚配置 */
-	
+	mid_io_config(&pin_io_in[PIN_IN_WAKEUP1],7,5,IO_INPUT,VALID_LOW_LEVEL);   //wake up 1 危险报警
+	mid_io_config(&pin_io_in[PIN_IN_WAKEUP2],7,6,IO_INPUT,VALID_LOW_LEVEL);   //wake up 2 acc
+	mid_io_config(&pin_io_in[PIN_IN_WAKEUP3],7,7,IO_INPUT,VALID_LOW_LEVEL);   //wake up 3 on
+//	mid_io_config(&pin_io_in[PIN_IN_OIL_PRESS],3,3,IO_INPUT,VALID_LOW_LEVEL);
+//	mid_io_config(&pin_io_in[PIN_IN_GUARD],3,4,IO_INPUT,VALID_LOW_LEVEL);
+//	mid_io_config(&pin_io_in[PIN_IN_CHARGE],3,6,IO_INPUT,VALID_LOW_LEVEL);
+//	mid_io_config(&pin_io_in[PIN_IN_ENGINE_GUARD],3,7,IO_INPUT,VALID_LOW_LEVEL);
+//	mid_io_config(&pin_io_in[PIN_IN_MAIN_BELT],5,0,IO_INPUT,VALID_LOW_LEVEL);
+//	mid_io_config(&pin_io_in[PIN_IN_ALS_ERROR],5,1,IO_INPUT,VALID_LOW_LEVEL);
+//	mid_io_config(&pin_io_in[PIN_IN_BRAKE_WARNING],5,3,IO_INPUT,VALID_LOW_LEVEL);
+	mid_io_config(&pin_io_in[PIN_IN_KEY0],6,0,IO_INPUT,VALID_LOW_LEVEL);
+	mid_io_config(&pin_io_in[PIN_IN_KEY1],6,1,IO_INPUT,VALID_LOW_LEVEL);
+	mid_io_config(&pin_io_in[PIN_IN_KEY2],6,2,IO_INPUT,VALID_LOW_LEVEL);
+	mid_io_config(&pin_io_in[PIN_IN_KEY3],6,3,IO_INPUT,VALID_LOW_LEVEL);
+//	mid_io_config(&pin_io_in[PIN_IN_REVERSE_SIGNAL],9,0,IO_INPUT,VALID_LOW_LEVEL);
+//	mid_io_config(&pin_io_in[PIN_IN_REVERSE_RADAR],9,1,IO_INPUT,VALID_LOW_LEVEL);
+//	mid_io_config(&pin_io_in[PIN_IN_VIDEO_MPOUT],5,4,IO_INPUT,VALID_LOW_LEVEL);
+//	mid_io_config(&pin_io_in[PIN_IN_VIDEO_INTREQ],5,2,IO_INPUT,VALID_LOW_LEVEL);
+//	mid_io_config(&pin_io_in[PIN_IN_ARM_LOAD],12,5,IO_INPUT,VALID_LOW_LEVEL); /* 检测ARM是否进入mfg_tool烧录模式引脚配置 */
+//
 	
 	app_init_io_parameter();
 }
@@ -273,8 +284,8 @@ void app_cfg_io_out(void)
 	mid_io_config(&MCU_HOLD_ON,6,6,IO_GENERAL_OUTPUT,VALID_LOW_LEVEL);
 	
 	//video
-	mid_io_config(&pin_io_out[PIN_OUT_VIDEO_PWDN],6,5,IO_GENERAL_OUTPUT,VALID_HIGH_LEVEL);
-	mid_io_config(&pin_io_out[PIN_OUT_VIDEO_RST],6,1,IO_GENERAL_OUTPUT,VALID_LOW_LEVEL);
+	//mid_io_config(&pin_io_out[PIN_OUT_VIDEO_PWDN],6,5,IO_GENERAL_OUTPUT,VALID_HIGH_LEVEL);
+	//mid_io_config(&pin_io_out[PIN_OUT_VIDEO_RST],6,1,IO_GENERAL_OUTPUT,VALID_LOW_LEVEL);
 	
 	// backlight PWM pin
 	mid_io_config(&pin_io_out[PIN_OUT_BACKLIGHT],8,2,IO_GENERAL_OUTPUT,VALID_LOW_LEVEL);

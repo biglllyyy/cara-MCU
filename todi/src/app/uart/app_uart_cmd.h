@@ -485,7 +485,9 @@ typedef struct {
 #if SETTINGS_GENERAL_FRAME_LEN>=SETTINGS_SPECIAL_FRAME_LEN
 #define SETTINGS_FRAME_LEN_MAX (SETTINGS_GENERAL_FRAME_LEN+1)
 #else
-#define SETTINGS_FRAME_LEN_MAX (SETTINGS_SPECIAL_FRAME_LEN+1)
+//#define SETTINGS_FRAME_LEN_MAX (SETTINGS_SPECIAL_FRAME_LEN+1)
+#define SETTINGS_FRAME_LEN_MAX (9+1)  //for 206
+
 #endif
 
 extern uint8_t g_u8IgnSts;
@@ -553,11 +555,11 @@ typedef enum
 	MENU_AIRPUMP_TYPE,		//07，气泵控制器信息界面；
 	MENU_OILPUMP_TYPE,		//08，油泵控制器信息界面；
 	MENU_DCDC_TYPE,		//09，DC-DC电源信息界面；
-	//MENU_TIME_TYPE,             //10，空调系统信息界面；
-	MENU_FRONT_MOUDLE,	//10，仪表诊断信息界面
-	MENU_MIDDLE_MOUDLE,	//11，仪表诊断信息界面
-	MENU_BACK_MOUDLE,	//12，仪表诊断信息界面
-	MENU_HIGH_PRESSURE, //13, 高压系统信息
+	MENU_HIGH_PRESSURE, //10, 高压系统信息
+	MENU_FRONT_MOUDLE,	//11，仪表诊断信息界面
+	MENU_MIDDLE_MOUDLE,	//12，仪表诊断信息界面
+	MENU_BACK_MOUDLE,	//13，仪表诊断信息界面
+	
 } FRAME_TYPES;
 
 void app_farme_sent_task(void);

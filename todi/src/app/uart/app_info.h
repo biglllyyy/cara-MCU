@@ -70,7 +70,7 @@ typedef enum
 	SUBINFO_AP,   /* 气泵控制器界面信息 */
 	SUBINFO_DMY,   /* 油泵控制器界面信息 */
 	SUBINFO_DCDC,   /* DCDC界面信息 */
-	//SUBINFO_TIME,   /* 空调控制器界面信息 */
+	SUBINFO_HIGH_PRESSURE,   /* 高压系统界面信息 */
 	SUBINFO_FRONT,   /* qian界面信息 */
 	
 	SUBINFO_MIDDLE,   /* zhong界面信息 */

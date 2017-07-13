@@ -1,4 +1,4 @@
-#include "app_high_pressure_system.c"
+#include "app_high_pressure_system.h"
 #include "app_can.h"
 #include "app_uart_cmd.h"
 #include "hal_uart.h"
@@ -17,10 +17,10 @@ static High_Pressure_System_Struct high_pressure_data = { 0 };
 void high_pressure_get_data(void)
 {
 	U16 u16temp = 0;
-	high_pressure_data.ICS01_Status1 = ICS01_Status1.byte;
-	high_pressure_data.ICS01_Status2 = ICS01_Status2.byte;
-	high_pressure_data.ICS01_Status3 = ICS01_Status3.byte;
-	high_pressure_data.ICS01_Status4 = ICS01_Status4.byte;
+	high_pressure_data.ICS01_Status1.byte = ICS01_Status1.byte;
+	high_pressure_data.ICS01_Status2.byte = ICS01_Status2.byte;
+	high_pressure_data.ICS01_Status3.byte = ICS01_Status3.byte;
+	high_pressure_data.ICS01_Status4.byte = ICS01_Status4.byte;
 	
 	u16temp = ICS01_Voltage_Front;
 	if(u16temp>1000)

@@ -59,6 +59,7 @@
 #include "app_warning.h"
 #include "app_BMS_Vol.h"
 #include "app_BMS_Tem.h"
+#include "app_high_pressure_system.h"
 
 
 
@@ -841,8 +842,10 @@ void uart_data_parse(UartQueue *p)
 		if ((0 != g_tUart1Rec.u8BattBoxNum)
 				&& (g_tUart1Rec.u8BattBoxNum <= MAXMENUNUM))
 		{
+			CurrentMenu = g_tUart1Rec.u8BattBoxNum;
 			//g_uSubInfo.BS.u8BattBoxNum = g_tUart1Rec.u8BattBoxNum;
 			//Dealwith_BS_Info();
+			MidSchAddTask(app_frame_sent_sub, 1000);			//发送界面数据
 		}
 	}
 	else if (SUBINFO_BSTEMP == g_tUart1Rec.u8MenuNum)
@@ -850,8 +853,10 @@ void uart_data_parse(UartQueue *p)
 		if((0 != g_tUart1Rec.u8BattBoxNum)
 				&& (g_tUart1Rec.u8BattBoxNum <= MAXMENUNUM))
 		{
+			CurrentMenu = g_tUart1Rec.u8BattBoxNum;
 			//g_uSubInfo.BS.u8BattBoxNum = g_tUart1Rec.u8BattBoxNum;
 			//Dealwith_BS_TEMP_Info();
+			MidSchAddTask(app_frame_sent_sub, 1000);			//发送界面数据
 		}
 		
 	}
@@ -939,7 +944,9 @@ U8 app_frame_sent_sub(void)
 		 	dcdc_get_data();
 		 	dcdc_send_data();
 			break;
-			
+		case SUBINFO_HIGH_PRESSURE:
+			high_pressure_get_data();
+			high_pressure_send_data();
 		case SUBINFO_FRONT:
 			//big_moudle_front_send_data();
 			break;

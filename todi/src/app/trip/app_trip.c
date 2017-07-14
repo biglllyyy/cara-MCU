@@ -29,7 +29,7 @@ void app_trip_init(void)
 	
 	aes_encrypt_init(); /*根据key生成expand key */
 	get_ee_total_trip(); /* 获取总里程 */
-	get_ee_sub_trip(); /* 获取里程小计 */
+	get_ee_sub_trip(); /* 获取里程小计 */ 
 	info.old_time = hal_timer_get_tick(); /* 获取当前系统节拍 */
 }
 
@@ -73,7 +73,7 @@ static void app_info_trip_cal(U16 spd)
 				{
 					app_sub_trip2_clear();
 				}
-				
+				write_sub_trip1(info.Trip1);  //100m write once
 				if(AFE_distance==0xffffffff)//防止溢出
 				{
 					AFE_distance=0xfffffffe;

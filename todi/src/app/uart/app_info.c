@@ -22,7 +22,7 @@ void cal_info_task_100ms(void)
 		
 		if (mile >= 100.0) 
 		{
-			mile = 0.0;
+			mile = 0;
 			save_flag = 1;
 			if (single_miles >= 9999) single_miles = 0;
 			else single_miles++;

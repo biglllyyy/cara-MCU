@@ -26,6 +26,8 @@
 #include "app_system.h"
 #include "app_fuel_method2.h"
 #include "app_uds.h"
+#include "app_info.h"
+#include "app_moudle.h"
 
 #define  PERIOD_MS(time)		(time)
 
@@ -789,6 +791,7 @@ void MCU_TO_PC_send(void) {  //对应报文0x7EF
 
 	hal_can_sent(CAN_CHN, &can_msg[msg_box - 1]);
 }
+
 void can_id_1801EF17_send(void) { //对应报文0x1801EF17
 	U8 msg_box;
 	U16 temp;
@@ -829,24 +832,24 @@ void can_id_1801EF17_send(void) { //对应报文0x1801EF17
     can_msg[msg_box - 1].data[2] = 0;
     can_msg[msg_box - 1].data[3] = 0;
 
-    CAN_DATA.bit1 = M_ON; //key on
-    CAN_DATA.bit2 = rKL8; //手制动
-    CAN_DATA.bit3 = (VCU_Gear == 13); //倒挡
-    CAN_DATA.bit4 = 0;
-    CAN_DATA.bit5 = 0;
-    CAN_DATA.bit6 = 0;
-    CAN_DATA.bit7 = rKL11; //后舱门
-    CAN_DATA.bit8 = 0;
+    CAN_DATA.bits.bit1 = M_ON; //key on
+    CAN_DATA.bits.bit2 = rKL8; //手制动
+    CAN_DATA.bits.bit3 = (VCU_Gear == 13); //倒挡
+    CAN_DATA.bits.bit4 = 0;
+    CAN_DATA.bits.bit5 = 0;
+    CAN_DATA.bits.bit6 = 0;
+    CAN_DATA.bits.bit7 = rKL11; //后舱门
+    CAN_DATA.bits.bit8 = 0;
     can_msg[msg_box - 1].data[4] = CAN_DATA.byte;
 
-    CAN_DATA.bit1 = LED2; //后门
-    CAN_DATA.bit2 = LED16; //蓄电池电量低
-    CAN_DATA.bit3 = 0;
-    CAN_DATA.bit4 = 0;
-    CAN_DATA.bit5 = LED1; //前门
-    CAN_DATA.bit6 = 0;
-    CAN_DATA.bit7 = 0;
-    CAN_DATA.bit8 = 0;
+    CAN_DATA.bits.bit1 = 0;//LED2; //后门
+    CAN_DATA.bits.bit2 = LED16; //蓄电池电量低
+    CAN_DATA.bits.bit3 = 0;
+    CAN_DATA.bits.bit4 = 0;
+    CAN_DATA.bits.bit5 = 0;//LED1; //前门
+    CAN_DATA.bits.bit6 = 0;
+    CAN_DATA.bits.bit7 = 0;
+    CAN_DATA.bits.bit8 = 0;
     can_msg[msg_box - 1].data[5] = CAN_DATA.byte;
 
     can_msg[msg_box - 1].data[6] = 0;
@@ -860,6 +863,7 @@ void can_id_1801EF17_send(void) { //对应报文0x1801EF17
 	
 }
 
+
 void can_id_1802EF17_send(void) { ////对应报文0x1802EF17
 	U8 msg_box;
 	U16 temp = 0;
@@ -868,10 +872,10 @@ void can_id_1802EF17_send(void) { ////对应报文0x1802EF17
 	msg_box = ID_RECV_NUM_ALL + 3;
 	can_msg[msg_box - 1].buffer_num = msg_box;
 
-	can_msg[msg_box - 1].data[0] = (U8) (e_total_miles); //低八位
-	can_msg[msg_box - 1].data[1] = (U8) (e_total_miles >> 8); //二级八位
-	can_msg[msg_box - 1].data[2] = (U8) (e_total_miles >> 16); //三级八位
-	can_msg[msg_box - 1].data[3] = (U8) (e_total_miles >> 24); //高八位
+	can_msg[msg_box - 1].data[0] = (U8) (info.Odo); //低八位
+	can_msg[msg_box - 1].data[1] = (U8) ((info.Odo) >> 8); //二级八位
+	can_msg[msg_box - 1].data[2] = (U8) ((info.Odo) >> 16); //三级八位
+	can_msg[msg_box - 1].data[3] = (U8) ((info.Odo) >> 24); //高八位
 	temp = pSpeed * 10;
 	can_msg[msg_box - 1].data[4] = (temp);
 	can_msg[msg_box - 1].data[5] = (temp >> 8);

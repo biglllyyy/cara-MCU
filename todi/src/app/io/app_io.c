@@ -258,10 +258,17 @@ void app_cfg_io_in(void)
 //	mid_io_config(&pin_io_in[PIN_IN_MAIN_BELT],5,0,IO_INPUT,VALID_LOW_LEVEL);
 //	mid_io_config(&pin_io_in[PIN_IN_ALS_ERROR],5,1,IO_INPUT,VALID_LOW_LEVEL);
 //	mid_io_config(&pin_io_in[PIN_IN_BRAKE_WARNING],5,3,IO_INPUT,VALID_LOW_LEVEL);
+#ifdef NEWBOARD
 	mid_io_config(&pin_io_in[PIN_IN_KEY0],6,0,IO_INPUT,VALID_LOW_LEVEL);
 	mid_io_config(&pin_io_in[PIN_IN_KEY1],6,1,IO_INPUT,VALID_LOW_LEVEL);
 	mid_io_config(&pin_io_in[PIN_IN_KEY2],6,2,IO_INPUT,VALID_LOW_LEVEL);
 	mid_io_config(&pin_io_in[PIN_IN_KEY3],6,3,IO_INPUT,VALID_LOW_LEVEL);
+#else
+	mid_io_config(&pin_io_in[PIN_IN_KEY0],12,0,IO_INPUT,VALID_LOW_LEVEL);
+	mid_io_config(&pin_io_in[PIN_IN_KEY1],3,5,IO_INPUT,VALID_LOW_LEVEL);
+	mid_io_config(&pin_io_in[PIN_IN_KEY2],7,5,IO_INPUT,VALID_LOW_LEVEL);
+	mid_io_config(&pin_io_in[PIN_IN_KEY3],7,6,IO_INPUT,VALID_LOW_LEVEL);
+#endif
 //	mid_io_config(&pin_io_in[PIN_IN_REVERSE_SIGNAL],9,0,IO_INPUT,VALID_LOW_LEVEL);
 //	mid_io_config(&pin_io_in[PIN_IN_REVERSE_RADAR],9,1,IO_INPUT,VALID_LOW_LEVEL);
 //	mid_io_config(&pin_io_in[PIN_IN_VIDEO_MPOUT],5,4,IO_INPUT,VALID_LOW_LEVEL);

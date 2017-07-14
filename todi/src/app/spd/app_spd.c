@@ -8,6 +8,7 @@
 #include "app_can.h"
 
 #include "app_uart_cmd.h"
+#include "app_moudle.h"
 
 #define  MAX_SHIFT_ENLARGE  16
 /**********************************************************************************/
@@ -110,7 +111,7 @@ static void app_cal_disp_speed(void)
 
 U8  app_get_fact_spd(void)
 {
-	return(g_u8Spd);
+	return(pSpeed);
 }
 
 U8  app_get_dis_spd(void)

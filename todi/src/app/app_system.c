@@ -44,6 +44,7 @@
 #include "app_time.h"
 #include "app_display.h"
 #include "app_uds.h"
+#include "app_ad_capture.h"
 
 extern void app_radar_ctl(void);
 static void app_task_10ms(void);
@@ -144,6 +145,8 @@ static void app_software_init(void)
 	app_init_spd();
 	app_CarTemp_init();	
 	first_state(PWR_OFF);   
+	//for 206
+	ad_capture_info_init();
 
 }
 
@@ -237,6 +240,10 @@ void app_task_100ms(void)
 //	app_read_fuel_ign_on();	/* 读取初始燃油量 */	
 //  app_buz_play_WAV_task(); /* 播放WAV音频任务，只执行一次 */	
 	app_clac_fuel_method2_task();
+
+	//add for 206
+	//void ad_capture_info_init(void);
+	ad_capture_info_get_data();
 }
 
 /* 检查UART是否还有ARM的信息，*/

@@ -11,6 +11,7 @@
 #include "mid_can.h"
 #include "mb91520.h"
 #include "uart_cfg.h"
+#include "app_trip.h"
 
 
 Main_Interface_Data_Struct main_interface_data =
@@ -28,6 +29,7 @@ void main_interface_get_data(void)
 	U32 temp = 0;
 	U16 temp1 = 0;
 	U8  temp2 = 0;
+	U8  tempSpeed = 0;
 	//按键
 	main_interface_data.key.u8KeyState = key_info_value; /* 按键状态 */
 
@@ -41,12 +43,13 @@ void main_interface_get_data(void)
 		temp1 = 20000 - TM_Feedback_RPM;
 	}
 
-	pSpeed = (U8) (temp1 * 0.382 * 2 * 60 * 3.14159 / 1000 / 5.571 * 1.05);  //车速单位1KM/H
-	if (pSpeed > 140)
+	tempSpeed = (U8) (temp1 * 0.382 * 2 * 60 * 3.14159 / 1000 / 5.571 * 1.05);  //车速单位1KM/H
+	if (tempSpeed > 140)
 	{
-		pSpeed = 140;
+		tempSpeed = 140;
 	}
-	main_interface_data.speed = pSpeed; /* 车速0-140km/h */
+	main_interface_data.speed = tempSpeed; /* 车速0-140km/h */
+	pSpeed = tempSpeed;
 
 
 	//电机转速
@@ -57,7 +60,7 @@ void main_interface_get_data(void)
 	main_interface_data.rpm = buf1; /* 收到后减去20000 单位r/min */
 
 	//总里程
-	temp = (total_miles); 
+	temp = (info.Odo); 
 
 	byte_order_change((U8*)&temp,4);
 	main_interface_data.odo = temp;
@@ -86,9 +89,9 @@ void main_interface_get_data(void)
 	main_interface_data.totalCurrent = buf1; 
 
 	//小计里程
-	buf1 = single_miles;
+	buf1 = info.Trip1;
 	byte_order_change((U8*)&(buf1), 2);
-	main_interface_data.trip = buf1; /* trip low 8 bit */
+	main_interface_data.trip = buf1; /* trip  */
 
 	//SOC
 	temp2 = BMS_SOC;

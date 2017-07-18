@@ -60,6 +60,9 @@
 #include "app_BMS_Vol.h"
 #include "app_BMS_Tem.h"
 #include "app_high_pressure_system.h"
+#include "app_trip.h"
+#include <time.h>
+
 
 
 
@@ -835,8 +838,10 @@ void uart_data_parse(UartQueue *p)
 	g_tUart1Rec.u8TripClear = dat[0] & 0x01;
 	g_tUart1Rec.u8MenuNum = dat[1];
 	g_tUart1Rec.u8BattBoxNum = dat[2];
+	memcpy(&g_tUart1Rec.u32UTCTime,&dat[3],4);
+	//g_tUart1Rec.u32UTCTime = dat[3]|dat[4]<<8
 	if (g_tUart1Rec.u8TripClear)
-		app_sub_trip_clear();
+		app_sub_trip1_clear();
 	if (SUBINFO_BS == g_tUart1Rec.u8MenuNum)
 	{
 		if ((0 != g_tUart1Rec.u8BattBoxNum)
@@ -876,10 +881,12 @@ void uart_data_parse(UartQueue *p)
 }
 
 U8 oushucisend = 0;
+
 void app_main_farme_sent_task(void)
 {
 	main_interface_get_data();
 	main_interface_send_data();
+	
 
 	if ((oushucisend % 2) == 0)
 	{
@@ -947,6 +954,7 @@ U8 app_frame_sent_sub(void)
 		case SUBINFO_HIGH_PRESSURE:
 			high_pressure_get_data();
 			high_pressure_send_data();
+			break;
 		case SUBINFO_FRONT:
 			//big_moudle_front_send_data();
 			break;

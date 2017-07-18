@@ -30,6 +30,6 @@ AutoLoad=1
 WSP=D:\Code\todi\
 
 [EditState]
-STATE-1=todi\src\app\uart\app_uart_cmd.c:948
+STATE-1=todi\src\app\uart\app_uart_cmd.c:957
 Count=1
 

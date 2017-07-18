@@ -162,6 +162,8 @@ typedef struct
 	U16  tm_zhuanju_nm;
 	U16  reversed2;
 
+	U32  utc_time_second;
+
 	
 
 } Main_Interface_Data_Struct;

@@ -54,9 +54,9 @@ typedef struct
 	
 	U8 u8TripClear:1;		/* clear trip */
 	U8 :7;                  /* 预留 */
-	U32 u32UTCTime;        /* UTC时间设置 */
 	U8  u8MenuNum;        /* 菜单信息请求 */
 	U8  u8BattBoxNum;      /* 电池箱号 */
+	U32 u32UTCTime;        /* UTC时间设置 */
 }FRAMEA20TOMCU_t;
 
 

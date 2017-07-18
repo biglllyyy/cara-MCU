@@ -12,6 +12,8 @@
 #include "mb91520.h"
 #include "uart_cfg.h"
 #include "app_trip.h"
+#include "g_variable.h"
+
 
 
 Main_Interface_Data_Struct main_interface_data =
@@ -180,6 +182,7 @@ void main_interface_get_data(void)
 
 	//电机转矩
 	main_interface_data.tm_zhuanju_nm = (TM_Feedback_NM/10);  //电机转矩 收到后减去2000
+	main_interface_data.utc_time_second = g_u32_utcTime;     //
 
 }
 void main_interface_send_data(void)

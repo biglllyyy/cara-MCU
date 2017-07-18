@@ -538,7 +538,7 @@ unsigned char get_uart_Overspeed(void);
 
 //add for 206
 #define    MAXMENUNUM  8
-#define    A20_MCU_DATA_LENTH			3//这里是设置队列buffer缓存，必须设置大于所需字节
+#define    A20_MCU_DATA_LENTH			7//这里是设置队列buffer缓存，必须设置大于所需字节
 
 #define   A20_MCU_DATA_BUF_LENGTH      (A20_MCU_DATA_LENTH+7)
 

@@ -6,6 +6,7 @@
 #include "hal_wdg.h"
 #include "app_power.h"
 #include "app_info.h"
+#include "app_trip.h"
 
 extern uint8_t g_u8IgnSts;
 
@@ -131,13 +132,13 @@ void app_key_init(void)
 void app_key_scan_task_100ms(void)
 {
 	U8 i;
-	if(g_u8IgnSts==ON)
+	if(/*g_u8IgnSts==*/ON)  //for 206 for test
 	{
 		//¶ÁIO×´Ì¬
-		key[PIN_LEFT_KEY].status_in_from_pin=(key_status_e)(pin_filter_in[PIN_IN_KEY2].result&0x01);
-		key[PIN_RIGHT_KEY].status_in_from_pin=(key_status_e)(pin_filter_in[PIN_IN_KEY1].result&0x01);
-		key[PIN_OK_KEY].status_in_from_pin=(key_status_e)(pin_filter_in[PIN_IN_KEY0].result&0x01);
-		key[PIN_CANCEL_KEY].status_in_from_pin=(key_status_e)(pin_filter_in[PIN_IN_KEY3].result&0x01);
+		key[PIN_LEFT_KEY].status_in_from_pin=(key_status_e)(!(pin_filter_in[PIN_IN_KEY2].result&0x01));
+		key[PIN_RIGHT_KEY].status_in_from_pin=(key_status_e)(!(pin_filter_in[PIN_IN_KEY1].result&0x01));
+		key[PIN_OK_KEY].status_in_from_pin=(key_status_e)(!(pin_filter_in[PIN_IN_KEY0].result&0x01));
+		key[PIN_CANCEL_KEY].status_in_from_pin=(key_status_e)(!(pin_filter_in[PIN_IN_KEY3].result&0x01));
 		
 		//ÅÐ¶Ï°´¼ü×´Ì¬
 		for(i=0;i<KEY_NUM_MAX;i++)
@@ -232,6 +233,7 @@ void app_key_scan_task_100ms(void)
 							break;
 						case LONG_PRESSED:
 							key_info_value	|= 0x08;
+							app_sub_trip1_clear();
 							break;
 						default:
 							key_info_value	&= ~0x08;

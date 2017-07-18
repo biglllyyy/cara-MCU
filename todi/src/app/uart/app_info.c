@@ -9,6 +9,8 @@ U32 total_miles = 0;
 U8 key_info_value = 0;
 U8 save_flag = 0;
 U8 CurrentMenu = 0;
+FRAMEA20TOMCU_t  g_tUart1Rec = {0};
+
 
 
 void cal_info_task_100ms(void)
@@ -20,7 +22,7 @@ void cal_info_task_100ms(void)
 		
 		if (mile >= 100.0) 
 		{
-			mile = 0.0;
+			mile = 0;
 			save_flag = 1;
 			if (single_miles >= 9999) single_miles = 0;
 			else single_miles++;
@@ -55,5 +57,9 @@ void cal_info_task_100ms(void)
 			
 }
 
+void app_sub_trip_clear(void)
+{
+	single_miles = 0;
+}
 
 

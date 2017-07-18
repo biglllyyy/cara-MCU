@@ -12,7 +12,7 @@
 
 enum
 {
-    BUF_REC_SIZE = 200,
+    BUF_REC_SIZE = 240,
     BUF_SENT_SIZE = 200
 };
 

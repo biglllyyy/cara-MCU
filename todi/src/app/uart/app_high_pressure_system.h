@@ -1,6 +1,7 @@
 #ifndef  APP_HIGH_PRESSURE_SYSTEM_H
 #define  APP_HIGH_PRESSURE_SYSTEM_H
 #include "comm_typedef.h"
+#include "app_can.h"
 
 typedef struct
 {

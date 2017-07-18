@@ -46,6 +46,44 @@ extern U32 total_miles;
 extern U8  key_info_value;
 extern U8  CurrentMenu;
 
+
+
+
+typedef struct
+{
+	
+	U8 u8TripClear:1;		/* clear trip */
+	U8 :7;                  /* 预留 */
+	U8  u8MenuNum;        /* 菜单信息请求 */
+	U8  u8BattBoxNum;      /* 电池箱号 */
+	U32 u32UTCTime;        /* UTC时间设置 */
+}FRAMEA20TOMCU_t;
+
+
+typedef enum
+{
+	//SUBINFO_WARN = 1,   /* 报警界面 */
+	SUBINFO_BMS = 1,   /* 电池管理系统界面信息 */
+	SUBINFO_BS,   /* 电池状态界面信息 */
+	SUBINFO_BSTEMP, /* 电池温度探头界面信息 */
+	SUBINFO_MOTOR,   /* 电机控制器界面信息 */
+	SUBINFO_AP,   /* 气泵控制器界面信息 */
+	SUBINFO_DMY,   /* 油泵控制器界面信息 */
+	SUBINFO_DCDC,   /* DCDC界面信息 */
+	SUBINFO_HIGH_PRESSURE,   /* 高压系统界面信息 */
+	SUBINFO_FRONT,   /* qian界面信息 */
+	
+	SUBINFO_MIDDLE,   /* zhong界面信息 */
+	
+	SUBINFO_BACK,   /* hou界面信息 */
+	SUBINFO_ALL
+}SUBINFO_NUM;   /* 当前界面序号 */
+
+extern FRAMEA20TOMCU_t A20_mcu;
+extern FRAMEA20TOMCU_t  g_tUart1Rec;
+
+
 extern void cal_info_task_100ms(void);
+extern void app_sub_trip_clear(void);
 
 #endif

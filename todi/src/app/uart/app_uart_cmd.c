@@ -47,6 +47,24 @@
 #include "mid_adc.h"
 
 #include "app_display.h"
+#include "app_info.h"
+#include "app_warning.h"
+#include "app_main_interface.h"
+#include "app_air_pump.h"
+#include "app_big_moudle.h"
+#include "app_BMS.h"
+#include "app_DCDC.h"
+#include "app_oil_pump.h"
+#include "app_tm.h"
+#include "app_warning.h"
+#include "app_BMS_Vol.h"
+#include "app_BMS_Tem.h"
+#include "app_high_pressure_system.h"
+#include "app_trip.h"
+#include <time.h>
+
+
+
 
 GeneralFrame	uart_general_data;
 SpecialFrame	uart_special_data;
@@ -56,6 +74,9 @@ SettingsSpecialFrame mcu_rec_special;
 
 U8		rec_queue_buf[SETTINGS_FRAME_LEN_MAX]= {0};	//uesd to process core to mcu data buf
 UartQueue mcu_frame_rec = {0};
+
+//FRAMEA20TOMCU_t  g_tUart1Rec = {0};
+
 
 /* 记录上一次收到UART数据时的tick */
 static U32 last_uart_tick;
@@ -70,8 +91,10 @@ static void app_uart_rec_process(UartQueue *p);
 void app_uart_frame_init(void)
 {
 	hal_uart_init();//初始化队列
+	#if 1
 	uart_queue_init(&mcu_frame_rec,rec_queue_buf,sizeof(rec_queue_buf)/sizeof(rec_queue_buf[0]));
 	uart_clear_queue(&mcu_frame_rec);
+	memset(&g_tUart1Rec, 0, sizeof(FRAMEA20TOMCU_t)); /* init mcu receive  data */  //add for 206
 	memset(&uart_general_data,0,sizeof(uart_general_data));
 	memset(&uart_special_data,0,sizeof(uart_special_data));
 	memset(&mcu_rec_general,0,sizeof(mcu_rec_general));
@@ -82,6 +105,13 @@ void app_uart_frame_init(void)
 	uart_special_data.specialInfo.MainDisp.first.bit.NotDisp=3;
 	mcu_rec_special.settingsInfo.CarNumInfo.val = 0xff;	/* 没有读到Flash中存储的车型代码前，不能发送0，因为0是第一种车型 */
 	mcu_rec_general.settingsInfo.fourth.bits.themeID = 0xF; /* 没有读到Flash中存储的主题ID前，不能发送0，因为0是第一种主题 */
+	#endif
+	// for 206
+	//uart_queue_init(&uart_recv_queue, uart_recv_buf, REC_BUF_LENGTH); /* init mcu rev lev1 buffer */
+	//uart_queue_init(&uart_sent_queue, uart_sent_buf, SENT_BUF_LENGTH); /* init mcu sent lev1 buffer */
+	//uart_queue_init(&mcu_frame_rec, A20_mcu_data, A20_MCU_DATA_BUF_LENGTH); /* init mcu uart rec lev2 buffer */
+
+
 }
 
 
@@ -548,8 +578,11 @@ void app_frame_get_task(void)
  */
 void app_frame_sent_task(void)
 {
-	if(get_uart_first_frame()==ENABLE)
+	if(1/*get_uart_first_frame()==ENABLE*/)
 	{
+
+		app_main_farme_sent_task();
+		#if 0
 		switch (screen_mode)
 		{
 			case MODE_NORMAL:
@@ -564,6 +597,7 @@ void app_frame_sent_task(void)
 			default:
 				dbg_string("screen mode ERROR!\n");
 		}
+		#endif
 	}
 	else
 	{
@@ -622,5 +656,321 @@ void app_uart_arm_alive(void)
 		}
 #endif
 
+}
+
+
+void app_frame_get_task20(void)
+{
+	U8 u8Char = 0;
+	static Bool bHeadOK = FALSE, bGetLen = FALSE;
+	static U8 dataindex = 0, datalen = 0;
+	if (uart_queue_not_empty(&uart_recv_queue)) /* 如果串口有数据 */
+	{
+		u8Char = uart_de_queue(&uart_recv_queue);			// 出队列
+	}
+	else
+	{
+		return;
+	}
+	if (bHeadOK == FALSE && u8Char == FRAME_HEAD)
+	{
+		bHeadOK = TRUE;
+		uart_clear_queue(&mcu_frame_rec);
+		uart_en_queue(&mcu_frame_rec, u8Char);
+		return;
+	}
+	if (bHeadOK == TRUE && bGetLen == FALSE)
+	{
+		datalen = u8Char;
+		bGetLen = TRUE;
+		dataindex = 0;
+		uart_en_queue(&mcu_frame_rec, u8Char);
+		return;
+	}
+	if (bHeadOK == TRUE && bGetLen == TRUE)
+	{
+		if (dataindex < datalen + 2)
+		{
+			dataindex++;
+			uart_en_queue(&mcu_frame_rec, u8Char);
+			if (dataindex >= datalen + 2)
+			{
+				uart_clear_queue(&uart_recv_queue);
+				if (mcu_frame_rec.queue[mcu_frame_rec.rear - 1] == FRAME_REAR)
+				{
+					uart_data_parse(&mcu_frame_rec);
+					bHeadOK = FALSE;
+					bGetLen = FALSE;
+					datalen = 0;
+				}
+				else
+				{
+					bHeadOK = FALSE;
+					bGetLen = FALSE;
+					datalen = 0;
+				}
+			}
+		}
+	}
+}
+
+
+/*================================================================================
+ **         Copyright (c) 2014, Wuhan AUTOROCK R&D
+ ** \name		uart_data_parse
+ ** \brief		used for autorock uart parse
+ ** \input		UartQueue
+ ** \output		void
+ ** \author		haitaoh
+ ** \version 	0.1
+ ** \data
+ ** \notes
+ **
+ ================================================================================
+ */
+void uart_data_parse(UartQueue *p)
+{
+#ifdef REQOK
+	U16 check_sum = 0;
+	U16 data_len = 0;
+	U8 i =0,frametype = 0;
+	U8 data_point = 0;
+	static U8 dat[20] =
+	{	0};
+
+	data_len = p->queue[p->front+1];
+	frametype= p->queue[p->front+2];
+	data_point = (p->front+3)%A20_MCU_DATA_BUF_LENGTH;
+	for(i =0;i<data_len;i++)
+	{
+		dat[i] = p->queue[data_point++%A20_MCU_DATA_BUF_LENGTH];
+	}
+	if((A20_MCU_DATA_LENTH+2) != data_len)
+	{
+#ifdef WIN32
+		DBG("data len err\n");
+		printf("it should be %d,but you fill is %d\n",A20_MCU_DATA_LENTH+2,data_len);
+#endif
+	}
+
+	check_sum =api_cal_crc16(0x0000,dat,data_len-2);
+	if (check_sum == (dat[i-2] | dat[i-1] <<8))
+	{
+		A20_mcu.u8CmdType = frametype;
+		if (A20_mcu.u8CmdType == 0x01 || A20_mcu.u8CmdType == 0x03) /* 01:QT升级包帧,02:车身信息帧, 03:MCU升级报帧 */
+		{
+			A20_mcu.u8RespCmdID_Core = dat[0];
+			if (A20_mcu.u8RespCmdID_Core == 0x91 || A20_mcu.u8RespCmdID_Core == 0x93)
+			{
+				A20_mcu.u8RespResult_Core = dat[1];
+			}
+			else if (A20_mcu.u8RespCmdID_Core == 0x92)
+			{
+				if (A20_mcu.u8CmdType == 0x01) /* QT程序升级 */
+				{
+					A20_mcu.u32FrameID = (dat[4]<<24)|(dat[3]<<16 | dat[2]<<8 | dat[1]);
+					A20_mcu.u8RespResult_Core = dat[5];
+				}
+				else if (A20_mcu.u8CmdType == 0x03) /* MCU程序升级 */
+				{
+					A20_mcu.u8RespResult_Core = dat[1];
+				}
+				else
+				{
+					A20_mcu.u8RespResult_Core = 0;
+				}
+			}
+			else
+			{
+				A20_mcu.u8RespResult_Core = 0;
+			}
+		}
+		else
+		{
+			//A20_mcu.u8ReqCmd  = dat[0]&0x01;
+			//A20_mcu.u8ShutOffTFT = (dat[0]&0x02)>>1;
+			A20_mcu.u8OdoClear = (dat[0]&0x04)>>2; /* BUG修复：ODO与TRIP顺序返了 */
+			A20_mcu.u8TripClear = (dat[0]&0x08)>>3;
+			A20_mcu.u32UTCTime = (dat[4]<<24)|(dat[3]<<16 | dat[2]<<8 | dat[1]);
+			if (A20_mcu.u8TripClear)
+			app_sub_trip_clear();
+#ifdef REQOK
+			if (A20_mcu.u8ShutOffTFT)
+			{
+				api_scheduler_deletetask(app_led_timerevent);
+				api_scheduler_addtask(UsbProgramIndicate, 2000);
+			}
+#endif
+			g_nMcuUartToJadeEnable = TRUE;
+			g_nMcuOpenLcdEnable = TRUE;
+		}
+
+	}
+	else
+	{
+#ifdef WIN32
+		DBG("check_sum err\n");
+		printf("check sum should be 0x%x\n",check_sum);
+#endif
+	}
+#else
+	U16 data_len = 0;
+	U8 i = 0, frametype = 0;
+	U8 data_point = 0;
+	static U8 dat[20] =
+	{ 0 };
+
+	data_len = p->queue[p->front + 1];
+	frametype = p->queue[p->front + 2];
+	data_point = (p->front + 3) % A20_MCU_DATA_BUF_LENGTH;
+	for (i = 0; i < data_len; i++)
+	{
+		dat[i] = p->queue[data_point++ % A20_MCU_DATA_BUF_LENGTH];
+	}
+	if ((A20_MCU_DATA_LENTH + 2) != data_len)
+	{
+#ifdef WIN32
+		DBG("data len err\n");
+		printf("it should be %d,but you fill is %d\n",A20_MCU_DATA_LENTH+2,data_len);
+#endif
+	}
+
+	g_tUart1Rec.u8TripClear = dat[0] & 0x01;
+	g_tUart1Rec.u8MenuNum = dat[1];
+	g_tUart1Rec.u8BattBoxNum = dat[2];
+	memcpy(&g_tUart1Rec.u32UTCTime,&dat[3],4);
+	//g_tUart1Rec.u32UTCTime = dat[3]|dat[4]<<8
+	if (g_tUart1Rec.u8TripClear)
+		app_sub_trip1_clear();
+	if (SUBINFO_BS == g_tUart1Rec.u8MenuNum)
+	{
+		if ((0 != g_tUart1Rec.u8BattBoxNum)
+				&& (g_tUart1Rec.u8BattBoxNum <= MAXMENUNUM))
+		{
+			CurrentMenu = g_tUart1Rec.u8BattBoxNum;
+			//g_uSubInfo.BS.u8BattBoxNum = g_tUart1Rec.u8BattBoxNum;
+			//Dealwith_BS_Info();
+			MidSchAddTask(app_frame_sent_sub, 1000);			//发送界面数据
+		}
+	}
+	else if (SUBINFO_BSTEMP == g_tUart1Rec.u8MenuNum)
+	{
+		if((0 != g_tUart1Rec.u8BattBoxNum)
+				&& (g_tUart1Rec.u8BattBoxNum <= MAXMENUNUM))
+		{
+			CurrentMenu = g_tUart1Rec.u8BattBoxNum;
+			//g_uSubInfo.BS.u8BattBoxNum = g_tUart1Rec.u8BattBoxNum;
+			//Dealwith_BS_TEMP_Info();
+			MidSchAddTask(app_frame_sent_sub, 1000);			//发送界面数据
+		}
+		
+	}
+	else if (0 != g_tUart1Rec.u8MenuNum)
+	{
+		//api_scheduler_addtask(app_update_subinfo, 50);//更新界面数据
+		MidSchAddTask(app_frame_sent_sub, 1000);			//发送界面数据
+	}
+	else
+	{
+		//api_scheduler_deletetask(app_update_subinfo);//停止更新界面数据
+		MidSchDeleteTask(app_frame_sent_sub);			//停止发送界面数据
+	}
+	//g_nMcuUartToJadeEnable = TRUE;
+
+#endif
+}
+
+U8 oushucisend = 0;
+
+void app_main_farme_sent_task(void)
+{
+	main_interface_get_data();
+	main_interface_send_data();
+	
+
+	if ((oushucisend % 2) == 0)
+	{
+		warning_get_data();
+		warning_send_data();
+
+	}
+
+	oushucisend++;
+
+	if (oushucisend == 0xff)
+	{
+		oushucisend = 0;
+	}
+
+}
+
+/*================================================================================
+ **
+ ** \name		app_frame_sent_main
+ ** \brief	 串口发送主界面数据
+ ** \input		void
+ ** \output	    1：ERR 0:OK
+ ** \author
+ ** \data
+ ** \notes
+ **
+ ================================================================================*/
+
+//extern void oil_pump_send_data(void);
+
+U8 app_frame_sent_sub(void)
+{
+	
+	switch(g_tUart1Rec.u8MenuNum)
+	{
+		case SUBINFO_BMS:
+			bms_get_data();
+			bms_send_data();	
+			break;
+		case SUBINFO_BS:
+		 	bms_vol_get_data();
+		 	bms_vol_send_data();
+			break;
+		case SUBINFO_BSTEMP:
+ 			bms_tem_get_data();
+ 			bms_tem_send_data();
+			break;
+		case SUBINFO_MOTOR:
+		 	tm_get_data();
+		 	tm_send_data();
+			break;
+		case SUBINFO_AP:
+		 	air_pump_get_data();
+		 	air_pump_send_data();
+			break;
+		case SUBINFO_DMY:
+		 	oil_pump_get_data();
+		 	oil_pump_send_data();
+			break;
+		case SUBINFO_DCDC:
+		 	dcdc_get_data();
+		 	dcdc_send_data();
+			break;
+		case SUBINFO_HIGH_PRESSURE:
+			high_pressure_get_data();
+			high_pressure_send_data();
+			break;
+		case SUBINFO_FRONT:
+			//big_moudle_front_send_data();
+			break;
+			
+		case SUBINFO_MIDDLE:
+			//big_moudle_middle_send_data();
+			break;
+						
+		case SUBINFO_BACK:
+			//big_moudle_back_send_data();
+			break;
+		
+		default:
+		break;
+	}
+
+	
 }
 

@@ -10,7 +10,7 @@
 
 
 
-#define BMS_TEM_DATA_LENGTH 16
+#define BMS_TEM_DATA_LENGTH 20
 #define BMS_TEM_FRAME_TYPE  MENU_BATTEMPERATURE_TYPE
 
 extern U8 CurrentMenu;
@@ -20,12 +20,13 @@ static U8 bms_tem_data[BMS_TEM_DATA_LENGTH] = { 0 };
 
 void bms_tem_get_data(void)
 {
-	U8 i = 0;
-	memset(&bms_tem_data[0],0,16);
+	U8 i = 0,j=0;
+	memset(&bms_tem_data[0],0,20);
 	
-	for((i=16*CurrentMenu);i<(16*(CurrentMenu+1));i++)
+	for((i=20*CurrentMenu);i<(20*(CurrentMenu+1));i++)
 	{
-		bms_tem_data[i] = BAT_Cell_Temperature[i];
+		bms_tem_data[j] = BAT_Cell_Temperature[i];
+		j++;
 	}
 
 }

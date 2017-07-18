@@ -11,24 +11,25 @@
 
 
 
-#define BMS_VOL_DATA_LENGTH  100
+#define BMS_VOL_DATA_LENGTH  40
 #define BMS_VOL_FRAME_TYPE   MENU_BATSTATUS_TYPE
 
 
 
-static U16 bms_vol_data[50] = {0};
+static U16 bms_vol_data[20] = {0};
 void bms_vol_get_data(void)
 {
 	//U8 temp = 0;
-	U16 i = 0;
-	memset(&bms_vol_data[0],0,100);
+	U16 i = 0,j=0;
+	memset(&bms_vol_data[0],0,40);
 	
-	for((i=50*CurrentMenu);i<(50*(CurrentMenu+1));i++)
+	for((i=20*CurrentMenu);i<(20*(CurrentMenu+1));i++)
 	{
-		bms_vol_data[i] = BAT_Cell_Voltage[i];
+		bms_vol_data[j] = BAT_Cell_Voltage[i];
+		j++;
 	}
 
-	for(i=0;i<50;i++)
+	for(i=0;i<20;i++)
 	{
 		if(i%2==0)
 		{

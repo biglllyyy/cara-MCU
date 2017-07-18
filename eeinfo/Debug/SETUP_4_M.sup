@@ -15,10 +15,11 @@ Core ID=0
 Monitor Load=1
 Monitor Load Condition=Disable
 Mode=FFFF
+ChangeFlag=Disable
 [Device]
 Communication=USB
-ProductID=0
-Protocol=0
+ProductID=201A
+Protocol=3
 [Target]
 AutoLoad=Enable
 Before Batch File=eeinfo_before4.prc
@@ -36,7 +37,7 @@ Synchronize after load=Disable
 Batch File=
 [Emulation Environment]
 Cable Length=2
-Software Break=0
+Software Break=1
 Flag=Enable
 Verify=1
 TRIG Input=0
@@ -194,7 +195,6 @@ TabSize=8
 Send=100
 Receive=100
 [IceMonitor Environment]
-Mode=FFFFFFFF
 [Trace Environment]
 Trace DataArea1=1 00000000 00000000 7
 Trace End Trace Break=0

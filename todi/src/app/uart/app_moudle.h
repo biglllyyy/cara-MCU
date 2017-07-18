@@ -3,76 +3,77 @@
 
 #include "comm_typedef.h"
 #include "app_can.h"
+#include "mb91520.h"
 
-extern U8 pSpeed; //外部CAN这算车速
+//extern U8 pSpeed; //外部CAN这算车速
 
-#if 0
+#if 1
 typedef struct {
-    unsigned long id;
-    unsigned char data[8];
-    unsigned char len;
-    unsigned char type;
+    U32 id;
+    U8 data[8];
+    U8 len;
+    U8 type;
 } CAN_MESSAGE;
 
 
 
 typedef union
 { 
-    unsigned char BYTES[2];
-    unsigned int  WORDS;
+    U8 BYTES[2];
+    U16  WORDS;
     struct 
     { 
-        unsigned char O1:1; 
-        unsigned char O2:1; 
-        unsigned char O3:1; 
-        unsigned char O4:1; 
-        unsigned char O5:1; 
-        unsigned char O6:1; 
-        unsigned char O7:1; 
-        unsigned char O8:1; 
-        unsigned char O9:1; 
-        unsigned char O10:1; 
-        unsigned char O11:1; 
-        unsigned char O12:1; 
-        unsigned char O13:1; 
-        unsigned char O14:1; 
-        unsigned char O15:1; 
-        unsigned  OD:1;
+        U8 O1:1; 
+        U8 O2:1; 
+        U8 O3:1; 
+        U8 O4:1; 
+        U8 O5:1; 
+        U8 O6:1; 
+        U8 O7:1; 
+        U8 O8:1; 
+        U8 O9:1; 
+        U8 O10:1; 
+        U8 O11:1; 
+        U8 O12:1; 
+        U8 O13:1; 
+        U8 O14:1; 
+        U8 O15:1; 
+        U8  OD:1;
     } BITS; 
 } DBCM_POUT; 
 
 typedef union {
     struct {
-        unsigned kl8 : 1;
-        unsigned kl7 : 1;
-        unsigned kl6 : 1;
-        unsigned kl5 : 1;
-        unsigned kl4 : 1;
-        unsigned kl3 : 1;
-        unsigned kl2 : 1;
-        unsigned kl1 : 1;
+        U8 kl8 : 1;
+        U8 kl7 : 1;
+        U8 kl6 : 1;
+        U8 kl5 : 1;
+        U8 kl4 : 1;
+        U8 kl3 : 1;
+        U8 kl2 : 1;
+        U8 kl1 : 1;
 
-        unsigned     : 1;
-        unsigned kl15 : 1;
-        unsigned kl14 : 1;
-        unsigned kl13 : 1;
-        unsigned kl12 : 1;
-        unsigned kl11 : 1;
-        unsigned kl10 : 1;
-		unsigned kl9 : 1;
+        U8     : 1;
+        U8 kl15 : 1;
+        U8 kl14 : 1;
+        U8 kl13 : 1;
+        U8 kl12 : 1;
+        U8 kl11 : 1;
+        U8 kl10 : 1;
+		U8 kl9 : 1;
 
 		
-		unsigned :6; 
-		unsigned add :1;
-        unsigned kh1 :1;
+		U8 :6; 
+		U8 add :1;
+        U8 kh1 :1;
         
              
     } BITS;
-    unsigned char BYTES[3];
+    U8 BYTES[3];
 } DBCM_KEY;
 
-unsigned char delay_cnt;
-DATA_BIT gKEY[5];
+extern U8 delay_cnt;
+extern DATA_BIT gKEY[5];
 
 #define  key_set          gKEY[0].bits.bit1 
 #define  pkey_set         gKEY[0].bits.bit2 
@@ -91,7 +92,7 @@ DATA_BIT gKEY[5];
 #define  F500ms_LCD       gKEY[1].bits.bit6 //lcd显示更新时间
 #define  alarm_update_flag  gKEY[1].bits.bit7//报警显示更新时间
 //#define  CLR_single_miles gKEY[1].bit7
-#define  save_flag        gKEY[1].bits.bit8
+//#define  save_flag        gKEY[1].bits.bit8
 
 #define  key_long_set     gKEY[2].bits.bit1
 #define  M_ON             gKEY[2].bits.bit2  
@@ -124,9 +125,9 @@ DATA_BIT gCTL[8]; //仪表输出控制信息
 extern U8 pSpeed; //外部CAN这算车速
 
 
-unsigned char Fversion;
-unsigned char Mversion;
-unsigned char Rversion;
+extern U8 Fversion;
+extern U8 Mversion;
+extern U8 Rversion;
 
 
 extern U8 front_moudle_count;
@@ -134,29 +135,29 @@ extern U8 middle_moudle_count;
 extern U8 back_moudle_count;
 
 
-DBCM_KEY fKEY; //前模块功率开关状态
-DBCM_KEY mKEY; //中（顶）模块功率开关状态
-DBCM_KEY rKEY; //后模块功率开关状态
+extern DBCM_KEY fKEY; //前模块功率开关状态
+extern DBCM_KEY mKEY; //中（顶）模块功率开关状态
+extern DBCM_KEY rKEY; //后模块功率开关状态
 
-unsigned int fFreq; //前模块频率
-unsigned int mFreq; //中（顶）模块频率
-unsigned int rFreq; //后模块频率
+extern U16 fFreq; //前模块频率
+extern U16 mFreq; //中（顶）模块频率
+extern U16 rFreq; //后模块频率
 
-unsigned int fSpeed; //前模块折算车速
-unsigned int mSpeed; //中（顶）模块折算车速
-unsigned int rSpeed; //后模块折算车速
+extern U16 fSpeed; //前模块折算车速
+extern U16 mSpeed; //中（顶）模块折算车速
+extern U16 rSpeed; //后模块折算车速
 
-unsigned int fADR[2]; //前模块电阻值
-unsigned int mADR[2]; //中（顶）模块电阻值
-unsigned int rADR[2]; //后模块电阻值
+extern U16 fADR[2]; //前模块电阻值
+extern U16 mADR[2]; //中（顶）模块电阻值
+extern U16 rADR[2]; //后模块电阻值
 
-DBCM_POUT fPOUT; //前模块功率输出状态
-DBCM_POUT mPOUT; //中（顶）模块功率输出状态
-DBCM_POUT rPOUT; //后模块功率输出状态
+extern DBCM_POUT fPOUT; //前模块功率输出状态
+extern DBCM_POUT mPOUT; //中（顶）模块功率输出状态
+extern DBCM_POUT rPOUT; //后模块功率输出状态
 
-unsigned int fSingle_miles;
-unsigned int mSingle_miles;
-unsigned int rSingle_miles;
+extern U16 fSingle_miles;
+extern U16 mSingle_miles;
+extern U16 rSingle_miles;
 
 /*
  报警灯相关
@@ -164,16 +165,16 @@ unsigned int rSingle_miles;
 typedef union {
 
     struct {
-        unsigned bit0 : 1;
-        unsigned bit1 : 1;
-        unsigned bit2 : 1;
-        unsigned bit3 : 1;
-        unsigned bit4 : 1;
-        unsigned bit5 : 1;
-        unsigned bit6 : 1;
-        unsigned bit7 : 1;
+        U8 bit0 : 1;
+        U8 bit1 : 1;
+        U8 bit2 : 1;
+        U8 bit3 : 1;
+        U8 bit4 : 1;
+        U8 bit5 : 1;
+        U8 bit6 : 1;
+        U8 bit7 : 1;
     }bits;
-    unsigned char byte;
+    U8 byte;
 } LED_DATA;
 
 extern LED_DATA alarm_led[4]; //报警灯全局变量
@@ -221,16 +222,16 @@ void LED_Out(void);
 typedef union {
 
     struct {
-        unsigned bit0 : 1;
-        unsigned bit1 : 1;
-        unsigned bit2 : 1;
-        unsigned bit3 : 1;
-        unsigned bit4 : 1;
-        unsigned bit5 : 1;
-        unsigned bit6 : 1;
-        unsigned bit7 : 1;
+        U8 bit0 : 1;
+        U8 bit1 : 1;
+        U8 bit2 : 1;
+        U8 bit3 : 1;
+        U8 bit4 : 1;
+        U8 bit5 : 1;
+        U8 bit6 : 1;
+        U8 bit7 : 1;
     }bits;
-    unsigned char byte;
+    U8 byte;
 } SW_DATA;
 
 extern SW_DATA sw_input[5]; //开关采集全局变量
@@ -277,10 +278,10 @@ void SW_Input(void);
 
 #define IN37  0      //ABS故障灯（低电平有效）
 
-#define wake_up1  (!MCU_IN29)      // 唤醒（危险报警）危急报警开关（控火） 需要唤醒  暂时定义为高有效
-#define wake_up2  MCU_IN30      //	唤醒  钥匙ACC档   暂时定义为高有效
+#define wake_up1  (PDDR07_P5)      // 唤醒（危险报警）危急报警开关（控火） 需要唤醒  暂时定义为高有效
+#define wake_up2  PDDR07_P6      //	唤醒  钥匙ACC档   暂时定义为高有效
 
-#define wake_up3  MCU_IN32     // ON档  钥匙ON开关（唤醒） 暂时定义为高有效
+#define wake_up3  PDDR07_P7     // ON档  钥匙ON开关（唤醒） 暂时定义为高有效
 
 
 
@@ -396,30 +397,30 @@ extern DBCM_KEY rKEY; //后模块功率开关状态
 #define CAN_TIME 30//CAN节点故障报警
 #define BAT24_TIME 100//蓄电池电压过低报警10秒
 
-extern unsigned int fFreq; //前模块频率
-extern unsigned int mFreq; //中（顶）模块频率
-extern unsigned int rFreq; //后模块频率
-extern unsigned int fSpeed; //前模块折算车速
-extern unsigned int mSpeed; //中（顶）模块折算车速
-extern unsigned int rSpeed; //后模块折算车速
-extern unsigned int fADR[2]; //前模块电阻值
-extern unsigned int mADR[2]; //中（顶）模块电阻值
-extern unsigned int rADR[2]; //后模块电阻值
+extern U16 fFreq; //前模块频率
+extern U16 mFreq; //中（顶）模块频率
+extern U16 rFreq; //后模块频率
+extern U16 fSpeed; //前模块折算车速
+extern U16 mSpeed; //中（顶）模块折算车速
+extern U16 rSpeed; //后模块折算车速
+extern U16 fADR[2]; //前模块电阻值
+extern U16 mADR[2]; //中（顶）模块电阻值
+extern U16 rADR[2]; //后模块电阻值
 extern DBCM_POUT fPOUT; //前模块功率输出状态
 extern DBCM_POUT mPOUT; //中（顶）模块功率输出状态
 extern DBCM_POUT rPOUT; //后模块功率输出状态
-extern unsigned char fPF[16]; //前模块功率输出故障
-extern unsigned char mPF[16]; //中（顶）模块功率故障
-extern unsigned char rPF[16]; //后模块功率输出故障
-extern unsigned int fpcur[15];//前模块功率输出电流
-extern unsigned int mpcur[15];//中模块功率输出电流
-extern unsigned int rpcur[15];//后模块功率输出电流
+extern U8 fPF[16]; //前模块功率输出故障
+extern U8 mPF[16]; //中（顶）模块功率故障
+extern U8 rPF[16]; //后模块功率输出故障
+extern U16 fpcur[15];//前模块功率输出电流
+extern U16 mpcur[15];//中模块功率输出电流
+extern U16 rpcur[15];//后模块功率输出电流
 
-extern unsigned int ADR[8]; //模拟量采集   10/15
-extern unsigned int ADV[8]; //模拟量采集 
+extern U16 ADR[8]; //模拟量采集   10/15
+extern U16 ADV[8]; //模拟量采集 
 
 
-//extern const unsigned char BMP_LOGO[];
+//extern const U8 BMP_LOGO[];
 
 void BCAN_Lost_handle(void);
 void Moudle_Logic_handle(void); 

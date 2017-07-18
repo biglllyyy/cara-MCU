@@ -10,7 +10,7 @@ typedef struct
     volatile U16 front;
     volatile U16 rear;
     volatile U8* queue;	//the queue buf address
-    volatile U16 queue_size;
+    volatile U8 queue_size;
 } UartQueue;
 
 void uart_clear_queue(UartQueue *queue);

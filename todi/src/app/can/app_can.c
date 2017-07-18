@@ -26,6 +26,8 @@
 #include "app_system.h"
 #include "app_fuel_method2.h"
 #include "app_uds.h"
+#include "app_info.h"
+#include "app_moudle.h"
 
 #define  PERIOD_MS(time)		(time)
 
@@ -772,7 +774,7 @@ union {
 	U8 odo8[4];
 } total_odo;
 
-void MCU_TO_PC_send(void) {
+void MCU_TO_PC_send(void) {  //对应报文0x7EF
 	U8 msg_box;
 
 	//发送MCU TO PC的报文
@@ -789,111 +791,103 @@ void MCU_TO_PC_send(void) {
 
 	hal_can_sent(CAN_CHN, &can_msg[msg_box - 1]);
 }
-void can_id_1800F328_send(void) {
+
+void can_id_1801EF17_send(void) { //对应报文0x1801EF17
 	U8 msg_box;
+	U16 temp;
+    DATA_BIT CAN_DATA;
 
 	//发送总里程信息的报文
 	msg_box = ID_RECV_NUM_ALL + 2;
 	can_msg[msg_box - 1].buffer_num = msg_box;
 
-	total_odo.odo32 = info.Odo;
+	if (ADV[3] < 500) 
+	{
+		temp = 0;
+	}
+    else if (ADV[3] < 3000) 
+	{
+		temp = (ADV[3] - 500) * 0.04;
+    }
+    else
+	{	
+		temp = 100;
+    }
+    can_msg[msg_box - 1].data[0] = temp; //前气压
 
-	can_msg[msg_box - 1].data[0] = 1;
-	can_msg[msg_box - 1].data[1] = total_odo.odo8[1];
-	can_msg[msg_box - 1].data[2] = total_odo.odo8[2];
-	can_msg[msg_box - 1].data[3] = total_odo.odo8[3];
-	can_msg[msg_box - 1].data[4] = 0;
-	can_msg[msg_box - 1].data[5] = 0;
-	can_msg[msg_box - 1].data[6] = 0;
-	can_msg[msg_box - 1].data[7] = 0;
+    if (ADV[4] < 500) 
+	{
+		temp = 0;
+    }
+    else if (ADV[4] < 3000) 
+	{
+		temp = (ADV[4] - 500) * 0.04;
+    }
+    else 
+	{
+		temp = 100;
+    }
+    can_msg[msg_box - 1].data[1] = temp; //后气压    
 
-	if (IPconfig.Sts == 1)			//总里程有效时，才往外发里程相关的CAN 报文
-			{
-		hal_can_sent(CAN_CHN, &can_msg[msg_box - 1]);
-	} else {
+    can_msg[msg_box - 1].data[2] = 0;
+    can_msg[msg_box - 1].data[3] = 0;
+
+    CAN_DATA.bits.bit1 = M_ON; //key on
+    CAN_DATA.bits.bit2 = rKL8; //手制动
+    CAN_DATA.bits.bit3 = (VCU_Gear == 13); //倒挡
+    CAN_DATA.bits.bit4 = 0;
+    CAN_DATA.bits.bit5 = 0;
+    CAN_DATA.bits.bit6 = 0;
+    CAN_DATA.bits.bit7 = rKL11; //后舱门
+    CAN_DATA.bits.bit8 = 0;
+    can_msg[msg_box - 1].data[4] = CAN_DATA.byte;
+
+    CAN_DATA.bits.bit1 = 0;//LED2; //后门
+    CAN_DATA.bits.bit2 = LED16; //蓄电池电量低
+    CAN_DATA.bits.bit3 = 0;
+    CAN_DATA.bits.bit4 = 0;
+    CAN_DATA.bits.bit5 = 0;//LED1; //前门
+    CAN_DATA.bits.bit6 = 0;
+    CAN_DATA.bits.bit7 = 0;
+    CAN_DATA.bits.bit8 = 0;
+    can_msg[msg_box - 1].data[5] = CAN_DATA.byte;
+
+    can_msg[msg_box - 1].data[6] = 0;
+    can_msg[msg_box - 1].data[7] = 0;
+	
+
 #if 1  //just for test can send by niujianlong
-		hal_can_sent(CAN_CHN, &can_msg[msg_box - 1]);
+	hal_can_sent(CAN_CHN, &can_msg[msg_box - 1]);
 #endif
 
-	}
+	
 }
 
-void can_id_1882BBAB_send(void) {
+
+void can_id_1802EF17_send(void) { ////对应报文0x1802EF17
 	U8 msg_box;
+	U16 temp = 0;
 
 	//发送总里程信息的报文
 	msg_box = ID_RECV_NUM_ALL + 3;
 	can_msg[msg_box - 1].buffer_num = msg_box;
 
-	can_msg[msg_box - 1].data[0] = 2;
-	can_msg[msg_box - 1].data[1] = 16;
-	can_msg[msg_box - 1].data[2] = 3;
-	can_msg[msg_box - 1].data[3] = 0;
-	can_msg[msg_box - 1].data[4] = 0;
-	can_msg[msg_box - 1].data[5] = 0;
+	can_msg[msg_box - 1].data[0] = (U8) (info.Odo); //低八位
+	can_msg[msg_box - 1].data[1] = (U8) ((info.Odo) >> 8); //二级八位
+	can_msg[msg_box - 1].data[2] = (U8) ((info.Odo) >> 16); //三级八位
+	can_msg[msg_box - 1].data[3] = (U8) ((info.Odo) >> 24); //高八位
+	temp = pSpeed * 10;
+	can_msg[msg_box - 1].data[4] = (temp);
+	can_msg[msg_box - 1].data[5] = (temp >> 8);
 	can_msg[msg_box - 1].data[6] = 0;
 	can_msg[msg_box - 1].data[7] = 0;
 
-	if (IPconfig.Sts == 1)			//仪表未激活的情况下，才发送配置代码请求帧
-			{
-		//hal_can_sent(CAN_CHN,&can_msg[msg_box-1]);
-	} else			//仪表激活的情况下，就不会发送配置代码请求帧了
-	{
-
-	}
+	
+	hal_can_sent(CAN_CHN,&can_msg[msg_box-1]);
+	
 }
 
-void can_id_18AB9B28_send(T_UDS *data, U8 len) {
-	U8 msg_box;
 
-	if (data->len == 0)
-		return;
-
-	//发送总里程信息的报文
-	msg_box = ID_RECV_NUM_ALL + 4;
-	can_msg[msg_box - 1].buffer_num = msg_box;
-
-	can_msg[msg_box - 1].data[0] = data->len;
-	can_msg[msg_box - 1].data[1] = data->id;
-	can_msg[msg_box - 1].data[2] = data->data[0];
-	can_msg[msg_box - 1].data[3] = data->data[1];
-	can_msg[msg_box - 1].data[4] = data->data[2];
-	can_msg[msg_box - 1].data[5] = data->data[3];
-	can_msg[msg_box - 1].data[6] = data->data[4];
-	can_msg[msg_box - 1].data[7] = data->data[5];
-
-//	data_copy(can_msg[msg_box-1].data, (U8*)&data, len);
-
-	hal_can_sent(CAN_CHN, &can_msg[msg_box - 1]);
-
-	memset(&uds_sent, 0, sizeof(uds_sent));
-
-}
-
-void can_id_18FFA017_send(void) {
-	U8 msg_box;
-
-	//发送总里程信息的报文
-	msg_box = ID_RECV_NUM_ALL + 5;
-	can_msg[msg_box - 1].buffer_num = msg_box;
-
-	can_msg[msg_box - 1].data[0] = 2;
-	can_msg[msg_box - 1].data[1] = 16;
-	can_msg[msg_box - 1].data[2] = 3;
-	can_msg[msg_box - 1].data[3] = 0;
-	can_msg[msg_box - 1].data[4] = 0;
-	can_msg[msg_box - 1].data[5] = 0;
-	can_msg[msg_box - 1].data[6] = 0;
-	can_msg[msg_box - 1].data[7] = 0;
-
-	if (IPconfig.Sts == 1)			//仪表未激活的情况下，才发送配置代码请求帧
-			{
-		//hal_can_sent(CAN_CHN,&can_msg[msg_box-1]);
-	} else			//仪表激活的情况下，就不会发送配置代码请求帧了
-	{
-
-	}
-}
 
 void app_can_sent_task(void) {
 	//MCU_TO_PC_send();
@@ -905,7 +899,9 @@ void app_can_sent_task(void) {
 		//can_id_766_send();
 	} else {
 #if 1  //just for test can send by niujianlong
-		can_id_1800F328_send();
+		can_id_1801EF17_send();
+		can_id_1802EF17_send();
+
 #endif
 
 	}

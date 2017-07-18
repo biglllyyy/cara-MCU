@@ -2,6 +2,8 @@
 #define APP_UART_CMD_H
 
 #include "comm_typedef.h"
+#include "uart_queue.h"
+
 #define default_value 0
 
 #define GOLDEN_RATIO_PRIME_32  (0x9e370001UL)
@@ -483,7 +485,9 @@ typedef struct {
 #if SETTINGS_GENERAL_FRAME_LEN>=SETTINGS_SPECIAL_FRAME_LEN
 #define SETTINGS_FRAME_LEN_MAX (SETTINGS_GENERAL_FRAME_LEN+1)
 #else
-#define SETTINGS_FRAME_LEN_MAX (SETTINGS_SPECIAL_FRAME_LEN+1)
+//#define SETTINGS_FRAME_LEN_MAX (SETTINGS_SPECIAL_FRAME_LEN+1)
+#define SETTINGS_FRAME_LEN_MAX (9+1)  //for 206
+
 #endif
 
 extern uint8_t g_u8IgnSts;
@@ -532,6 +536,12 @@ unsigned char get_uart_Overspeed(void);
 
 
 
+//add for 206
+#define    MAXMENUNUM  8
+#define    A20_MCU_DATA_LENTH			7//这里是设置队列buffer缓存，必须设置大于所需字节
+
+#define   A20_MCU_DATA_BUF_LENGTH      (A20_MCU_DATA_LENTH+7)
+
 /*add for zhongkun 206*/
 typedef enum
 {
@@ -545,13 +555,19 @@ typedef enum
 	MENU_AIRPUMP_TYPE,		//07，气泵控制器信息界面；
 	MENU_OILPUMP_TYPE,		//08，油泵控制器信息界面；
 	MENU_DCDC_TYPE,		//09，DC-DC电源信息界面；
-	//MENU_TIME_TYPE,             //10，空调系统信息界面；
-	MENU_FRONT_MOUDLE,	//10，仪表诊断信息界面
-	MENU_MIDDLE_MOUDLE,	//11，仪表诊断信息界面
-	MENU_BACK_MOUDLE,	//12，仪表诊断信息界面
-	MENU_HIGH_PRESSURE, //13, 高压系统信息
+	MENU_HIGH_PRESSURE, //10, 高压系统信息
+	MENU_FRONT_MOUDLE,	//11，仪表诊断信息界面
+	MENU_MIDDLE_MOUDLE,	//12，仪表诊断信息界面
+	MENU_BACK_MOUDLE,	//13，仪表诊断信息界面
+	
 } FRAME_TYPES;
 
+void app_farme_sent_task(void);
+void app_frame_get_task20(void);
+void app_uart_data_init(void);
+void uart_data_parse(UartQueue *p);
+U8   app_frame_sent_sub(void);
+void app_main_farme_sent_task(void);
 
 
 #endif // APP_UART_CMD_H

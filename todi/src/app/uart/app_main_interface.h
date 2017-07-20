@@ -76,37 +76,37 @@ typedef union
 	U32 u32_switch_capture;
 		struct
 		{
-		   U32 MCU_IN1:1,     //左转向开关 4
-			   MCU_IN2:1,     //保留开关   3
-			   MCU_IN3:1,     //中门开状态 2
-			   MCU_IN4 :1,   //前门开状态 (测试板上的1)
-			   MCU_IN5 :1,   //右转向开关
-			   MCU_IN6 :1,   //小灯开关
-			   MCU_IN7 :1,   //远光灯开关
-			   MCU_IN8 :1,   //近光灯开关
-			   MCU_IN9 :1,   //前雾灯开关
-			   MCU_IN10:1,    //后雾灯开关
-			   MCU_IN11:1,    //前气压报警开关（仪表蜂鸣提醒并图标显示）
-			   MCU_IN12:1,    //后气压报警开关（仪表蜂鸣提醒并图标显示）
-			   MCU_IN13:1,   //保留
-			   MCU_IN14:1,    //雨刮低档开关
-			   MCU_IN15:1,    //雨刮间歇档开关
-			   MCU_IN16:1,    //雨刮高档开关
-			   MCU_IN17:1,   //雨刮喷水档开关
-			   MCU_IN18:1,    //
-			   MCU_IN19:1,    //厢灯1开关
-			   MCU_IN20:1,    //厢灯2开关
+		   U32 MCU_IN1:1,     //前雾灯信号  高有效
+			   MCU_IN2:1,     //后雾灯信号  高有效
+			   MCU_IN3:1,     //小灯信号    高有效
+			   MCU_IN4 :1,   //前门开状态   高有效
+			   MCU_IN5 :1,   //中门开       高有效   
+			   MCU_IN6 :1,   //ABS报警的    高有效
+			   MCU_IN7 :1,   //前门安全阀打开报警  高有效
+			   MCU_IN8 :1,   //
+			   MCU_IN9 :1,   //前气压报警      低有效
+			   MCU_IN10:1,    //后气压报警     低有效
+			   MCU_IN11:1,    //手刹开关       低有效
+			   MCU_IN12:1,    //水位报警       低有效
+			   MCU_IN13:1,   //后仓门开信号    低有效
+			   MCU_IN14:1,    //
+			   MCU_IN15:1,    //远光灯信号     高有效
+			   MCU_IN16:1,    //左转向灯信号   高有效
+			   MCU_IN17:1,   //右转向灯信号    高有效
+			   MCU_IN18:1,    //近光灯信号     高有效
+			   MCU_IN19:1,    //刹车信号       高有效
+			   MCU_IN20:1,    //
 			   MCU_IN21:1,    //
-			   MCU_IN22:1,    //司机风扇开关
-			   MCU_IN23:1,   //路牌开关
+			   MCU_IN22:1,    //
+			   MCU_IN23:1,   //
 			   MCU_IN24:1,    //
-			   MCU_IN25:1,    //电控排污阀开关
-			   MCU_IN26:1,    //强制行车开关
-			   MCU_IN27:1,    //手制动信号
-			   MCU_IN28:1,   //司机灯开关
+			   MCU_IN25:1,    //
+			   MCU_IN26:1,    // 
+			   MCU_IN27:1,    //左刹车片磨损   低有效
+			   MCU_IN28:1,   //右刹车片磨损    低有效
 			   MCU_IN29:1,   //
 			   MCU_IN30:1,    //
-			   MCU_IN31:1,    //安全带开关
+			   MCU_IN31:1,    //
 			   MCU_IN32:1;     //
 	} bits;
 
@@ -160,7 +160,8 @@ typedef struct
 	Switch_Capture switch_capture;
 	
 	U16  tm_zhuanju_nm;
-	U16  reversed2;
+	U8  charge_overtime;
+	U8  vcu_fault;
 
 	U32  utc_time_second;
 

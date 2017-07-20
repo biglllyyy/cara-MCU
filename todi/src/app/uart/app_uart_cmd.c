@@ -836,12 +836,14 @@ void uart_data_parse(UartQueue *p)
 	}
 
 	g_tUart1Rec.u8TripClear = dat[0] & 0x01;
+	g_tUart1Rec.time_set_enable = dat[0] & 0x02;
 	g_tUart1Rec.u8MenuNum = dat[1];
 	g_tUart1Rec.u8BattBoxNum = dat[2];
 	memcpy(&g_tUart1Rec.u32UTCTime,&dat[3],4);
 	//g_tUart1Rec.u32UTCTime = dat[3]|dat[4]<<8
 	if (g_tUart1Rec.u8TripClear)
 		app_sub_trip1_clear();
+		
 	if (SUBINFO_BS == g_tUart1Rec.u8MenuNum)
 	{
 		if ((0 != g_tUart1Rec.u8BattBoxNum)

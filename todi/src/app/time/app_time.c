@@ -3,6 +3,7 @@
 #include "mid_ds1302.h"
 #include "app_uart_cmd.h"
 #include "g_variable.h"
+#include "app_info.h"
 
 struct tm utc_time;
 
@@ -16,11 +17,11 @@ void setCurrentTime(struct tm time)
 }
 void app_update_time_task()
 {
-	time_t temp=0;
-	if((time_t)mcu_rec_general.settingsInfo.Time.u32Time!=mktime(&utc_time)
-		&&mcu_rec_general.settingsInfo.Time.u32Time!=0)
+	time_t temp=0;	
+	//sizeoftime = sizeof(time_t);
+	if(g_tUart1Rec.time_set_enable)
 	{
-		temp = mcu_rec_general.settingsInfo.Time.u32Time;
+		temp = g_tUart1Rec.u32UTCTime;
 		setCurrentTime(*gmtime(&temp));		
 	}
 	utc_time = getCurrentTime();

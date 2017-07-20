@@ -115,8 +115,16 @@ void main_interface_get_data(void)
 	}
 
 	//气压待定
-	//main_interface_data.airPressure1 = (U8)(ad_data_group[0]&0xff); /* 气压1 */
-	//main_interface_data.airPressure2 = (U8)((ad_data_group[0]&0xff00)>>8); /* 气压2 */
+	main_interface_data.airPressure1 = (U8)(0.4*((ADR[0]/(4095)*3.3)-0.5)*100); /* 气压1值扩大了100倍   */
+	if(main_interface_data.airPressure1>=100)
+	{
+		main_interface_data.airPressure1 = 100;
+	}
+	main_interface_data.airPressure2 = (U8)(0.4*((ADR[1]/(4095)*3.3)-0.5)*100);  /* 气压2 值扩大了100倍 */
+	if(main_interface_data.airPressure2>=100)
+	{
+		main_interface_data.airPressure2 = 100;
+	}
 
 	/* 单体最高温 */
 	if(BAT_Temp_H > 200)

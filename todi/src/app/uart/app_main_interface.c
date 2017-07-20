@@ -114,16 +114,16 @@ void main_interface_get_data(void)
 		main_interface_data.ready_signal = 0xff; //can丢失 ready 信号无效 
 	}
 
-	//气压待定
-	main_interface_data.airPressure1 = (U8)(0.4*((ADR[0]/(4095)*3.3)-0.5)*100); /* 气压1值扩大了100倍   */
-	if(main_interface_data.airPressure1>=100)
+	//气压
+	main_interface_data.airPressure1 = (U8)((ADR[0]/(4095)*3.3)*10); /* 气压1 电压值扩大了10倍   */
+	if(main_interface_data.airPressure1>=33)
 	{
-		main_interface_data.airPressure1 = 100;
+		main_interface_data.airPressure1 = 33;
 	}
-	main_interface_data.airPressure2 = (U8)(0.4*((ADR[1]/(4095)*3.3)-0.5)*100);  /* 气压2 值扩大了100倍 */
-	if(main_interface_data.airPressure2>=100)
+	main_interface_data.airPressure2 = (U8)((ADR[1]/(4095)*3.3)*10);  /* 气压2 电压值扩大了10倍 */
+	if(main_interface_data.airPressure2>=33)
 	{
-		main_interface_data.airPressure2 = 100;
+		main_interface_data.airPressure2 = 33;
 	}
 
 	/* 单体最高温 */
@@ -190,6 +190,26 @@ void main_interface_get_data(void)
 
 	//电机转矩
 	main_interface_data.tm_zhuanju_nm = (TM_Feedback_NM/10);  //电机转矩 收到后减去2000
+	
+	//预充超时 
+	if(mid_can_lost_sts_get(ID_100017EF) == 0 )
+	{
+		main_interface_data.charge_overtime = CHARGE_OVERTIME; /*预充超时*/
+	}
+	else
+	{
+		main_interface_data.charge_overtime = 0xff; //can丢失 预充超时 信号无效 
+	}
+
+	//整车系统故障
+	if(mid_can_lost_sts_get(ID_100017EF) == 0 )
+	{
+		main_interface_data.vcu_fault = VCU_FAULT; /*整车系统故障*/
+	}
+	else
+	{
+		main_interface_data.vcu_fault = 0xff; //can丢失 整车系统故障 信号无效 
+	}
 	main_interface_data.utc_time_second = g_u32_utcTime;     //
 
 }

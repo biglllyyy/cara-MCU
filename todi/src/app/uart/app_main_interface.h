@@ -160,7 +160,8 @@ typedef struct
 	Switch_Capture switch_capture;
 	
 	U16  tm_zhuanju_nm;
-	U16  reversed2;
+	U8  charge_overtime;
+	U8  vcu_fault;
 
 	U32  utc_time_second;
 

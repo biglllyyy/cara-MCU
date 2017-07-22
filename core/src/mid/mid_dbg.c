@@ -15,7 +15,7 @@ void dbg_init(void)
 	dbg_string("Core lib version %d.%d.%d\n", CORE_VER_MAJOR, CORE_VER_MINOR, CORE_VER_REV);
 }
 
-
+#if 1
 void dbg_string(const char*fmt,...)
 {
 	va_list vp;
@@ -27,7 +27,13 @@ void dbg_string(const char*fmt,...)
 	uart_write(UART_DEBUG_CHN, (U8*)dbg_buf);
 	printf("%s", dbg_buf);
 }
+#else
+void dbg_string(const char*fmt,...)
+{
+	return ;
+}
 
+#endif
 void vp_dbg_string(const char*fmt,va_list vp,...)
 {
 	vsprintf(dbg_buf, fmt, vp);

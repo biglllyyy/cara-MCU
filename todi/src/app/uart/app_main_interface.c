@@ -19,7 +19,7 @@
 Main_Interface_Data_Struct main_interface_data =
 { 0 };
 
-#define MAIN_INTERFACE_DATA_LENGTH 36
+#define MAIN_INTERFACE_DATA_LENGTH 40
 #define MAIN_INTERFACE_FRAME_TYPE  CAR_INFO_TYPE
 
 extern U16 ad_data;
@@ -224,7 +224,7 @@ void main_interface_send_data(void)
 	maindata[2] = CAR_INFO_TYPE;
 
 	memcpy(&maindata[3], (void*)&main_interface_data, MAIN_INTERFACE_DATA_LENGTH);
-	
+
 
 	/*-------------------------CRC check------------------------*/
 	temp = api_cal_crc16(&maindata[3], MAIN_INTERFACE_DATA_LENGTH); /* crc check */

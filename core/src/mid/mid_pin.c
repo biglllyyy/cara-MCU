@@ -39,6 +39,7 @@ void mid_io_config(io_type_t *io_name, U8 port, U8 bit,e_io_direction dir,U8 val
 {
 	if((io_name != NULL)&& (port < 20) && (bit < 8))
 	{
+		wdg_feed();
 		io_name->port = port;
 		io_name->bit = bit;
 		io_name->dir = dir;
@@ -48,6 +49,7 @@ void mid_io_config(io_type_t *io_name, U8 port, U8 bit,e_io_direction dir,U8 val
 		{
 			mid_set_io_sts(io_name,value);
 		}
+		
 	}
 }
 

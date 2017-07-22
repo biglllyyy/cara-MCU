@@ -33,6 +33,7 @@ void mid_switch_task10(io_type_t *pin_io_in, pin_filter_t*pin_filter_in)
 	{	
 		temp = mid_get_io_sts(&pin_io_in[index]);//直接从寄存器读取IO的输入值
 		mid_pin_filter(&pin_filter_in[index],temp);//根据配置的滤波系数进行滤波，得到滤波后的输入值
+		wdg_feed();
 	}
 }
 

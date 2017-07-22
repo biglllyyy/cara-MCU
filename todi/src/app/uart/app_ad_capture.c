@@ -19,7 +19,7 @@ void ad_capture_info_init(void)
 	U8 i = 0;
 	for(i=0;i<MCU_SER_ALL;i++)
 	{
-		//mid_adc_start(ad_cap_info_arr[i].ser_ad_channel);
+		mid_adc_start(ad_cap_info_arr[i].ser_ad_channel);
 	}
 
 }
@@ -29,7 +29,9 @@ void ad_capture_info_get_data(void)
 	U8 i = 0;
 	for(i=0;i<MCU_SER_ALL;i++)
 	{
-		//ADR[i] =  mid_adc_get(ad_cap_info_arr[i].ser_ad_channel);/* 先获取AD值, 0xFFF为无效 */
+		ADR[i] =  mid_adc_get(ad_cap_info_arr[i].ser_ad_channel);/* 先获取AD值, 0xFFF为无效 */
+		//dbg_string("ADR[%d] = %d\r",i,ADR[i]);
+		wdg_feed();
 	}
 	  
 

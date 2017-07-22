@@ -200,7 +200,7 @@ void app_cfg_io(void)
 	
 	app_cfg_io_in();
 	app_cfg_io_out();
-	app_cfg_led_out_io();
+	//app_cfg_led_out_io();
 }
 
 

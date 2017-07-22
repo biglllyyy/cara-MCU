@@ -125,12 +125,12 @@ static void app_hardware_init(void)
 static void app_software_init(void)
 {
 	variable_init();
-	app_init_led();
+	//app_init_led();
 	app_buz_init();
 	//app_init_fuel();
 	HW_Version_Read_Init();
 	//app_buz_play_WAV_Init();
-	app_door_init();
+	//app_door_init();
 	app_gear_init();
 	app_user_setting_init();
 	app_tpms_init();
@@ -221,7 +221,7 @@ void app_task_50ms(void)
 {
 	app_process_rpm_task();
 	app_radar_ctl();
-	app_pro_led();
+	//app_pro_led();
 	mid_adc_manager_task();	/* ADC管理，所有有关ADC的APP层操作必须放在这后面 */
 }
 
@@ -248,7 +248,7 @@ void app_task_100ms(void)
 	//wdg_feed();
 	//app_can_lost_time_cnt_100ms();
 	//wdg_feed();
-	//app_frame_sent_task(); 		/* 工程模式发送串口框架任务 */
+	app_frame_sent_task(); 		/* 工程模式发送串口框架任务 */
 	//wdg_feed();
 //	app_demo_frame_sent_task(); /* 普通模式发送串口框架任务 */
 //	app_read_fuel_ign_on();	/* 读取初始燃油量 */	
@@ -259,7 +259,7 @@ void app_task_100ms(void)
 
 	//add for 206
 	//void ad_capture_info_init(void);
-	//ad_capture_info_get_data();
+	ad_capture_info_get_data();
 }
 
 /* 检查UART是否还有ARM的信息，*/

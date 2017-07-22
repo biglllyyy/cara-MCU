@@ -207,7 +207,7 @@ __interrupt void  AD_Converter_interrupt_0_31(void)
 {
     U16 temp_value = 0;
     U16 *ptr = 0;
-	
+	wdg_feed();
 	ptr = (U16 *)((U32)REG_ADTCS_0_31_ADDS(current_chn));	//get adtcs value
 	temp_value = *ptr;
 	temp_value &= MASK14;
@@ -230,7 +230,7 @@ __interrupt void  AD_Converter_interrupt_32_47(void)
 {
     U16 temp_value = 0;
     U16 *ptr = 0;
-	
+	wdg_feed();
 	ptr = (U16 *)((U32)REG_ADTCS_32_47_ADDS(current_chn-32));	//get adtcs value
 	temp_value = *ptr;
 	temp_value &= MASK14;

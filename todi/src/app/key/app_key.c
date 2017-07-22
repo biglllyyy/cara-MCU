@@ -118,7 +118,8 @@ static void update_mode_judge(void)
 			
 			if(time_cnt>=CONST_TIME_10S)
 			{
-				while(1);//µÈ´ýwdg reset
+				wdg_feed();
+				//while(1);//µÈ´ýwdg reset
 			}
 		}
 	}

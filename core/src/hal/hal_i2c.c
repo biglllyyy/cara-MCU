@@ -223,6 +223,7 @@ static S8 hal_i2c_writeSlaveAddr(U8 nPortNum, U8 a_ucSlaveAddress_7Bit, U8 bWrit
 			//retry if needed
 			while(1)
 			{
+				wdg_feed();
 				if (MFS3_I2C_IBCR_INT == 1)
 				{
 					//No Ack

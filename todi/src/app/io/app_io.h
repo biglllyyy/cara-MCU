@@ -56,7 +56,7 @@ extern  io_type_t   IO_MCU_CTL_START_UP;
 extern  io_type_t	IO_MCU_CTL_STOP_UP;
 extern  void app_update_A20_ioconfg(void);
 #endif
-
+#define NEWBOARD
 /**********************************************************************************/
 
 #if	   (SIG_BACKLIGHT_EN == CFG_ON)

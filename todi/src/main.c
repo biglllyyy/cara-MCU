@@ -25,7 +25,7 @@ extern void icr_manage(void);
 
 void main(void)
 {   
-   
+   	U32 temp = RSTRR;
     wdg_feed();
     // Allow all interrupt levels
     __set_il(0x1F); /* ILM = 31 */
@@ -34,6 +34,7 @@ void main(void)
     wdg_feed();
     app_sys_init();
     icr_manage();
+	dbg_printf("RSTRR = %x",temp);
     while(1)
     {
         wdg_feed();

@@ -5,8 +5,8 @@
 
 typedef struct  
 {
-	U8  chn[MAX_CHN];
-	U8  count;
+	U8  chn[MAX_CHN];	//!<adc 通道号
+	U8  count;			//!<当前位置
 }chn_manger;
 
 chn_manger  ad_chn_mgr;
@@ -69,7 +69,7 @@ void mid_adc_manager_task(void)//该任务的作用就是把所有配置了的AD输入使能了
 	static U8  cur_chn_cnt = 0;
 	if(index != 0)
 	{
-		cur_chn_cnt = (cur_chn_cnt+1)%index;
+		cur_chn_cnt = (cur_chn_cnt+1)%index;//!<限幅,防止数组角标越界
 		if(ad_chn_mgr.chn[cur_chn_cnt] < 32)
 		{
 			hal_adc_init(AD_GROUP1,ad_chn_mgr.chn[cur_chn_cnt]);

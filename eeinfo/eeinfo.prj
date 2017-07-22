@@ -1,5 +1,5 @@
 [Version]
-DLLVer=02.5010.00.2
+DLLVer=02.5012.00.1
 PRJVer=1
 
 [PRJKIND]
@@ -9,7 +9,7 @@ mode=1
 CpuSerise=911
 
 [DirInfo]
-PRJ=D:\Code\todi\eeinfo\
+PRJ=E:\WorkSpace\FY-169prj\新建文件夹 (2)\mcu-zhongkunruihua\eeinfo\
 
 [PrjInfo]
 Count=1

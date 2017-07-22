@@ -262,7 +262,7 @@ void app_init_variable(void) {
 
 void app_init_can(void) {
 	mid_can_prepare(ID_RECV_NUM_ALL, ID_SENT_NUM_ALL, can_msg);
-
+	//mid_can_init(CAN_CHN, CAN_CHIP);
 	app_init_variable();
 	can_chip_mode_switch(&io_can_stb, &io_can_en, NORMAL_MODE);
 	/* receive id bound,add your code here,the id need to be received */

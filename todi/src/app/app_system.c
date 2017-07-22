@@ -105,7 +105,7 @@ static void app_hardware_init(void)
 	// PLL_CLK_MCLK_4M_PLL_80M_CCLK_80M_PCLK_TCLK_40M();
 	PLL_CLK_MCLK_4M_PLL_80M_CCLK_40M_PCLK_TCLK_40M();
     hal_gpio_Init();							/* initiate GPIO ports */
-    app_cfg_io_in();	/* init io in and out */
+    app_cfg_io_in();	/* init io in and out  在app_cfg_io函数中有调用 */
     mid_switch_init(PIN_IN_ALL);							
 	app_cfg_io();
 	app_uart_frame_init();
@@ -118,7 +118,7 @@ static void app_hardware_init(void)
     app_init_can();
     mid_DS1302_open(DS1302_io_config);
 	app_trip_init();
-	app_lin_init();
+	//app_lin_init();
 
 }
 
@@ -127,7 +127,7 @@ static void app_software_init(void)
 	variable_init();
 	app_init_led();
 	app_buz_init();
-	app_init_fuel();
+	//app_init_fuel();
 	HW_Version_Read_Init();
 	//app_buz_play_WAV_Init();
 	app_door_init();
@@ -137,7 +137,7 @@ static void app_software_init(void)
 	
 	app_radar_init();
 	app_key_init();
-	app_IPconfig_init();
+	//app_IPconfig_init();
 	app_service_init();
 	app_drivetime_init();
 	app_init_temp();
@@ -153,16 +153,18 @@ static void app_software_init(void)
 /** 打印GPIO的数值 **/
 static void print_gpio(void)
 {
-#ifdef __DEBUG__
+//#ifdef __DEBUG__
 	dbg_string("   PDR , DDR , PFR \n");
-	dbg_string("01:0x%02x, 0x%02x, 0x%02x\n", PDR01, DDR01, PFR01);
+	//dbg_string("01:0x%02x, 0x%02x, 0x%02x\n", PDR01, DDR01, PFR01);
 	dbg_string("02:0x%02x, 0x%02x, 0x%02x\n", PDR02, DDR02, PFR02);
 	dbg_string("03:0x%02x, 0x%02x, 0x%02x\n", PDR03, DDR03, PFR03);
 	dbg_string("04:0x%02x, 0x%02x, 0x%02x\n", PDR04, DDR04, PFR04);
 	dbg_string("05:0x%02x, 0x%02x, 0x%02x\n", PDR05, DDR05, PFR05);
 	dbg_string("06:0x%02x, 0x%02x, 0x%02x\n", PDR06, DDR06, PFR06);
-	dbg_string("07:0x%02x, 0x%02x, 0x%02x\n", PDR07, DDR07, PFR07);
-#endif
+	//dbg_string("07:0x%02x, 0x%02x, 0x%02x\n", PDR07, DDR07, PFR07);
+	dbg_string("14:0x%02x, 0x%02x, 0x%02x\n", PDR14, DDR14, PFR14);
+	dbg_string("15:0x%02x, 0x%02x, 0x%02x\n", PDR15, DDR14, PFR15);
+//#endif
 }
 
 void app_sys_init(void)
@@ -204,7 +206,7 @@ void app_task_10ms(void)
 	mid_switch_task10(pin_io_in, pin_filter_in); /* 得到滤波后输入的值 */
 	app_power_manager_task10(); /* 实现系统电源状态的切换 */
 	mid_can_get_task10(); /* 实现CAN 报文的解析 */
-	app_lin_task10(); /* 实现LIN报文的解析 */
+	//app_lin_task10(); /* 实现LIN报文的解析 */
 	app_buz_ctl();	
 }
 
@@ -213,6 +215,7 @@ void app_task_20ms(void)
 	app_process_spd_task();
 	task_work_flash();	/* work flash异步擦写 */	
 	app_uds_task();
+	
 }
 void app_task_50ms(void)
 {
@@ -225,25 +228,38 @@ void app_task_50ms(void)
 void app_task_100ms(void)
 {
 	app_info_task100();
+	wdg_feed();
 //	mid_ds1302_time_update(&(mcu_rec_general.settingsInfo.Time.u32Time));
 	app_update_time_task();
-	app_pro_temp_task();
-	app_tpms_task();
-	app_gear_pro_100ms();
-	fuel_ins_consumption_cal();
+	wdg_feed();
+	//app_pro_temp_task();
+	//wdg_feed();
+	//app_tpms_task();
+	//wdg_feed();
+	//app_gear_pro_100ms();
+	//wdg_feed();
+	//fuel_ins_consumption_cal();
+	//wdg_feed();
 	app_key_scan_task_100ms();	/* 按键任务 */
-	app_get_door_sts_100ms();	/* 车门状态 */
-	app_lin_lost_time_cnt_100ms();
-	app_can_lost_time_cnt_100ms();
-	app_frame_sent_task(); 		/* 工程模式发送串口框架任务 */
+	wdg_feed();
+	//app_get_door_sts_100ms();	/* 车门状态 */
+	//wdg_feed();
+	//app_lin_lost_time_cnt_100ms();
+	//wdg_feed();
+	//app_can_lost_time_cnt_100ms();
+	//wdg_feed();
+	//app_frame_sent_task(); 		/* 工程模式发送串口框架任务 */
+	//wdg_feed();
 //	app_demo_frame_sent_task(); /* 普通模式发送串口框架任务 */
 //	app_read_fuel_ign_on();	/* 读取初始燃油量 */	
 //  app_buz_play_WAV_task(); /* 播放WAV音频任务，只执行一次 */	
-	app_clac_fuel_method2_task();
+	//app_clac_fuel_method2_task();
+	//wdg_feed();
+
 
 	//add for 206
 	//void ad_capture_info_init(void);
-	ad_capture_info_get_data();
+	//ad_capture_info_get_data();
 }
 
 /* 检查UART是否还有ARM的信息，*/
@@ -281,15 +297,16 @@ void app_task_1000ms(void)
 	app_drivetime_task_1000ms();
 	app_get_rest_service_task_1000ms();
 	app_cal_avg_fuel_consump();
-	app_IPconfig_pro_1000ms();
+	//app_IPconfig_pro_1000ms();
 	app_check_arm_alive();	/* 检查ARM是否活着，如果否就给ARM重新上电 */
 	app_calc_this_trip_AFE_task();
+	print_gpio();
 }
 
 static void app_task_2000ms(void)
 {
 	/*随机改变演示模式的数据*/
-	app_display_rand_data_task(); 
+	//app_display_rand_data_task(); 
 }
 
 static void app_task_5000ms(void)

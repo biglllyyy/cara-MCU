@@ -357,6 +357,7 @@ static void state_pwr_sleep(STATE_ACTION action)
 				
         while((FALSE == g_u8IgnWakeUpFlg) && (FALSE == g_u8LinWakeUpFlg))
         {
+			wdg_feed();
 //           	DS1302_de_init();
            	app_leds_all_off_test();//2015/10/16 14:13:41
             hal_entry_low_power_mode();	/* MCU Stop */

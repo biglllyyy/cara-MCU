@@ -98,7 +98,7 @@ U8 write_sub_trip1(U16 trip)
 	U8	ret=TRUE;
 	T_DATA_STORE	*sData;
 	
-	dbg_printf("Write trip1:%d\n", trip);
+	//dbg_printf("Write trip1:%d\n", trip);
 
 	if(trip <= MAX_SUB_TRIP)
 	{

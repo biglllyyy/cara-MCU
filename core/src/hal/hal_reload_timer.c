@@ -286,6 +286,7 @@ __interrupt void ISR_Reloadtimer3(void)
 __interrupt void reload_timer_0(void)
 {
 	U8  duty = 0;
+	wdg_feed();
 
 	if (TMCSR0_UF == 1)
 	{

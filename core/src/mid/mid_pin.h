@@ -9,10 +9,10 @@
 
 typedef struct
 {
-	U8   port;
-	U8   bit;
-	e_io_direction  dir;
-	U8   value; 
+	U8   port;				
+	U8   bit;				
+	e_io_direction  dir;	//!<·½Ïò
+	U8   value; 			
 }io_type_t;
 
 void 	mid_set_io_sts(io_type_t *io_name,U8 value);

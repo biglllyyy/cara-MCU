@@ -268,23 +268,23 @@ void app_init_can(void) {
 	/* receive id bound,add your code here,the id need to be received */
 	app_bound_id(PC_T0_MCU_ID, 0xfff, 8, STAND_ID, 1, PERIOD_MS(100));
 	
-	app_bound_id(ID_REC_01_100017EF, 0x1FFFFFFF, 8, EXTERN_ID, 2,  (ID_100017EF_period*5));
-	app_bound_id(ID_REC_02_1801FBEF, 0x1FFFFFFF, 8, EXTERN_ID, 3,  (ID_1801FBEF_period*5));
-	app_bound_id(ID_REC_03_1811FBEF, 0x1FFFFFFF, 8, EXTERN_ID, 4,  (ID_1811FBEF_period*5));
-	app_bound_id(ID_REC_04_18FF08F2, 0x1FFFFFFF, 8, EXTERN_ID, 5,  (ID_18FF08F2_period*5));
-	app_bound_id(ID_REC_05_10F8159E, 0x1FFFFFFF, 8, EXTERN_ID, 6,  (ID_10F8159E_Period*5));
-	app_bound_id(ID_REC_06_10F8169E, 0x1FFFFFFF, 8, EXTERN_ID, 7,  (ID_10F8169E_Period*5));
-	app_bound_id(ID_REC_07_18F8179E, 0x1FFFFFFF, 8, EXTERN_ID, 8,  (ID_18F8179E_Period*5));
-	app_bound_id(ID_REC_08_18F8189E, 0x1FFFFFFF, 8, EXTERN_ID, 9,  (ID_18F8189E_Period*5));
-	app_bound_id(ID_REC_09_18F8199E, 0x1FFFFFFF, 8, EXTERN_ID, 10, (ID_18F8199E_Period*5));
-	app_bound_id(ID_REC_10_18F81A9E, 0x1FFFFFFF, 8, EXTERN_ID, 11, (ID_18F81A9E_Period*5));
-	app_bound_id(ID_REC_11_18FF12F7, 0x1FFFFFFF, 8, EXTERN_ID, 12, (ID_18FF12F7_Period*5));
-	app_bound_id(ID_REC_12_18FF0AF8, 0x1FFFFFFF, 8, EXTERN_ID, 13, (ID_18FF0AF8_Period*5));
-	app_bound_id(ID_REC_13_18FF0BF8, 0x1FFFFFFF, 8, EXTERN_ID, 14, (ID_18FF0BF8_Period*5));
-	app_bound_id(ID_REC_14_18FF0CF9, 0x1FFFFFFF, 8, EXTERN_ID, 15, (ID_18FF0CF9_Period*5));
-	app_bound_id(ID_REC_15_18FF0DF9, 0x1FFFFFFF, 8, EXTERN_ID, 16, (ID_18FF0DF9_Period*5));
-	app_bound_id(ID_REC_16_1801EFA9, 0x1FFFFFFF, 8, EXTERN_ID, 17, (ID_1801EFA9_Period*5));
-	app_bound_id(ID_REC_17_104C1000, 0x1FFFF000, 8, EXTERN_ID, 18, (ID_104C1000_Period*5));
+	app_bound_id(ID_REC_01_100017EF, 0x1FFFFFFF, 8, EXTERN_ID, 2,  (ID_100017EF_period*50));
+	app_bound_id(ID_REC_02_1801FBEF, 0x1FFFFFFF, 8, EXTERN_ID, 3,  (ID_1801FBEF_period*50));
+	app_bound_id(ID_REC_03_1811FBEF, 0x1FFFFFFF, 8, EXTERN_ID, 4,  (ID_1811FBEF_period*50));
+	app_bound_id(ID_REC_04_18FF08F2, 0x1FFFFFFF, 8, EXTERN_ID, 5,  (ID_18FF08F2_period*50));
+	app_bound_id(ID_REC_05_10F8159E, 0x1FFFFFFF, 8, EXTERN_ID, 6,  (ID_10F8159E_Period*50));
+	app_bound_id(ID_REC_06_10F8169E, 0x1FFFFFFF, 8, EXTERN_ID, 7,  (ID_10F8169E_Period*50));
+	app_bound_id(ID_REC_07_18F8179E, 0x1FFFFFFF, 8, EXTERN_ID, 8,  (ID_18F8179E_Period*50));
+	app_bound_id(ID_REC_08_18F8189E, 0x1FFFFFFF, 8, EXTERN_ID, 9,  (ID_18F8189E_Period*50));
+	app_bound_id(ID_REC_09_18F8199E, 0x1FFFFFFF, 8, EXTERN_ID, 10, (ID_18F8199E_Period*50));
+	app_bound_id(ID_REC_10_18F81A9E, 0x1FFFFFFF, 8, EXTERN_ID, 11, (ID_18F81A9E_Period*50));
+	app_bound_id(ID_REC_11_18FF12F7, 0x1FFFFFFF, 8, EXTERN_ID, 12, (ID_18FF12F7_Period*50));
+	app_bound_id(ID_REC_12_18FF0AF8, 0x1FFFFFFF, 8, EXTERN_ID, 13, (ID_18FF0AF8_Period*50));
+	app_bound_id(ID_REC_13_18FF0BF8, 0x1FFFFFFF, 8, EXTERN_ID, 14, (ID_18FF0BF8_Period*50));
+	app_bound_id(ID_REC_14_18FF0CF9, 0x1FFFFFFF, 8, EXTERN_ID, 15, (ID_18FF0CF9_Period*50));
+	app_bound_id(ID_REC_15_18FF0DF9, 0x1FFFFFFF, 8, EXTERN_ID, 16, (ID_18FF0DF9_Period*50));
+	app_bound_id(ID_REC_16_1801EFA9, 0x1FFFFFFF, 8, EXTERN_ID, 17, (ID_1801EFA9_Period*50));
+	app_bound_id(ID_REC_17_104C1000, 0x1FFFF000, 8, EXTERN_ID, 18, (ID_104C1000_Period*50));
 	
 	
 

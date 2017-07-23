@@ -114,18 +114,29 @@ void main_interface_get_data(void)
 		main_interface_data.ready_signal = 0xff; //can丢失 ready 信号无效 
 	}
 
-	//气压
-	main_interface_data.airPressure1 = (U8)((ADR[0]/(4095)*3.3)*10); /* 气压1 电压值扩大了10倍   */
-	if(main_interface_data.airPressure1>=33)
+	//气压 电路分压10倍，
 	{
-		main_interface_data.airPressure1 = 33;
+		U32 u32temp;
+		ADV[4] = (ADR[4]*3300*11/4096);
+		u32temp = ADV[4]/100;
+		
+		if (u32temp>=33)
+		{
+			u32temp = 33;
+		}
+		main_interface_data.airPressure1 = (U8)u32temp;//(U8)(ADR[4]*330/4096);//(U8)((ADR[4]/(4095)*3.3)*10); /* 气压1 电压值扩大了10倍   */
 	}
-	main_interface_data.airPressure2 = (U8)((ADR[1]/(4095)*3.3)*10);  /* 气压2 电压值扩大了10倍 */
-	if(main_interface_data.airPressure2>=33)
 	{
-		main_interface_data.airPressure2 = 33;
+		U32 u32temp;
+		ADV[3] = (ADR[3]*3300*11/4096);
+		u32temp = ADV[3]/100;
+		if (u32temp>=33)
+		{
+			u32temp = 33;
+		}
+		main_interface_data.airPressure2 = (U8)u32temp;//(U8)(ADR[4]*330/4096);//(U8)((ADR[4]/(4095)*3.3)*10); /* 气压1 电压值扩大了10倍   */
 	}
-
+	
 	/* 单体最高温 */
 	if(BAT_Temp_H > 200)
 	{

@@ -41,6 +41,46 @@
 #define MCU_IN31     PDDR05_P6
 
 #define MCU_IN32     PDDR05_P7
+
+//#define MCU_IN1     (pin_filter_in[PIN_IN_01].result)
+//#define MCU_IN2     (pin_filter_in[PIN_IN_02].result)
+//#define MCU_IN3     (pin_filter_in[PIN_IN_03].result)
+//#define MCU_IN4     (pin_filter_in[PIN_IN_04].result)
+//#define MCU_IN5     (pin_filter_in[PIN_IN_05].result)
+//#define MCU_IN6     (pin_filter_in[PIN_IN_06].result)
+//#define MCU_IN7     (pin_filter_in[PIN_IN_07].result)
+//#define MCU_IN8     (pin_filter_in[PIN_IN_08].result)
+
+//#define MCU_IN9      (pin_filter_in[PIN_IN_09].result)
+//#define MCU_IN10     (pin_filter_in[PIN_IN_10].result)
+//#define MCU_IN11     (pin_filter_in[PIN_IN_11].result)
+//#define MCU_IN12     (pin_filter_in[PIN_IN_12].result)
+//#define MCU_IN13     (pin_filter_in[PIN_IN_13].result)
+//#define MCU_IN14     (pin_filter_in[PIN_IN_14].result)
+//#define MCU_IN15     (pin_filter_in[PIN_IN_15].result)
+//#define MCU_IN16     (pin_filter_in[PIN_IN_16].result)
+
+//#define MCU_IN17     (pin_filter_in[PIN_IN_17].result)
+//#define MCU_IN18     (pin_filter_in[PIN_IN_18].result)
+//#define MCU_IN19     (pin_filter_in[PIN_IN_19].result)
+//#define MCU_IN20     (pin_filter_in[PIN_IN_20].result)
+//#define MCU_IN21     (pin_filter_in[PIN_IN_21].result)
+//#define MCU_IN22     (pin_filter_in[PIN_IN_22].result)
+
+//#define MCU_IN23     (pin_filter_in[PIN_IN_23].result)
+
+//#define MCU_IN24     (pin_filter_in[PIN_IN_24].result)
+
+//#define MCU_IN25     (pin_filter_in[PIN_IN_25].result)
+//#define MCU_IN26     (pin_filter_in[PIN_IN_26].result)
+//#define MCU_IN27     (pin_filter_in[PIN_IN_27].result)
+//#define MCU_IN28     (pin_filter_in[PIN_IN_28].result)
+//#define MCU_IN29     (pin_filter_in[PIN_IN_29].result)
+//#define MCU_IN30     (pin_filter_in[PIN_IN_30].result)
+//#define MCU_IN31     (pin_filter_in[PIN_IN_31].result)
+
+//#define MCU_IN32     (pin_filter_in[PIN_IN_32].result)
+
 extern U16 single_miles;
 extern U32 total_miles;
 extern U8  key_info_value;

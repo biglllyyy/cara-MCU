@@ -11,6 +11,7 @@ const Ad_Capture_Info ad_cap_info_arr[MCU_SER_ALL] =
 	{MCU_SER4,25},
 	{MCU_SER5,29},
 	{MCU_SER6,30},
+	{MCU_VBAT,12},
 };
 
 
@@ -30,7 +31,7 @@ void ad_capture_info_get_data(void)
 	for(i=0;i<MCU_SER_ALL;i++)
 	{
 		ADR[i] =  mid_adc_get(ad_cap_info_arr[i].ser_ad_channel);/* 先获取AD值, 0xFFF为无效 */
-		//dbg_string("ADR[%d] = %d\r",i,ADR[i]);
+		//dbg_string("ADR[%d] = %d\n",i,ADR[i]);
 		wdg_feed();
 	}
 	  

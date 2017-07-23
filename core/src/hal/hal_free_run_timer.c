@@ -203,7 +203,7 @@ __interrupt void ISR_FreeRunTimer0(void)
     if(FT0_TCCS0_ICLR)   //clear match interrupt flag
     {
         FT0_TCCS0_ICLR  = 0;
-        
+        wdg_feed();
         func_app_beep_ctrl();
     }    
 }
@@ -211,7 +211,7 @@ __interrupt void ISR_FreeRunTimer0(void)
 __interrupt void ISR_FreeRunTimer1(void)
 {
 	static unsigned long int i = 0; 
-
+	wdg_feed();
     if(FT1_TCCS1_ICLR)   /* ÷–∂œ±Í÷æ */
     {
         FT1_TCCS1_ICLR  = 0;
@@ -234,6 +234,7 @@ __interrupt void ISR_FreeRunTimer1(void)
 
 __interrupt void ISR_FreeRunTimer2(void)
 {
+	wdg_feed();
     if(FT2_TCCS2_ICLR)   //clear match interrupt flag
     {
         FT2_TCCS2_ICLR  = 0;

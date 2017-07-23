@@ -27,14 +27,9 @@ Exec=0
 AutoLoad=1
 
 [DirInfo]
-WSP=E:\WorkSpace\FY-169prj\新建文件夹 (2)\mcu-zhongkunruihua\
+WSP=E:\WorkSpace\FY-169prj\rrrf\mcu-zhongkunruihua\
 
 [EditState]
-STATE-1=todi\src\app\can\app_can.c:262
-STATE-2=todi\src\app\can\app_can.h:5
-STATE-3=todi\src\app\can\can_cfg.h:8
-STATE-4=todi\src\app\io\app_io.h:34
-STATE-5=core\src\hal\hal_can.c:1
-STATE-6=core\src\mid\mid_can.c:52
-Count=6
+STATE-1=core\src\mid\mid_switch.c:32
+Count=1
 

@@ -11,6 +11,7 @@ typedef enum
 	MCU_SER4,
 	MCU_SER5,
 	MCU_SER6,
+	MCU_VBAT,
 	MCU_SER_ALL
 }MCU_SER_ENUM;
 

@@ -128,7 +128,7 @@ static void app_software_init(void)
 	//app_init_led();
 	app_buz_init();
 	//app_init_fuel();
-	HW_Version_Read_Init();
+	//HW_Version_Read_Init();
 	//app_buz_play_WAV_Init();
 	//app_door_init();
 	app_gear_init();
@@ -153,7 +153,7 @@ static void app_software_init(void)
 /** 打印GPIO的数值 **/
 static void print_gpio(void)
 {
-//#ifdef __DEBUG__
+#ifdef __DEBUG__
 	dbg_string("   PDR , DDR , PFR \n");
 	//dbg_string("01:0x%02x, 0x%02x, 0x%02x\n", PDR01, DDR01, PFR01);
 	dbg_string("02:0x%02x, 0x%02x, 0x%02x\n", PDR02, DDR02, PFR02);
@@ -164,7 +164,7 @@ static void print_gpio(void)
 	//dbg_string("07:0x%02x, 0x%02x, 0x%02x\n", PDR07, DDR07, PFR07);
 	dbg_string("14:0x%02x, 0x%02x, 0x%02x\n", PDR14, DDR14, PFR14);
 	dbg_string("15:0x%02x, 0x%02x, 0x%02x\n", PDR15, DDR14, PFR15);
-//#endif
+#endif
 }
 
 void app_sys_init(void)
@@ -203,33 +203,49 @@ void app_igoff_action(void) /* IGN 从ON 到OFF之后 */
 
 void app_task_10ms(void)
 {
+	dbg_string(">>mid_switch_task10\n");
 	mid_switch_task10(pin_io_in, pin_filter_in); /* 得到滤波后输入的值 */
+	dbg_string(">>app_power_manager_task10\n");
 	app_power_manager_task10(); /* 实现系统电源状态的切换 */
+	dbg_string(">>mid_can_get_task10\n");
 	mid_can_get_task10(); /* 实现CAN 报文的解析 */
 	//app_lin_task10(); /* 实现LIN报文的解析 */
+	dbg_string(">>app_buz_ctl\n");
 	app_buz_ctl();	
+	dbg_string(">>end\n");
 }
 
 void app_task_20ms(void)
 {
+	dbg_string(">>app_process_spd_task\n");
 	app_process_spd_task();
+	dbg_string(">>task_work_flash\n");
 	task_work_flash();	/* work flash异步擦写 */	
+	dbg_string(">>app_uds_task\n");
 	app_uds_task();
+	dbg_string(">>end\n");
 	
 }
 void app_task_50ms(void)
 {
+	dbg_string(">>app_process_rpm_task\n");
 	app_process_rpm_task();
-	app_radar_ctl();
+	//dbg_string(">>app_radar_ctl\n");
+	//app_radar_ctl();
 	//app_pro_led();
+	dbg_string(">>mid_adc_manager_task\n");
 	mid_adc_manager_task();	/* ADC管理，所有有关ADC的APP层操作必须放在这后面 */
+	dbg_string(">>end\n");
+	
 }
 
 void app_task_100ms(void)
 {
+	dbg_string(">>app_info_task100\n");
 	app_info_task100();
 	wdg_feed();
 //	mid_ds1302_time_update(&(mcu_rec_general.settingsInfo.Time.u32Time));
+	dbg_string(">>app_update_time_task\n");
 	app_update_time_task();
 	wdg_feed();
 	//app_pro_temp_task();
@@ -240,6 +256,7 @@ void app_task_100ms(void)
 	//wdg_feed();
 	//fuel_ins_consumption_cal();
 	//wdg_feed();
+	dbg_string(">>app_key_scan_task_100ms\n");
 	app_key_scan_task_100ms();	/* 按键任务 */
 	wdg_feed();
 	//app_get_door_sts_100ms();	/* 车门状态 */
@@ -248,6 +265,7 @@ void app_task_100ms(void)
 	//wdg_feed();
 	//app_can_lost_time_cnt_100ms();
 	//wdg_feed();
+	dbg_string(">>app_frame_sent_task\n");
 	app_frame_sent_task(); 		/* 工程模式发送串口框架任务 */
 	//wdg_feed();
 //	app_demo_frame_sent_task(); /* 普通模式发送串口框架任务 */
@@ -259,7 +277,9 @@ void app_task_100ms(void)
 
 	//add for 206
 	//void ad_capture_info_init(void);
+	dbg_string(">>ad_capture_info_get_data\n");
 	ad_capture_info_get_data();
+	dbg_string(">>end\n");
 }
 
 /* 检查UART是否还有ARM的信息，*/
@@ -291,16 +311,24 @@ static void app_check_arm_alive(void)
 
 void app_task_1000ms(void)
 {
+	dbg_string(">>app_show_HW_version\n");
 	app_show_HW_version(); /* 打印硬件版本信息，只执行一次 */
+	dbg_string(">>app_rest_mile_cal_task\n");
 
 	app_rest_mile_cal_task();
+	dbg_string(">>app_drivetime_task_1000ms\n");
 	app_drivetime_task_1000ms();
+	dbg_string(">>app_get_rest_service_task_1000ms\n");
 	app_get_rest_service_task_1000ms();
+	dbg_string(">>app_cal_avg_fuel_consump\n");
 	app_cal_avg_fuel_consump();
 	//app_IPconfig_pro_1000ms();
+	dbg_string(">>app_check_arm_alive\n");
 	app_check_arm_alive();	/* 检查ARM是否活着，如果否就给ARM重新上电 */
+	dbg_string(">>app_calc_this_trip_AFE_task\n");
 	app_calc_this_trip_AFE_task();
-	print_gpio();
+	dbg_string(">>end\n");
+
 }
 
 static void app_task_2000ms(void)
@@ -311,7 +339,9 @@ static void app_task_2000ms(void)
 
 static void app_task_5000ms(void)
 {
+		dbg_string(">>app_get_CarTemp_5000ms\n");
 		app_get_CarTemp_5000ms();
+		dbg_string(">>end\n");
 }
 
 

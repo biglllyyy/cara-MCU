@@ -34,7 +34,7 @@ void main(void)
     wdg_feed();
     app_sys_init();
     icr_manage();
-	dbg_printf("RSTRR = %x",temp);
+	//dbg_printf("RSTRR = %x",temp);
     while(1)
     {
         wdg_feed();
@@ -42,7 +42,9 @@ void main(void)
         uart0_rx_interrupt();
 		uart1_tx_interrupt();
 #endif
+		dbg_string("-->main\n;");
         MidSchDispatchTasks();
+		
     }
 
 }

@@ -198,7 +198,7 @@ void main_interface_get_data(void)
 		   (MCU_IN25<<7)|(MCU_IN26<<6)|(MCU_IN27<<5)|(MCU_IN28<<4)|(MCU_IN29<<3)|(MCU_IN30<<2)|(MCU_IN31<<1)|(MCU_IN32);
 	byte_order_change((U8*)&temp,4);
 	main_interface_data.switch_capture.u32_switch_capture = temp;
-
+	//dbg_string("io = %x\n",main_interface_data.switch_capture.u32_switch_capture);
 	//电机转矩
 	main_interface_data.tm_zhuanju_nm = (TM_Feedback_NM/10);  //电机转矩 收到后减去2000
 	

@@ -18,7 +18,7 @@
 static U16  REG_ADERLO = 0;
 static U16  REG_ADERH0 = 0;
 static U16  REG_ADERL1 = 0;
-U16 AD_Value[MAX_AD_CHN] = {0xffff};
+U16 AD_Value[2][0x20] = {0};
 U8          current_chn = 0;
 
 /*
@@ -207,6 +207,7 @@ __interrupt void  AD_Converter_interrupt_0_31(void)
 {
     U16 temp_value = 0;
     U16 *ptr = 0;
+	static U16 cont1 = 0,cont2 = 0;
 	wdg_feed();
 	ptr = (U16 *)((U32)REG_ADTCS_0_31_ADDS(current_chn));	//get adtcs value
 	temp_value = *ptr;
@@ -217,12 +218,21 @@ __interrupt void  AD_Converter_interrupt_0_31(void)
 	temp_value = *ptr;
 	if(0 == (temp_value & 0x8000)) //最高位为1表示错误
 	{
-		AD_Value[current_chn] = temp_value & 0x0FFF;
+		//AD_Value[current_chn] = temp_value & 0x0FFF;
+		if (current_chn == 25)
+		{
+			AD_Value[0][cont1++&0x1F] = temp_value & 0x0FFF;
+		}
+		else if (current_chn == 29)
+		{
+			AD_Value[1][cont2++&0x1F] = temp_value & 0x0FFF;
+		}
 	}
 	else
 	{
-		AD_Value[current_chn] = 0xffff;
+		//AD_Value[current_chn] = 0xffff;
 	}
+	//dbg_printf("interrupt adc[%d] = %d\n",current_chn,AD_Value[current_chn]);
 	ADTSS0_START = 0;
 }
 
@@ -239,11 +249,11 @@ __interrupt void  AD_Converter_interrupt_32_47(void)
 	temp_value = *ptr;
 	if(0 == (temp_value & 0x8000)) //最高位为1表示错误
 	{
-		AD_Value[current_chn] = temp_value & 0x0FFF;
+		//AD_Value[current_chn] = temp_value & 0x0FFF;
 	}
 	 else
 	{
-    	AD_Value[current_chn] = 0Xffff;
+    	//AD_Value[current_chn] = 0Xffff;
  	}
  	ADTSS1_START = 0;
 }
@@ -260,7 +270,7 @@ U16 hal_adc_get(ad_group_t group,U8 single_chn)
 
 	if(single_chn < MAX_AD_CHN)
 	{
-		ret = AD_Value[single_chn];
+		//ret = AD_Value[single_chn];
 	}
 	else
 	{

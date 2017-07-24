@@ -214,6 +214,7 @@ void app_task_10ms(void)
 	dbg_string(">>app_buz_ctl\n");
 	app_buz_ctl();	
 	dbg_string(">>end\n");
+	mid_adc_manager_task();	/* ADC管理，所有有关ADC的APP层操作必须放在这后面 */
 }
 
 void app_task_20ms(void)
@@ -237,7 +238,7 @@ void app_task_50ms(void)
 	//app_radar_ctl();
 	//app_pro_led();
 	dbg_string(">>mid_adc_manager_task\n");
-	mid_adc_manager_task();	/* ADC管理，所有有关ADC的APP层操作必须放在这后面 */
+	
 	dbg_string(">>end\n");
 	
 }

@@ -118,18 +118,42 @@ void main_interface_get_data(void)
 	{
 		U32 u32temp;
 		ADV[4] = (ADR[4]*3300*11/4096);
+		if (ADV[4]>2100)
+		{
+			ADV[4] += 500;
+		}
+		else if (ADV[4]>1600)
+		{
+			ADV[4] += 400;
+		}
+		else
+		{
+			ADV[4] +=200;
+		}
 		u32temp = ADV[4]/100;
-		
+
 		if (u32temp>=33)
 		{
 			u32temp = 33;
 		}
 		main_interface_data.airPressure1 = (U8)u32temp;//(U8)(ADR[4]*330/4096);//(U8)((ADR[4]/(4095)*3.3)*10); /* 气压1 电压值扩大了10倍   */
-		dbg_printf("ad1 = %d\n",ADV[4]);
+		dbg_printf("ad1 = %d\n",ADR[4]);
 	}
 	{
 		U32 u32temp;
 		ADV[3] = (ADR[3]*3300*11/4096);
+		if (ADV[3]>2100)
+		{
+			ADV[3] += 500;
+		}
+		else if (ADV[4]>1600)
+		{
+			ADV[3] += 400;
+		}
+		else
+		{
+			ADV[3] +=200;
+		}
 		u32temp = ADV[3]/100;
 		if (u32temp>=33)
 		{
@@ -137,7 +161,7 @@ void main_interface_get_data(void)
 		}
 		main_interface_data.airPressure2 = (U8)u32temp;//(U8)(ADR[4]*330/4096);//(U8)((ADR[4]/(4095)*3.3)*10); /* 气压1 电压值扩大了10倍   */
 		
-		dbg_printf("ad2 = %d\n",ADV[3]);
+		dbg_printf("ad2 = %d\n",ADR[3]);
 	}
 	
 	/* 单体最高温 */

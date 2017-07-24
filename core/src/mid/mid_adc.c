@@ -66,10 +66,13 @@ void mid_adc_stop(U8  signal_chn)//删除一个作为AD输入的通道
 void mid_adc_manager_task(void)//该任务的作用就是把所有配置了的AD输入使能了
 {
 	U8     index = ad_chn_mgr.count;
+	extern U8          current_chn;
 	static U8  cur_chn_cnt = 0;
 	if(index != 0)
 	{
+		
 		cur_chn_cnt = (cur_chn_cnt+1)%index;//!<限幅,防止数组角标越界
+		dbg_printf("+current_chn = %d\n",ad_chn_mgr.chn[cur_chn_cnt]);
 		if(ad_chn_mgr.chn[cur_chn_cnt] < 32)
 		{
 			hal_adc_init(AD_GROUP1,ad_chn_mgr.chn[cur_chn_cnt]);
@@ -80,6 +83,7 @@ void mid_adc_manager_task(void)//该任务的作用就是把所有配置了的AD输入使能了
 			hal_adc_init(AD_GROUP2,ad_chn_mgr.chn[cur_chn_cnt]);
 			hal_adc_start(AD_GROUP2);
 		}
+		dbg_printf("-current_chn = %d\n",ad_chn_mgr.chn[cur_chn_cnt]);
 	}
 }
 
@@ -89,7 +93,7 @@ U16  mid_adc_get(U8 single_chn)
 {
 	U16  ret = 0;
 
-	ret = AD_Value[single_chn];
+	//ret = AD_Value[single_chn];
 	
 	return ret;
 }

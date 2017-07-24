@@ -96,7 +96,7 @@ static void app_tasks_init(void)
 	MidSchAddTask(app_task_1000ms,1000);
 	MidSchAddTask(app_task_2000ms,2000);
 	MidSchAddTask(app_task_5000ms,5000);
-	MidSchAddTask(app_frame_get_task20,20);
+	//MidSchAddTask(app_frame_get_task20,20);
 	//MidSchAddTask(task_mid_wf_test, 250);
 }	
 
@@ -224,6 +224,8 @@ void app_task_20ms(void)
 	task_work_flash();	/* work flashÒì²½²ÁĞ´ */	
 	dbg_string(">>app_uds_task\n");
 	app_uds_task();
+	dbg_string(">>app_frame_get_task20\n");
+	app_frame_get_task20();
 	dbg_string(">>end\n");
 	
 }

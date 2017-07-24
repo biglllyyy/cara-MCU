@@ -15,7 +15,7 @@ void dbg_init(void)
 	dbg_string("Core lib version %d.%d.%d\n", CORE_VER_MAJOR, CORE_VER_MINOR, CORE_VER_REV);
 }
 
-#if 1
+#if 0
 void dbg_string(const char*fmt,...)
 {
 	va_list vp;

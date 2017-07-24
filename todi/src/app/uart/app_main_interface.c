@@ -200,7 +200,9 @@ void main_interface_get_data(void)
 	main_interface_data.switch_capture.u32_switch_capture = temp;
 	//dbg_string("io = %x\n",main_interface_data.switch_capture.u32_switch_capture);
 	//电机转矩
-	main_interface_data.tm_zhuanju_nm = (TM_Feedback_NM/10);  //电机转矩 收到后减去2000
+	temp = (TM_Feedback_NM/10);
+	byte_order_change((U8*)&temp,2);
+	main_interface_data.tm_zhuanju_nm = temp;  //电机转矩 收到后减去2000
 	
 	//预充超时 
 	if(mid_can_lost_sts_get(ID_100017EF) == 0 )

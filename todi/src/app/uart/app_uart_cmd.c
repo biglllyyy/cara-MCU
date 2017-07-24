@@ -672,6 +672,7 @@ void app_frame_get_task20(void)
 	{
 		return;
 	}
+
 	if (bHeadOK == FALSE && u8Char == FRAME_HEAD)
 	{
 		bHeadOK = TRUE;
@@ -695,6 +696,7 @@ void app_frame_get_task20(void)
 			uart_en_queue(&mcu_frame_rec, u8Char);
 			if (dataindex >= datalen + 2)
 			{
+				
 				uart_clear_queue(&uart_recv_queue);
 				if (mcu_frame_rec.queue[mcu_frame_rec.rear - 1] == FRAME_REAR)
 				{
@@ -834,13 +836,13 @@ void uart_data_parse(UartQueue *p)
 		printf("it should be %d,but you fill is %d\n",A20_MCU_DATA_LENTH+2,data_len);
 #endif
 	}
-
 	g_tUart1Rec.u8TripClear = dat[0] & 0x01;
 	g_tUart1Rec.time_set_enable = dat[0] & 0x02;
 	g_tUart1Rec.u8MenuNum = dat[1];
 	g_tUart1Rec.u8BattBoxNum = dat[2];
 	memcpy(&g_tUart1Rec.u32UTCTime,&dat[3],4);
 	//g_tUart1Rec.u32UTCTime = dat[3]|dat[4]<<8
+
 	if (g_tUart1Rec.u8TripClear)
 		app_sub_trip1_clear();
 		

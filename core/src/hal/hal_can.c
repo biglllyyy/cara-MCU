@@ -135,10 +135,10 @@ void can_receive_object_init(U8 chn,U8 num,CAN_ID_FORMAT_e format,U32 id,U8 dlc,
 	}
 	else
 	{
-		IO_CAN0.IF2MSK.word = 0xFFFFFFFF;				/*MXtd=1 MDir=1 res=1 MID28-MID18 all=1
+		IO_CAN0.IF2MSK.word = id_mask;				/*MXtd=1 MDir=1 res=1 MID28-MID18 all=1
 														MID17-MID0 all=0*/
 		IO_CAN0.IF2MSK.bit.MXtd = 1;    /* extened frame */
-        IO_CAN0.IF2ARB.word = 0xC0000000|(id & id_mask);	/*MsgVal=1 Xtd=1 Dir=0 ID(28-18)=1 TestMode Only*/
+        IO_CAN0.IF2ARB.word = 0xC0000000|(id & 0x1FFFFFFF);	/*MsgVal=1 Xtd=1 Dir=0 ID(28-18)=1 TestMode Only*/
 	}
 
         /*MCTR*/
@@ -406,6 +406,7 @@ U8 hal_can_get(can_msg_t *can_rx_ptr)
 		if(can_rx_ptr->format)	//extern id
 		{
 			can_rx_ptr->id = MSG2EXT( IO_CAN0.IF2ARB.word);   /* Arbitration */
+			//dbg_printf("can_rx_ptr id = %08x",can_rx_ptr->id);
 		}
 		else
 		{

@@ -125,6 +125,7 @@ void main_interface_get_data(void)
 			u32temp = 33;
 		}
 		main_interface_data.airPressure1 = (U8)u32temp;//(U8)(ADR[4]*330/4096);//(U8)((ADR[4]/(4095)*3.3)*10); /* 气压1 电压值扩大了10倍   */
+		dbg_printf("ad1 = %d\n",ADV[4]);
 	}
 	{
 		U32 u32temp;
@@ -135,6 +136,8 @@ void main_interface_get_data(void)
 			u32temp = 33;
 		}
 		main_interface_data.airPressure2 = (U8)u32temp;//(U8)(ADR[4]*330/4096);//(U8)((ADR[4]/(4095)*3.3)*10); /* 气压1 电压值扩大了10倍   */
+		
+		dbg_printf("ad2 = %d\n",ADV[3]);
 	}
 	
 	/* 单体最高温 */
@@ -191,16 +194,20 @@ void main_interface_get_data(void)
 	}
 
 	//开关采集
-	temp = 0;
-	temp = (MCU_IN1<<31)|(MCU_IN2<<30)|((MCU_IN3)<<29)|((MCU_IN4)<<28)|(MCU_IN5<<27)|(MCU_IN6<<26)|(MCU_IN7<<25)|(MCU_IN8<<24)|
-		   (MCU_IN9<<23)|(MCU_IN10<<22)|(MCU_IN11<<21)|(MCU_IN12<<20)|(MCU_IN13<<19)|(MCU_IN14<<18)|(MCU_IN15<<17)|(MCU_IN16<<16)|
-		   (MCU_IN17<<15)|(MCU_IN18<<14)|(MCU_IN19<<13)|(MCU_IN20<<12)|(MCU_IN21<<11)|(MCU_IN22<<10)|(MCU_IN23<<9)|(MCU_IN24<<8)|
-		   (MCU_IN25<<7)|(MCU_IN26<<6)|(MCU_IN27<<5)|(MCU_IN28<<4)|(MCU_IN29<<3)|(MCU_IN30<<2)|(MCU_IN31<<1)|(MCU_IN32);
-	byte_order_change((U8*)&temp,4);
+	{
+		temp = 0;
+		temp = (MCU_IN1<<31)|(MCU_IN2<<30)|((MCU_IN3)<<29)|((MCU_IN4)<<28)|(MCU_IN5<<27)|(MCU_IN6<<26)|(MCU_IN7<<25)|(MCU_IN8<<24)|
+			   (MCU_IN9<<23)|(MCU_IN10<<22)|(MCU_IN11<<21)|(MCU_IN12<<20)|(MCU_IN13<<19)|(MCU_IN14<<18)|(MCU_IN15<<17)|(MCU_IN16<<16)|
+			   (MCU_IN17<<15)|(MCU_IN18<<14)|(MCU_IN19<<13)|(MCU_IN20<<12)|(MCU_IN21<<11)|(MCU_IN22<<10)|(MCU_IN23<<9)|(MCU_IN24<<8)|
+			   (MCU_IN25<<7)|(MCU_IN26<<6)|(MCU_IN27<<5)|(MCU_IN28<<4)|(MCU_IN29<<3)|(MCU_IN30<<2)|(MCU_IN31<<1)|(MCU_IN32);
+		byte_order_change((U8*)&temp,4);
+	}
 	main_interface_data.switch_capture.u32_switch_capture = temp;
-
+	dbg_printf("io = %x\n",main_interface_data.switch_capture.u32_switch_capture);
 	//电机转矩
-	main_interface_data.tm_zhuanju_nm = (TM_Feedback_NM/10);  //电机转矩 收到后减去2000
+	buf1 = (TM_Feedback_NM/10);
+	byte_order_change((U8*)&buf1,2);
+	main_interface_data.tm_zhuanju_nm = buf1;  //电机转矩 收到后减去2000
 	
 	//预充超时 
 	if(mid_can_lost_sts_get(ID_100017EF) == 0 )
@@ -221,7 +228,9 @@ void main_interface_get_data(void)
 	{
 		main_interface_data.vcu_fault = 0xff; //can丢失 整车系统故障 信号无效 
 	}
-	main_interface_data.utc_time_second = g_u32_utcTime;     //
+	temp = g_u32_utcTime;
+	byte_order_change((U8*)&temp,4);
+	main_interface_data.utc_time_second = temp;     //
 
 }
 void main_interface_send_data(void)

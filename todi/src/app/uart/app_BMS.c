@@ -109,7 +109,7 @@ void bms_get_data(void)
 	{
 		u32temp=100000;
 	}
-	byte_order_change(((U8*)&(u32temp)),3); 
+	byte_order_change(((U8*)&(u32temp)),4); 
 	bms_data.IRM_Ohm_Positive = u32temp;    				//总正绝缘阻值 2.6
 
 
@@ -119,7 +119,7 @@ void bms_get_data(void)
 	{
 		u32temp=100000;
 	}
-	byte_order_change(((U8*)&(u32temp)),3); 
+	byte_order_change(((U8*)&(u32temp)),4); 
 	bms_data.IRM_Ohm_Negative = u32temp;					//总负绝缘阻值 2.7
 
 	bms_data.IRM_Fault_Level = IRM_Fault_Level; 				//设备故障等级	2.8

@@ -262,7 +262,7 @@ void mid_can_get_task10(void)
 					can_msg[index].new_frame = 1;
 					can_msg[index].lost = 0;
 					can_msg[index].count = 0;
-					can_msg_temp.id = can_msg[index].id;
+					//can_msg_temp.id = can_msg[index].id;
 					can_msg_temp.dlc = can_msg[index].dlc;
 					if(can_rx_pro != NULL)
 					{

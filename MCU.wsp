@@ -31,9 +31,9 @@ WSP=E:\WorkSpace\FY-169prj\rrrf\mcu-zhongkunruihua\
 
 [EditState]
 STATE-1=core\src\mid\mid_switch.c:32
-STATE-2=todi\src\app\uart\app_main_interface.c:120
+STATE-2=todi\src\app\uart\app_main_interface.c:207
 STATE-3=todi\src\app\uart\app_main_interface.h:79
-STATE-4=todi\src\app\uart\app_uart_cmd.c:708
+STATE-4=todi\src\app\uart\app_uart_cmd.c:710
 STATE-5=core\src\mid\mid_dbg.c:19
 Count=5
 

@@ -736,14 +736,13 @@ static void can_id_104C1000_analyse(can_msg_t *msg, can_pro_way_e way) {
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
-		dbg_printf("id = %08x\n",msg->id);
 		for (i = 0; i < 100; i++) {
             if (msg->id == (0x104C19A4 + i)) {
-				dbg_printf("   i = %x\n",i);
                 BAT_Cell_Voltage[i * 4] = (U8) msg->data[0]+((U16) msg->data[1] << 8);
                 BAT_Cell_Voltage[(i * 4) + 1] = (U8) msg->data[2]+((U16) msg->data[3] << 8);
                 BAT_Cell_Voltage[(i * 4) + 2] = (U8) msg->data[4]+((U16) msg->data[5] << 8);
                 BAT_Cell_Voltage[(i * 4) + 3] = (U8) msg->data[6]+((U16) msg->data[7] << 8);
+				dbg_printf("id_%d = %d,%d,%d,%d\n",i,BAT_Cell_Voltage[i * 4],BAT_Cell_Voltage[(i * 4) + 1],BAT_Cell_Voltage[(i * 4) + 2],BAT_Cell_Voltage[(i * 4) + 3]);
             }
         }
         for (i = 0; i < 16; i++) {

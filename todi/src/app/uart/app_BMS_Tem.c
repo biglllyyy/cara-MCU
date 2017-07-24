@@ -21,9 +21,14 @@ static U8 bms_tem_data[BMS_TEM_DATA_LENGTH] = { 0 };
 void bms_tem_get_data(void)
 {
 	U8 i = 0,j=0;
+	U16 temp;
 	memset(&bms_tem_data[0],0,20);
+	if (temp != 0)
+	{
+		temp--;
+	}
 	
-	for((i=20*CurrentMenu);i<(20*(CurrentMenu+1));i++)
+	for((i=20*temp);i<(20*(temp+1));i++)
 	{
 		bms_tem_data[j] = BAT_Cell_Temperature[i];
 		j++;

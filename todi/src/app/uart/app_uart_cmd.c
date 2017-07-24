@@ -672,8 +672,7 @@ void app_frame_get_task20(void)
 	{
 		return;
 	}
-	dbg_printf(" read %02x\n",u8Char);
-	dbg_printf(" bHeadOK %02x\n",bHeadOK);
+
 	if (bHeadOK == FALSE && u8Char == FRAME_HEAD)
 	{
 		bHeadOK = TRUE;
@@ -681,7 +680,6 @@ void app_frame_get_task20(void)
 		uart_en_queue(&mcu_frame_rec, u8Char);
 		return;
 	}
-	dbg_printf(" bGetLen1 %02x\n",bGetLen);
 	if (bHeadOK == TRUE && bGetLen == FALSE)
 	{
 		datalen = u8Char;
@@ -690,10 +688,8 @@ void app_frame_get_task20(void)
 		uart_en_queue(&mcu_frame_rec, u8Char);
 		return;
 	}
-	dbg_printf(" bGetLen2 %02x\n",bGetLen);
 	if (bHeadOK == TRUE && bGetLen == TRUE)
 	{
-		dbg_printf("dataindex=%d,datalen=%d\n",dataindex,datalen);
 		if (dataindex < datalen + 2)
 		{
 			dataindex++;
@@ -702,15 +698,6 @@ void app_frame_get_task20(void)
 			{
 				
 				uart_clear_queue(&uart_recv_queue);
-				dbg_printf("FRAME_REAR=%d\n",mcu_frame_rec.queue[mcu_frame_rec.rear - 1]);
-				{
-					U32 i;
-					for (i=0;i<mcu_frame_rec.rear;i++)
-					{
-						dbg_printf("%02x ",mcu_frame_rec.queue[i]);
-					}
-					dbg_printf("\n");
-				}
 				if (mcu_frame_rec.queue[mcu_frame_rec.rear - 1] == FRAME_REAR)
 				{
 					uart_data_parse(&mcu_frame_rec);
@@ -856,10 +843,6 @@ void uart_data_parse(UartQueue *p)
 	memcpy(&g_tUart1Rec.u32UTCTime,&dat[3],4);
 	//g_tUart1Rec.u32UTCTime = dat[3]|dat[4]<<8
 
-	dbg_printf("->u8TripClear %d\n",g_tUart1Rec.u8TripClear);
-	dbg_printf("->time_set_enable %d\n",g_tUart1Rec.time_set_enable);
-	dbg_printf("->u8MenuNum %d\n",g_tUart1Rec.u8MenuNum);
-	dbg_printf("->u8BattBoxNum %d\n",g_tUart1Rec.u8BattBoxNum);
 	if (g_tUart1Rec.u8TripClear)
 		app_sub_trip1_clear();
 		

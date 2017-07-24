@@ -125,6 +125,7 @@ void main_interface_get_data(void)
 			u32temp = 33;
 		}
 		main_interface_data.airPressure1 = (U8)u32temp;//(U8)(ADR[4]*330/4096);//(U8)((ADR[4]/(4095)*3.3)*10); /* 气压1 电压值扩大了10倍   */
+		dbg_printf("ad1 = %d\n",ADV[4]);
 	}
 	{
 		U32 u32temp;
@@ -135,6 +136,8 @@ void main_interface_get_data(void)
 			u32temp = 33;
 		}
 		main_interface_data.airPressure2 = (U8)u32temp;//(U8)(ADR[4]*330/4096);//(U8)((ADR[4]/(4095)*3.3)*10); /* 气压1 电压值扩大了10倍   */
+		
+		dbg_printf("ad2 = %d\n",ADV[3]);
 	}
 	
 	/* 单体最高温 */
@@ -203,9 +206,7 @@ void main_interface_get_data(void)
 	dbg_printf("io = %x\n",main_interface_data.switch_capture.u32_switch_capture);
 	//电机转矩
 	buf1 = (TM_Feedback_NM/10);
-	dbg_printf("TM_Feedback_NM = %x",TM_Feedback_NM);
 	byte_order_change((U8*)&buf1,2);
-	dbg_printf("buf1 = %x\n",buf1);
 	main_interface_data.tm_zhuanju_nm = buf1;  //电机转矩 收到后减去2000
 	
 	//预充超时 

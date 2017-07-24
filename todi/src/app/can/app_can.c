@@ -283,6 +283,7 @@ void app_init_can(void) {
 	app_bound_id(ID_REC_13_18FF0BF8, 0x1FFFFFFF, 8, EXTERN_ID, 14, (ID_18FF0BF8_Period*50));
 	app_bound_id(ID_REC_14_18FF0CF9, 0x1FFFFFFF, 8, EXTERN_ID, 15, (ID_18FF0CF9_Period*50));
 	app_bound_id(ID_REC_15_18FF0DF9, 0x1FFFFFFF, 8, EXTERN_ID, 16, (ID_18FF0DF9_Period*50));
+	//app_bound_id(ID_REC_17_104C1000, 0x1FFFF000, 8, EXTERN_ID, 18, (ID_104C1000_Period*50));
 	app_bound_id(ID_REC_16_1801EFA9, 0x1FFFFFFF, 8, EXTERN_ID, 17, (ID_1801EFA9_Period*50));
 	app_bound_id(ID_REC_17_104C1000, 0x1FFFF000, 8, EXTERN_ID, 18, (ID_104C1000_Period*50));
 	
@@ -423,8 +424,8 @@ static void can_id_18FF08F2_analyse(can_msg_t *msg, can_pro_way_e way) {
 		IRM_Ohm_Negative = (U8) msg->data[3]+((U16) msg->data[4] << 8)+((U32) msg->data[5] << 16);
 
 		CAN_DOUBLE.byte = msg->data[6];
-		IRM_Fault_Level = CAN_DOUBLE.bits.bit1;
-		IRM_Insulation_Level = CAN_DOUBLE.bits.bit2;
+		IRM_Fault_Level = CAN_DOUBLE.bits.bit4;
+		IRM_Insulation_Level = CAN_DOUBLE.bits.bit3;
 
 		IRM_Life = msg->data[7];
 
@@ -735,8 +736,10 @@ static void can_id_104C1000_analyse(can_msg_t *msg, can_pro_way_e way) {
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		dbg_printf("id = %08x\n",msg->id);
 		for (i = 0; i < 100; i++) {
-            if (msg->id == (0x104C19A4 + i)) {
+            if (msg->id == (0x104C19A4 + i)) {
+				dbg_printf("   i = %x\n",i);
                 BAT_Cell_Voltage[i * 4] = (U8) msg->data[0]+((U16) msg->data[1] << 8);
                 BAT_Cell_Voltage[(i * 4) + 1] = (U8) msg->data[2]+((U16) msg->data[3] << 8);
                 BAT_Cell_Voltage[(i * 4) + 2] = (U8) msg->data[4]+((U16) msg->data[5] << 8);
@@ -758,7 +761,7 @@ static void can_id_104C1000_analyse(can_msg_t *msg, can_pro_way_e way) {
 		//data_copy((U8*) &can0.ID_104C1000[0], (U8*) &msg->data[0], msg->dlc);
 		break;
 	case CAN_LOST:
-		memset(BAT_Cell_Voltage,0,(400*sizeof(U16)));
+		memset(BAT_Cell_Voltage,1,(400*sizeof(U16)));
 		
 		memset(BAT_Cell_Temperature,0,(128*sizeof(U8)));
 		break;

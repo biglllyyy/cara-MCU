@@ -191,7 +191,7 @@ void app_igon_action(void) /*IGN 从OFF 到ON之后 */
 {
    	MidSchAddTask(app_can_sent_task,50);
     MidSchAddTask(app_io_task,10);
-	app_A20_power_on();
+	//app_A20_power_on();
 	//MidSchAddTask(app_backlight_ctl,100);
 	//MidSchAddTask(app_buz_play_WAV_task,10000);
 }
@@ -201,7 +201,7 @@ void app_igoff_action(void) /* IGN 从ON 到OFF之后 */
 	MidSchDeleteTask(app_can_sent_task);
 	MidSchDeleteTask(app_io_task);
 	app_leds_all_off_test();
-	app_A20_power_off();
+	//app_A20_power_off();
 }
 
 void app_task_10ms(void)

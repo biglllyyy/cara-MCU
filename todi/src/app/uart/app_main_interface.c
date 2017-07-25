@@ -13,6 +13,7 @@
 #include "uart_cfg.h"
 #include "app_trip.h"
 #include "g_variable.h"
+#include "mid_filter.h"
 
 
 
@@ -216,14 +217,15 @@ void main_interface_get_data(void)
 	{
 		main_interface_data.moter_temp = TM_Temp; //需要QT -40
 	}
-
 	//开关采集
 	{
+		extern pin_filter_t    pin_filter_in[];
 		temp = 0;
 		temp = (MCU_IN1<<31)|(MCU_IN2<<30)|((MCU_IN3)<<29)|((MCU_IN4)<<28)|(MCU_IN5<<27)|(MCU_IN6<<26)|(MCU_IN7<<25)|(MCU_IN8<<24)|
 			   (MCU_IN9<<23)|(MCU_IN10<<22)|(MCU_IN11<<21)|(MCU_IN12<<20)|(MCU_IN13<<19)|(MCU_IN14<<18)|(MCU_IN15<<17)|(MCU_IN16<<16)|
 			   (MCU_IN17<<15)|(MCU_IN18<<14)|(MCU_IN19<<13)|(MCU_IN20<<12)|(MCU_IN21<<11)|(MCU_IN22<<10)|(MCU_IN23<<9)|(MCU_IN24<<8)|
-			   (MCU_IN25<<7)|(MCU_IN26<<6)|(MCU_IN27<<5)|(MCU_IN28<<4)|(MCU_IN29<<3)|(MCU_IN30<<2)|(MCU_IN31<<1)|(MCU_IN32);
+			   (MCU_IN25<<7)|(MCU_IN26<<6)|(MCU_IN27<<5)|(MCU_IN28<<4)|(MCU_IN29<<3)|(pin_filter_in[0].result<<2)|(pin_filter_in[1].result<<1)|(pin_filter_in[2].result);
+		dbg_printf("io_temp = %x\n",temp);
 		byte_order_change((U8*)&temp,4);
 	}
 	main_interface_data.switch_capture.u32_switch_capture = temp;

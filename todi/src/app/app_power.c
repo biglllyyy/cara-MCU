@@ -31,9 +31,9 @@
 
 
 
-#define IGN_OFF_2_SLEEP_TIME    200
-#define GLOBLE_CAN_LOST_TIME    500
-#define GLOBLE_LIN_LOST_TIME    500
+#define IGN_OFF_2_SLEEP_TIME    2
+#define GLOBLE_CAN_LOST_TIME    5
+#define GLOBLE_LIN_LOST_TIME    5
 
 TIMER_TYPE  lcd_on_time = {0};
 TIMER_TYPE  core_startup_time = {0};
@@ -303,7 +303,7 @@ static void state_pwr_pre_sleep(STATE_ACTION action)
 			{				 	
 				/*收到关机请求、IGNOFF后40s未收到关屏请求，关闭CORE板*/
 				if(get_uart_close_lcd_req() == 1 || \
-					hal_timer_passed(enter_pre_sleep_tick) >= 40*HZ)
+					hal_timer_passed(enter_pre_sleep_tick) >= 1*HZ)//!< 40
 				{
 					//dbg_string("time_passed:%d\n",hal_timer_passed(enter_pre_sleep_tick));
 					mcu_rec_general.settingsInfo.first.bits.closeReq=0;
@@ -388,6 +388,7 @@ static void state_pwr_off(STATE_ACTION action)
  	{
  		case ENTER:
 			app_A20_power_off();
+			mid_set_io_sts(&MCU_HOLD_ON,OFF);
 		break;
 		case LEAVE:
 			can_lost.all_lost_keep_time = 0;

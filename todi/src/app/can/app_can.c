@@ -890,7 +890,6 @@ void can_id_1802EF17_send(void) { ////对应报文0x1802EF17
 }
 
 
-
 void app_can_sent_task(void) {
 	//MCU_TO_PC_send();
 	if (uart_special_data.specialInfo.LedWarning.third.bit.IPconfig == 2) {

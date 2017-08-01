@@ -79,6 +79,7 @@ void main_interface_get_data(void)
 
 	//µµÎ»
 	main_interface_data.gear = VCU_Gear;  /*0000:¿Õµ² 0001: 1 µµ 0010: 2 µµ 0011: 3 µµ 0100: 4 µµ 0101: 5 µµ 0110: 6 µµ 1101: 13µ¹µµ*/
+	main_interface_data.reversed1 = VCU_Status_Flag1.byte;
 
 	//×ÜµçÁ÷
 	buf1 = BMS_Current;

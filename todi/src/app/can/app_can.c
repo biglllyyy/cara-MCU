@@ -809,7 +809,7 @@ void can_id_1801EF17_send(void) { //对应报文0x1801EF17
 	}
     else if (ADV[3] < 3000) 
 	{
-		temp = (ADV[3] - 500) * 0.004;
+		temp = (ADV[3] - 500) * 4 /100;
     }
     else
 	{	
@@ -823,7 +823,7 @@ void can_id_1801EF17_send(void) { //对应报文0x1801EF17
     }
     else if (ADV[4] < 3000) 
 	{
-		temp = (ADV[4] - 500) * 0.004;
+		temp = (ADV[4] - 500) * 4 / 100 ;
     }
     else 
 	{

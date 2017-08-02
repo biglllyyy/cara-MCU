@@ -162,9 +162,8 @@ typedef struct
 	U16  tm_zhuanju_nm;
 	U8  charge_overtime;
 	U8  vcu_fault;
-
 	U32  utc_time_second;
-
+	U32 vol;
 	
 
 } Main_Interface_Data_Struct;

@@ -41,6 +41,8 @@ __interrupt void Vectors_Isr_DefaultHandler (void);
 __interrupt void uart1_rx_interrupt(void);
 __interrupt void uart1_tx_interrupt(void);
 __interrupt void reload_timer_0(void);
+__interrupt void CAN_0_int(void);
+
 //__interrupt void ISR_LIN0_Reception(void);
 //__interrupt void ISR_LIN0_Transmission(void);
 //__interrupt void ISR_LIN1_Reception(void);
@@ -76,7 +78,7 @@ __interrupt void reload_timer_0(void);
 #pragma	intvect	Vectors_Isr_DefaultHandler 31	///< Multi-function serial interface ch.5 (transmission completed)
 #pragma	intvect	Vectors_Isr_DefaultHandler 32	///< Multi-function serial interface ch.6 (reception completed) Multi-function serial interface ch.6 (status)
 #pragma	intvect	Vectors_Isr_DefaultHandler 33	///< Multi-function serial interface ch.6 (transmission completed)
-#pragma	intvect	Vectors_Isr_DefaultHandler 34	///< CAN0
+#pragma	intvect	CAN_0_int 34	///< CAN0
 #pragma	intvect	Vectors_Isr_DefaultHandler 35	///< CAN1
 #pragma	intvect	Vectors_Isr_DefaultHandler 36	///< Up/down counter 0 Up/down counter 1
 #pragma	intvect	Vectors_Isr_DefaultHandler 37	///< Real time clock
@@ -145,7 +147,7 @@ void icr_manage(void)
    icr_set(7,22);      //uart1 sent intterrupt
     //icr_set(12,22);      //Multi-function serial interface ch.4 (reception completed)
     //icr_set(13,22);      //Multi-function serial interface ch.4 (transmission completed)
-    //icr_set(18,23);     //CAN0 interrupt
+    icr_set(18,23);     //CAN0 interrupt
     //icr_set(23,26);
     //icr_set(25,26);		// turn beep
     //icr_set(29,24);		//16-bit ICU 0 (fetching) / 16-bit ICU 1 (fetching),vector 45

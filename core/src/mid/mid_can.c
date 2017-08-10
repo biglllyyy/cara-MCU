@@ -57,7 +57,7 @@ static const U8 moto_format[64]=
 
 static U8 cntRecv, cntSend;
 static can_msg_t *can_msg;
-static U8 mPhyChip = 0;
+static U8 mPhyChip = 1;
 /****************************************************/
 /* motor format
   BIT7---------------------------------BIT0

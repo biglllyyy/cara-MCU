@@ -294,7 +294,7 @@ void app_init_can(void) {
 	app_bound_id(ID_SEND_1_1801EF17, 0x1FFFFFFF, 8, EXTERN_ID, (ID_RECV_NUM_ALL + 2),ID_1801EF17_Period);
 	app_bound_id(ID_SEND_2_1802EF17, 0x1FFFFFFF, 8, EXTERN_ID, (ID_RECV_NUM_ALL + 3),ID_1802EF17_Period);
 	
-
+	
 	/* register the can id process function */
 	can_rx_pro = app_can_process;
 	/*register the can id process */

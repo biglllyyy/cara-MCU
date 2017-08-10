@@ -22,13 +22,13 @@ typedef unsigned char   Bool;
 #else
 typedef unsigned char   Bool;
 #endif
-typedef unsigned char   U8;  	/*unsigned 8 bit definition */
-typedef unsigned short  U16; 	/*unsigned 16 bit definition*/
-typedef unsigned int    U32; 	/*unsigned 32 bit definition*/
-typedef unsigned long	U64;		
-typedef signed   char     S8;   	/*signed 8 bit definition */
-typedef signed   short    S16;  	/*signed 16 bit definition*/
-typedef signed   long     S32;  	/*signed 32 bit definition*/
+typedef unsigned char   U8,UINT8;  	/*unsigned 8 bit definition */
+typedef unsigned short  U16,UINT16; 	/*unsigned 16 bit definition*/
+typedef unsigned int    U32,UINT32; 	/*unsigned 32 bit definition*/
+typedef unsigned long	U64,UINT64;		
+typedef signed   char     S8,INT8;   	/*signed 8 bit definition */
+typedef signed   short    S16,INT16;  	/*signed 16 bit definition*/
+typedef signed   long     S32,INT32;  	/*signed 32 bit definition*/
 typedef unsigned short   COUNTER;
 
 typedef signed char 	int8_t;

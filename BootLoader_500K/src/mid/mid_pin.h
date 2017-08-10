@@ -8,11 +8,11 @@
 
 typedef struct
 {
-	unsigned char *name;
-	U8   port;
-	U8   bit;
-	e_io_direction  dir;
-	U8   value; 
+	unsigned char *name;		//!<固件名称
+	U8   port;					//!<端口号
+	U8   bit;					//!<引脚号
+	e_io_direction  dir;		//!<输入、输出方向
+	U8   value; 				//!<初始值
 }gpio_dev_t;
 
 void		  mid_set_io_sts(gpio_dev_t *io_name,U8 value);

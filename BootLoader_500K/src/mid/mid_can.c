@@ -1,5 +1,5 @@
 #include "Mid_can.h"
-#include "hal_can.h"
+
 #include "hal_gpio.h"
 #include "mid_pin.h"
 /**
@@ -118,18 +118,17 @@ void mid_can_io_init(U8 chn)
 /**
   * @brief  can控制器初始化
   * @param  chn 控制器端口选择
-  * @param  pcan_msg can节点
+  * @param  can_rx_handle 数据接收处理函数
   * @retval None
   */
-
-void mid_can_init(U8 chn)
+void mid_can_init(U8 chn,pCanAnalyse can_rx_handle)
 {
 /**
   * @TODO: 初始化can端口
   * @{
   */
 	mid_can_io_init(chn);
-	hal_can_init(chn);
+	hal_can_init(chn,can_rx_handle);
 	can_chip_mode_switch(&gpio_can0[CAN_CTR_STB],&gpio_can0[CAN_CTR_EN],NORMAL_MODE);//选择标准模式
 	mid_set_io_sts(&gpio_can0[CAN_CTR_WAKE],ON);
 /**

@@ -68,9 +68,10 @@ typedef enum
 } t_CAN_ERR_TYPE;
 
 
+typedef void (*pCanAnalyse)(can_msg_t *msg);
 
 extern  void hal_can_prepare(U8 nRecv, U8 nSend,can_msg_t*can_msg);
-extern  void hal_can_init(U8 chn);
+extern  void hal_can_init(U8 chn,pCanAnalyse can_rx_handle);
 extern  U8   hal_can_get(can_msg_t *can_rx_ptr);
 extern  void hal_can_sent(U8 chn,can_msg_t *can_msg);
 extern  void State_judge_0(void);

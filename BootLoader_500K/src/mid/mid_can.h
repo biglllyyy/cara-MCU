@@ -1,6 +1,7 @@
 #ifndef _MID_CAN_H__
 	#define _MID_CAN_H__
 #include "comm_typedef.h"
+#include "hal_can.h"
 
 
 #define    CAN_CHN			0
@@ -12,7 +13,8 @@ typedef enum{
 }can_mode_t;
 
 
-extern void mid_can_init(U8 chn);
+void mid_can_init(U8 chn,pCanAnalyse can_rx_handle);
+
 
 #endif
 

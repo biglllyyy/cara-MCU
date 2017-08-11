@@ -48,11 +48,13 @@ volatile UPDATA_FIFO updata_buf;
 UINT8 Getchar(void)
 {
 	extern U32 CanStop;
-	while((CanStop == 0)||(updata_buf.r == updata_buf.w))
+	while(
+		//(CanStop == 0)||				//!<查询方式需要加这个判断
+		(updata_buf.r == updata_buf.w))
 	{
 		//执行其他任务
 		wdg_feed();
-		app_can_get_task();
+		//app_can_get_task();
 		Protocol(&can_info);
 	}
 	return updata_buf.buf[(updata_buf.r++)&(BUFFER_SIZE-1)];

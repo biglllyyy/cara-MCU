@@ -17,11 +17,14 @@
 #include "Mid_can.h"
 #include "hal_can.h"
 #include "protocol.h"
+#include "srec.h"
 
 
+void CanRxHandle(can_msg_t *msg);
 
 
 can_msg_t can_msg[ID_PROCESS_ALL]={0};
+
 
 static can_msg_t *rx_msg = &can_msg[0];
 static can_msg_t *tx_msg_1 = &can_msg[1];
@@ -82,7 +85,7 @@ void app_init_can(void)
 	app_bound_id(Write_ID,0x1FFFFFF0,8,EXTERN_ID,5,PERIOD_MS(100));
 //	app_bound_id(BOOT_ADDR+5,0x1FFFFFF0,8,EXTERN_ID,6,PERIOD_MS(100));
 	//!<can控制器 初始化
-	mid_can_init(CAN_CHN);
+	mid_can_init(CAN_CHN,CanRxHandle);
 	
 }
 /**
@@ -140,7 +143,7 @@ U32 ReadCanData(PROTOCOL_MSG *msg)
 U32 SendCanData(PROTOCOL_MSG *msg)
 {
 	can_msg_t *tx_msg;
-
+	
 	switch(msg->CMD + BOOT_ADDR)
 	{
 		case CHECK_ID:
@@ -204,4 +207,44 @@ void app_can_get_task(void)
 		rx_msg->count = 0;
 	}
 }
+
+/**
+  * @brief  can中断接收服务函数
+  * @param  msg can报文数据
+  * @retval None
+  */
+
+void CanRxHandle(can_msg_t *msg)
+{
+	if(msg->id == Write_ID)
+	{
+		U32 i;
+		if(data_index<data_size)
+		{
+			CanStop = 0;
+			for (i=0;i<msg->dlc;i++)
+			{
+				data_index++;
+				if(data_index+2<=data_size){
+					updata_buf.buf[(updata_buf.w++)&(BUFFER_SIZE - 1)] = msg->data[i];
+				}
+			}
+			
+		}
+		if(data_index>=data_size){
+			CanStop = 1;
+			rx_msg->id = msg->id;
+			rx_msg->new_frame = 1;
+			//数据接收结束
+		}
+	}
+	else
+	{
+		rx_msg->id = msg->id;
+		memcpy(rx_msg->data,msg->data,8);
+		rx_msg->dlc = msg->dlc;
+		rx_msg->new_frame = 1;
+	}
+}
+
 

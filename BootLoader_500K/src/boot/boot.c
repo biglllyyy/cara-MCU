@@ -207,7 +207,7 @@ void CAN_Boot_Process(void)
 	while(1)
 	{
 		U32 temp;
-		app_can_get_task();
+		//app_can_get_task();
 		Protocol(&can_info);
 		temp = ProgramFlash();
 		if (temp != 0)

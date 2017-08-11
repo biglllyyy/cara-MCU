@@ -25,6 +25,7 @@ static void can_sent_object_init(U8 chn,U8 num,CAN_ID_FORMAT_e format,U32 id,U8 
 
 static U8 cntRecv = 0, cntSend = 0;
 static can_msg_t*can_msg=0;
+static pCanAnalyse pCanHandle;
 void hal_can_prepare(U8 nRecv, U8 nSend,can_msg_t*msg)
 {
 	
@@ -43,12 +44,13 @@ void hal_can_prepare(U8 nRecv, U8 nSend,can_msg_t*msg)
 	}
 }
 
-void hal_can_init(U8 chn)
+void hal_can_init(U8 chn,pCanAnalyse can_rx_handle)
 {
     int i = 0;
     switch(chn)
     {
     case 0:
+		pCanHandle = can_rx_handle;
 #if 0
         WriteKeyProtectedRegister((unsigned int)&DDR09, 0x00, BYTE_ACCESS);
         WriteKeyProtectedRegister((unsigned int)&PFR09, 0x20, BYTE_ACCESS);	/* TX0/P95,RX0/P96 */
@@ -92,6 +94,7 @@ void hal_can_init(U8 chn)
         //IO_CAN0.CTRLR.hword = 0x000B;		/* BTR/BRPE Write Disable, Test mode ON */
         /*lookback mode */
         //IO_CAN0.TESTR.hword = 0x0010;		/* LoopBack mode ON */
+         IO_CAN0.CTRLR.bit.IE = 1;
         IO_CAN0.CTRLR.bit.Init = 0;				/* CAN Controller Start */
         break;
     case 1:
@@ -224,11 +227,12 @@ void State_judge_0(void)
 void TxRx_Judge_0(void)
 {
     S16   MsgNbr = 0x00;
+	can_msg_t temp_msg;
     U32  MsgBuffer;
     U8  i =0;
     ///check///
     MsgNbr = IO_CAN0.INTR.hword;				//stor MsgNbr
-	Console("hword = %d",MsgNbr);
+	//Console("hword = %d",MsgNbr);
     if( (MsgNbr>=1) && (MsgNbr<=0x20) ) // valid buffer number
     {
         MsgBuffer = 0x01 << (MsgNbr-1);
@@ -257,43 +261,95 @@ void TxRx_Judge_0(void)
                 }
                 else
                 {
-                    MsgNbr-=2;
-                    if((MsgNbr>=0) && (MsgNbr < cntRecv))
-                    {
-                        can_msg[MsgNbr].dlc = (U8)CAN0_IF2MCTR_DLC;
-                    }
-                    switch(can_msg[MsgNbr].dlc)
+					temp_msg.dlc = CAN0_IF2MCTR_DLC;
+					temp_msg.format = (IO_CAN0.IF2ARB.bit.Xtd == 1)?EXTERN_ID:STAND_ID;
+					if(temp_msg.format)	//extern id
+					{
+						temp_msg.id = MSG2EXT( IO_CAN0.IF2ARB.word);   /* Arbitration */
+					}
+					else
+					{
+						temp_msg.id = MSG2STD(IO_CAN0.IF2ARB.word);
+					}
+                    switch(temp_msg.dlc)
                     {
                     case 8:
-                        can_msg[MsgNbr].data[7] = CAN0_IF2DTB2_IF2DTB2L;//save data from buffer to RAM
+                        temp_msg.data[7] = CAN0_IF2DTB2_IF2DTB2L;//save data from buffer to RAM
                     case 7:
-                        can_msg[MsgNbr].data[6] = CAN0_IF2DTB2_IF2DTB2H;
+                        temp_msg.data[6] = CAN0_IF2DTB2_IF2DTB2H;
                     case 6:
-                        can_msg[MsgNbr].data[5] = CAN0_IF2DTB1_IF2DTB1L;
+                        temp_msg.data[5] = CAN0_IF2DTB1_IF2DTB1L;
                     case 5:
-                        can_msg[MsgNbr].data[4] = CAN0_IF2DTB1_IF2DTB1H;
+                        temp_msg.data[4] = CAN0_IF2DTB1_IF2DTB1H;
                     case 4:
-                        can_msg[MsgNbr].data[3] = CAN0_IF2DTA2_IF2DTA2L;
+                        temp_msg.data[3] = CAN0_IF2DTA2_IF2DTA2L;
                     case 3:
-                        can_msg[MsgNbr].data[2] = CAN0_IF2DTA2_IF2DTA2H;
+                        temp_msg.data[2] = CAN0_IF2DTA2_IF2DTA2H;
                     case 2:
-                        can_msg[MsgNbr].data[1] = CAN0_IF2DTA1_IF2DTA1L;
+                        temp_msg.data[1] = CAN0_IF2DTA1_IF2DTA1L;
                     case 1:
-                        can_msg[MsgNbr].data[0] = CAN0_IF2DTA1_IF2DTA1H;
-                        can_msg[MsgNbr].new_frame = 1;					/* new frame receive */
-                        can_msg[MsgNbr].lost = 0;							/* clear lost flg */
-                        can_msg[MsgNbr].count = 0;
+                        temp_msg.data[0] = CAN0_IF2DTA1_IF2DTA1H;
+                        temp_msg.new_frame = 1;					/* new frame receive */
+                        temp_msg.lost = 0;							/* clear lost flg */
+                        temp_msg.count = 0;
                         break;
                     case 0:
                         break;
                     default:
                         break;
-                    }
-                    for(i=8; i>can_msg[MsgNbr].dlc; i--)
+                    }		
+					for(i=8; i>temp_msg.dlc; i--)
                     {
-                        can_msg[MsgNbr].data[i-1] = 0;
+                        temp_msg.data[i-1] = 0;
                     }
+					pCanHandle(&temp_msg);
+//                    MsgNbr-=2;
+//                    if((MsgNbr>=0) && (MsgNbr < cntRecv))
+//                    {
+//                        can_msg[MsgNbr].dlc = (U8)CAN0_IF2MCTR_DLC;
+//                    }
+//					can_msg[MsgNbr].format = (IO_CAN0.IF2ARB.bit.Xtd == 1)?EXTERN_ID:STAND_ID;
+//					if(can_msg[MsgNbr].format)	//extern id
+//					{
+//						can_msg[MsgNbr].id = MSG2EXT( IO_CAN0.IF2ARB.word);   /* Arbitration */
+//					}
+//					else
+//					{
+//						can_msg[MsgNbr].id = MSG2STD(IO_CAN0.IF2ARB.word);
+//					}
 
+//                    switch(can_msg[MsgNbr].dlc)
+//                    {
+//                    case 8:
+//                        can_msg[MsgNbr].data[7] = CAN0_IF2DTB2_IF2DTB2L;//save data from buffer to RAM
+//                    case 7:
+//                        can_msg[MsgNbr].data[6] = CAN0_IF2DTB2_IF2DTB2H;
+//                    case 6:
+//                        can_msg[MsgNbr].data[5] = CAN0_IF2DTB1_IF2DTB1L;
+//                    case 5:
+//                        can_msg[MsgNbr].data[4] = CAN0_IF2DTB1_IF2DTB1H;
+//                    case 4:
+//                        can_msg[MsgNbr].data[3] = CAN0_IF2DTA2_IF2DTA2L;
+//                    case 3:
+//                        can_msg[MsgNbr].data[2] = CAN0_IF2DTA2_IF2DTA2H;
+//                    case 2:
+//                        can_msg[MsgNbr].data[1] = CAN0_IF2DTA1_IF2DTA1L;
+//                    case 1:
+//                        can_msg[MsgNbr].data[0] = CAN0_IF2DTA1_IF2DTA1H;
+//                        can_msg[MsgNbr].new_frame = 1;					/* new frame receive */
+//                        can_msg[MsgNbr].lost = 0;							/* clear lost flg */
+//                        can_msg[MsgNbr].count = 0;
+//                        break;
+//                    case 0:
+//                        break;
+//                    default:
+//                        break;
+//                    }
+//                    for(i=8; i>can_msg[MsgNbr].dlc; i--)
+//                    {
+//                        can_msg[MsgNbr].data[i-1] = 0;
+//                    }
+//					pCanHandle(&can_msg[MsgNbr]);
                 }
             }
             else if ( (IO_CAN0.TREQR12.word & MsgBuffer) == 0 ) // is transmission done
@@ -312,7 +368,7 @@ void TxRx_Judge_0(void)
 
 void __interrupt CAN_0_int(void)
 {
-	Console("----can interrupt !\n");
+	//Console("----can interrupt !\n");
     if(IO_CAN0.INTR.hword == 0x8000)		/* status int */
     {
         State_judge_0();					//judge state only when INTR==0x8000
@@ -483,5 +539,7 @@ t_CAN_ERR_TYPE hal_get_eer_type(void)
     temp &= 0x07;
     return ((t_CAN_ERR_TYPE)temp);
 }
+
+
 
 

@@ -47,6 +47,7 @@ void ExecutiveAppHandle(PROTOCOL_COMM_INFO *info,PROTOCOL_MSG *msg);
   * @}
   */
 
+
 U32 data_index = 0,data_size = 0,CanStop = 1;
 
 
@@ -100,6 +101,7 @@ void Protocol(PROTOCOL_COMM_INFO *pro)
 void BOOT_ExecutiveCommandHandle(PROTOCOL_COMM_INFO *info,PROTOCOL_MSG *msg)
 {
 	int i;
+
 	for(i=0;;i++)
 	{
 		if (commandTable[i].fHandle == NULL)
@@ -165,6 +167,7 @@ void ExecutiveEraseFlashHandle(PROTOCOL_COMM_INFO *info,PROTOCOL_MSG *msg)
 	msg->CMD = EraseFlashID;
 	msg->len = 8;
 	msg->data[0] = app_flash_result;
+	//Console("\n ²Á³ý³É¹¦",msg->CMD);
 	info->pSendData(msg);
 }
 /**
@@ -181,9 +184,9 @@ void ExecutiveBlockWriteInfoHandle(PROTOCOL_COMM_INFO *info,PROTOCOL_MSG *msg)
 	data_index = 0;
 	data_size = msg->data[4];
 	data_size <<=8;
-	data_size =msg->data[5];
+	data_size +=msg->data[5];
 	data_size <<=8;
-	data_size = msg->data[6];
+	data_size += msg->data[6];
 	data_size <<=8;
 	data_size +=msg->data[7];
 	msg->CMD = BlockWriteInfoID;
@@ -201,24 +204,29 @@ void ExecutiveBlockWriteInfoHandle(PROTOCOL_COMM_INFO *info,PROTOCOL_MSG *msg)
 
 void ExecutiveWriteBlockFlashHandle(PROTOCOL_COMM_INFO *info,PROTOCOL_MSG *msg)
 {
-	U32 i;
-	if(data_index<data_size)
-	{
-		CanStop = 0;
-		for (i=0;i<msg->len;i++)
-		{
-			data_index++;
-			if(data_index+2<=data_size){
-				updata_buf.buf[(updata_buf.w++)&(BUFFER_SIZE - 1)] = msg->data[i];
-			}
-		}
-		//Console("\n data_index=%d,data_size=%d",data_index,data_size);
-	}
-	if(data_index>=data_size){
-		CanStop = 1;
-		//Console("\n send id = %d",msg->CMD);
-		info->pSendData(msg);
-	}
+	
+//	U32 i;
+//	if(data_index<data_size)
+//	{
+//		CanStop = 0;
+//		for (i=0;i<msg->len;i++)
+//		{
+//			data_index++;
+//			if(data_index+2<=data_size){
+//				updata_buf.buf[(updata_buf.w++)&(BUFFER_SIZE - 1)] = msg->data[i];
+//			}
+//		}
+//		//Console("\n data_index=%d,data_size=%d",data_index,data_size);
+//	}
+//	if(data_index>=data_size){
+//		CanStop = 1;
+//		//Console("\n send id = %d",msg->CMD);
+//		info->pSendData(msg);
+//	}
+	msg->CMD = WriteBlockFlashID;
+	msg->len= 0;
+	memset(msg->data,0,8);
+	info->pSendData(msg);
 }
 
 void ExecutiveAppHandle(PROTOCOL_COMM_INFO *info,PROTOCOL_MSG *msg)

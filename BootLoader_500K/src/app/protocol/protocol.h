@@ -39,6 +39,7 @@ typedef struct __PROTOCOL_COMM_INFO
 	  U32 (* pSendData)(PROTOCOL_MSG *msg) ;           //!<·¢ËÍÊý¾Ý
 }
 PROTOCOL_COMM_INFO;
+extern U32 data_index,data_size,CanStop;
 
 
 

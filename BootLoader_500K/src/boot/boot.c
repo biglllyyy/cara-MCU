@@ -206,8 +206,14 @@ void CAN_Boot_Process(void)
 	Console("Saber Bootloader in %s version %d.%d\n",PROJECT ,BL_VER_MAJOR, BL_VER_REV);
 	while(1)
 	{
+		U32 temp;
 		app_can_get_task();
 		Protocol(&can_info);
+		temp = ProgramFlash();
+		if (temp != 0)
+		{
+			Console("\–¥»Î¥ÌŒÛ ¥ÌŒÛ¬Î:%d",temp); 
+		}
 		wdg_feed(); 
 	}
 

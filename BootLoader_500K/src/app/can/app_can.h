@@ -15,13 +15,13 @@
 #define    CHECK_ID			(BOOT_ADDR + OnlineCheckID)
 #define    Erase_ID			(BOOT_ADDR + EraseFlashID)
 #define    Info_ID          (BOOT_ADDR + BlockWriteInfoID)
+#define    Write_ID         (BOOT_ADDR + WriteBlockFlashID)
 
 extern can_msg_t can_msg[ID_PROCESS_ALL];
 void app_init_can(void);
 U32 IsCanEmpty(void);
-U32 ReadCanData(U8 *data);
-U32 ReadCanID(void);
-void SendCanData(U32 ID,U8 *data,U8 len);
+U32 ReadCanData(PROTOCOL_MSG *msg);
+U32 SendCanData(PROTOCOL_MSG *msg);
 
 
 

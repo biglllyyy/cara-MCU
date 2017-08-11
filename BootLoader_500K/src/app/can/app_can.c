@@ -16,6 +16,7 @@
 #include "app_can.h"
 #include "Mid_can.h"
 #include "hal_can.h"
+#include "protocol.h"
 
 
 
@@ -78,7 +79,7 @@ void app_init_can(void)
 	app_bound_id(CHECK_ID,0x1FFFFFF0,8,EXTERN_ID,2,PERIOD_MS(100));
 	app_bound_id(Erase_ID,0x1FFFFFF0,8,EXTERN_ID,3,PERIOD_MS(100));
 	app_bound_id(Info_ID,0x1FFFFFF0,8,EXTERN_ID,4,PERIOD_MS(100));
-//	app_bound_id(BOOT_ADDR+4,0x1FFFFFF0,8,EXTERN_ID,5,PERIOD_MS(100));
+	app_bound_id(Write_ID,0x1FFFFFF0,8,EXTERN_ID,5,PERIOD_MS(100));
 //	app_bound_id(BOOT_ADDR+5,0x1FFFFFF0,8,EXTERN_ID,6,PERIOD_MS(100));
 	//!<can控制器 初始化
 	mid_can_init(CAN_CHN);
@@ -103,39 +104,32 @@ U32 IsCanEmpty(void)
   * 2.执行该函数会改变节点状态
   */
 
-U32 ReadCanData(U8 *data)
+U32 ReadCanData(PROTOCOL_MSG *msg)
 {
 	U32 id;
-	memset(data,0,8);//!<data数据长度必须为8，或大于8
+	memset(msg->data,0,MSG_BUF_SIZE);//!<data数据长度必须为8，或大于8
+	if (rx_msg->new_frame == 0)
+	{
+		return FAIL;
+	}
 	switch(rx_msg->dlc)
 	{
-		case 8:data[7] = rx_msg->data[7];
-		case 7:data[6] = rx_msg->data[6];
-		case 6:data[5] = rx_msg->data[5];
-		case 5:data[4] = rx_msg->data[4];
-		case 4:data[3] = rx_msg->data[3];
-		case 3:data[2] = rx_msg->data[2];
-		case 2:data[1] = rx_msg->data[1];
-		case 1:data[0] = rx_msg->data[0];
+		case 8:msg->data[7] = rx_msg->data[7];
+		case 7:msg->data[6] = rx_msg->data[6];
+		case 6:msg->data[5] = rx_msg->data[5];
+		case 5:msg->data[4] = rx_msg->data[4];
+		case 4:msg->data[3] = rx_msg->data[3];
+		case 3:msg->data[2] = rx_msg->data[2];
+		case 2:msg->data[1] = rx_msg->data[1];
+		case 1:msg->data[0] = rx_msg->data[0];
 		case 0:break;
 		default: break;
 	}
-	id = rx_msg->id;
+	msg->CMD = (rx_msg->id)&0x0F;
+	msg->len = rx_msg->dlc;
 	rx_msg->new_frame = 0;
-	return 8;
+	return SUCCESS;
 }
-/**
-  * @brief 获取ID;
-  * @retval ID
-  * @attention
-  */
-
-U32 ReadCanID(void)
-{
-	return (rx_msg->id);
-}
-
-
 /**
   * @brief 发送can数据
   * @param ID 数据ID
@@ -143,11 +137,11 @@ U32 ReadCanID(void)
   * @param len 数据长度
   */
 
-void SendCanData(U32 ID,U8 *data,U8 len)
+U32 SendCanData(PROTOCOL_MSG *msg)
 {
 	can_msg_t *tx_msg;
 
-	switch(ID)
+	switch(msg->CMD + BOOT_ADDR)
 	{
 		case CHECK_ID:
 			tx_msg = tx_msg_1;
@@ -158,22 +152,27 @@ void SendCanData(U32 ID,U8 *data,U8 len)
 		case Info_ID:
 			tx_msg = tx_msg_3;
 			break;
-		default : return;
+		case Write_ID:
+			tx_msg = tx_msg_4;
+			break;
+		default :
+			return;
 	}
 	switch(tx_msg->dlc)
 	{
-		case 8:tx_msg->data[7] = data[7];
-		case 7:tx_msg->data[6] = data[6];
-		case 6:tx_msg->data[5] = data[5];
-		case 5:tx_msg->data[4] = data[4];
-		case 4:tx_msg->data[3] = data[3];
-		case 3:tx_msg->data[2] = data[2];
-		case 2:tx_msg->data[1] = data[1];
-		case 1:tx_msg->data[0] = data[0];
+		case 8:tx_msg->data[7] = msg->data[7];
+		case 7:tx_msg->data[6] = msg->data[6];
+		case 6:tx_msg->data[5] = msg->data[5];
+		case 5:tx_msg->data[4] = msg->data[4];
+		case 4:tx_msg->data[3] = msg->data[3];
+		case 3:tx_msg->data[2] = msg->data[2];
+		case 2:tx_msg->data[1] = msg->data[1];
+		case 1:tx_msg->data[0] = msg->data[0];
 		case 0:break;
 		default:break;
 	}	
 	hal_can_sent(0,tx_msg);
+	return SUCCESS;
 }
 
 

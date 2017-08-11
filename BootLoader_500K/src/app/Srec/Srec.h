@@ -35,29 +35,36 @@ Version  Date          Author    Description of Changes
 *******************************************************************************/
 #ifndef _UTILITIES_H /* Prevent duplicated includes */
 #define _UTILITIES_H
+#include "comm_typedef.h"
 
 #define DataRec 1
 #define EndRec 2
 #define HeaderRec 3
 
-#define noErr			0
-#define BadHexData		0x01
-
 #define MaxSRecLen 128
-extern int scont2;
+#define BUFFER_SIZE		0x400
+
+enum {
+	noErr = 0,
+	BadHexData,
+	CheckSumErr,
+	SRecTooLong,
+	SRecOddError,
+	SRecAdderr,
+};
 typedef struct {
-                UINT8 RecType;
-                UINT8 NumBytes;
+                UINT8 RecType;					//!<类型
+                UINT8 NumBytes;					//!<字节数;
                 UINT32 LoadAddr;
                 UINT8 Data[MaxSRecLen];
+				UINT8 DataLen;
                } SRecDataRec;
-#define RESET_VEC_SRC       (0x03FFE0ul)
-#define RESET_VEC_DST       (0x03EFF8ul)
+
 typedef struct 
 {
-	char buf[BUFFER_SIZE];
-	int r;
-	int w;
+	UINT8 buf[BUFFER_SIZE];
+	UINT32 r;
+	UINT32 w;
 }
 UPDATA_FIFO;
 extern volatile UPDATA_FIFO updata_buf;

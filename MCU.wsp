@@ -7,7 +7,7 @@ FILE-0=BootLoader_500K\prj\BootLoader.prj
 FILE-1=core\core.prj
 FILE-2=todi\todi.prj
 FILE-3=eeinfo\eeinfo.prj
-ActivePrj=todi.prj
+ActivePrj=BootLoader.prj
 
 [SubPrj-BootLoader.prj]
 Count=0
@@ -35,5 +35,9 @@ STATE-2=todi\src\app\uart\app_main_interface.c:207
 STATE-3=todi\src\app\uart\app_main_interface.h:79
 STATE-4=todi\src\app\uart\app_uart_cmd.c:710
 STATE-5=core\src\mid\mid_dbg.c:19
-Count=5
+STATE-6=BootLoader_500K\src\app\can\app_can.c:140
+STATE-7=BootLoader_500K\src\app\protocol\protocol.c:205
+STATE-8=BootLoader_500K\src\app\Srec\srec.h:59
+STATE-9=BootLoader_500K\src\app\Srec\Srec.c:51
+Count=9
 

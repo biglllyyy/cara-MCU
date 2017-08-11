@@ -2,6 +2,7 @@
 #define  __BOOT_H__
 
 /* Saber Bootloader Version*/
+
 #define BL_VER_MAJOR (1u)
 #define BL_VER_REV	 (8u)
 #define CAN_BL_BOOT	(0x0u)

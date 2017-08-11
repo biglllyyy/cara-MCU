@@ -14,14 +14,29 @@
 #define ExcuteAppID         0x09//执行应用程序
 
 
-#define BUFFER_SIZE		0x400
+
+
+/** @defgroup 消息类型
+  * @{
+  */
+#define MSG_BUF_SIZE	(0x08)
+typedef struct __PROTOCOL_MSG
+{
+	U32 CMD;					//!<命令
+	U8 data[MSG_BUF_SIZE];      //!<数据
+	U32 len;					//!<数据长度
+	U8  pro;					//!<端口不能重复
+}
+PROTOCOL_MSG;
+/**
+ * @}
+ */
 
 typedef struct __PROTOCOL_COMM_INFO
 {
 	  U32 (* pIsEmpty)(void) ;		                   //!<判断数据是否为空
-	  U32 (* pGetCMD)(void) ;		                   //!<获取命令
-	  U32 (* pReadData)(U8 *data) ;		               //!<获取数据，返回数据长度
-	  U32 (* pSendData)(U32 cmd,U8 *data,U8 len) ;     //!<发送数据
+	  U32 (* pReadData)(PROTOCOL_MSG *msg) ;		   //!<获取数据，返回错误状态
+	  U32 (* pSendData)(PROTOCOL_MSG *msg) ;           //!<发送数据
 }
 PROTOCOL_COMM_INFO;
 

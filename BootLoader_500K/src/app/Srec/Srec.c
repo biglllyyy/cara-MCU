@@ -36,11 +36,25 @@ Version   Date          Author    Description of Changes
 
 #include "srec.h"
 #include "comm_typedef.h"
+#include "protocol.h"
+#include "app_can.h"
+#include "boot.h"
 
 volatile UPDATA_FIFO updata_buf;
 
+
+
+
 UINT8 Getchar(void)
 {
+	extern U32 CanStop;
+	while((CanStop == 0)||(updata_buf.r == updata_buf.w))
+	{
+		//执行其他任务
+		wdg_feed();
+		app_can_get_task();
+		Protocol(&can_info);
+	}
 	return updata_buf.buf[(updata_buf.r++)&(BUFFER_SIZE-1)];
 }
 
@@ -53,6 +67,7 @@ static UINT8 GetHexByte(UINT8 *MemByte)
   *MemByte = 0;
   
   c = Getchar();    //get an ASCII hex byte from stdin (upper nybble of byte)
+  //Console("\nGetchar:%d",c); 
   if (!isxdigit(c))      //is it a valid hex digit
     return(BadHexData);  //no. return an error
     
@@ -129,6 +144,11 @@ UINT8 RcvSRecord(SRecDataRec *SRecData)
 	  SRecData->RecType = DataRec;
 	  AddrBytes = 2;
 	}
+	else if (RecType == '3')
+	{
+	  SRecData->RecType = DataRec;
+	  AddrBytes = 4;
+	}
     else
       continue;        //we only receive S0, S2, S7, S8 & S9 S-Records
       
@@ -141,7 +161,7 @@ UINT8 RcvSRecord(SRecDataRec *SRecData)
     
     //subtract number of bytes in the address+1 to get the length of data field
     NumDataBytes = (SRecData->NumBytes -= (AddrBytes +1));
-    
+    SRecData->DataLen = NumDataBytes;
     if (NumDataBytes > MaxSRecLen)  //is the S-Record longer than allowed?
       return(SRecTooLong);          //yes. report an error
       
@@ -153,25 +173,6 @@ UINT8 RcvSRecord(SRecDataRec *SRecData)
       CheckSum += SRecByte;   //add it into the checksum
       LoadAddress = (LoadAddress << 8) + SRecByte;
     }
-	//逻辑地址转化为物理地址
-	if (LoadAddress < 0xFFFF){
-		if (LoadAddress >=0xC000)
-		{
-			LoadAddress = 0x3C000UL - 0xC000UL + LoadAddress;
-		}
-		else if ((LoadAddress >= 0x4000) && (LoadAddress <= 0x7FFF))
-		{
-			LoadAddress = 0x34000UL - 0x4000UL + LoadAddress;
-		}
-	}
-	else
-	{
-		unsigned long page = 0,idx;
-		page = (unsigned int)(LoadAddress>>16);
-		idx = LoadAddress&0x3FFF;
-		LoadAddress = page * 0x4000ul;
-		LoadAddress += idx;
-	}
 
     SRecData->LoadAddr = LoadAddress;
     
@@ -207,21 +208,17 @@ UINT8 ProgramFlash(void)
 
   for(;;)
   {
-    _FEED_COP();
+    wdg_feed();
     Error = RcvSRecord(&ProgSRec);
     if (Error != noErr) //go get an S-Record, return if there was an error 
+    {
+	 
       break;
+    }
     
     if (ProgSRec.RecType == EndRec){ // S7, S* or S9 record? 
- #ifdef CHECK_TYPE
-      UINT8 * Src;
-      int temp;
-      Src = (UINT8 *)0x4000;
-      temp = strncmp(Src,CHECK_TYPE,sizeof(CHECK_TYPE));
-      if (0 == temp) 
-#endif
 	  { 
-        PFlash_Program(0x3EE00,(UINT16 *)APP_CHECK_STRING);
+        //PFlash_Program(0x3EE00,(UINT16 *)APP_CHECK_STRING);
       }
       break;                        // yes. return 
     }
@@ -231,38 +228,22 @@ UINT8 ProgramFlash(void)
     else                            //a data record was received 
     {
         
-      if ((ProgSRec.LoadAddr & 0x0000001FUL) != 0) //S-Record address alligned?
-        return(SRecOddError);       //yes. return
-      
-      if (ProgSRec.LoadAddr == RESET_VEC_SRC)
-      {
-        //Program reset vector to address 0xEFFE
-        if(Error = PFlash_Program(RESET_VEC_DST, (UINT16 *)&ProgSRec.Data[24]))
-          return(Error);
-      } 
-      else 
-      {
-        //is the address within a physical flash?
-        if (!((ProgSRec.LoadAddr >= 0x020000UL) && (ProgSRec.LoadAddr <= 0x03EFDFUL)))
-			return(SRecRangeError); 
         
-        
+		if ((ProgSRec.LoadAddr & 0x0000001UL) != 0) //S-Record address alligned?
+		  return(SRecOddError); 	  //yes. return
+		if (ProgSRec.LoadAddr<FLASH_START_ADDRESS)
+			return (SRecAdderr);
+		if (ProgSRec.LoadAddr>FLASH_END_ADDRESS)
+			return (SRecAdderr);
         //address is OK, program the record to flash
-        if(Error = PFlash_Program(ProgSRec.LoadAddr, (UINT16 *)&ProgSRec.Data))
-          return(Error);
-        if(Error = PFlash_Program(ProgSRec.LoadAddr+8, (UINT16 *)&ProgSRec.Data[8]))
-          return(Error);
-        if(Error = PFlash_Program(ProgSRec.LoadAddr+16, (UINT16 *)&ProgSRec.Data[16]))
-          return(Error);
-        if(Error = PFlash_Program(ProgSRec.LoadAddr+24, (UINT16 *)&ProgSRec.Data[24]))
+        if(Error = hal_Flash_Sector_Programing(ProgSRec.LoadAddr, (UINT16 *)ProgSRec.Data,(ProgSRec.DataLen)/2))
           return(Error);
       }
-    
+
     //feedback to serial port for each correctly programmed S-Record
 
     
     }
-  }
  
   return(Error);
 

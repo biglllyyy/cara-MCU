@@ -117,7 +117,7 @@ void can_io_config(U8 chip)
 		break;
 		case TJA1043:
 			mid_io_config(&io_can_stb,9,4,IO_GENERAL_OUTPUT,OFF);
-			mid_io_config(&io_can_en,9,3,IO_GENERAL_OUTPUT,OFF);
+			mid_io_config(&io_can_en,9,7,IO_GENERAL_OUTPUT,OFF);
 		break;
 	}
 		

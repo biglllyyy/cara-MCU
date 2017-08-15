@@ -22,14 +22,14 @@ typedef union {
 typedef union {
 
     struct {
-        U8 bit1 : 1;
-        U8 bit2 : 1;
-        U8 bit3 : 1;
-        U8 bit4 : 1;
-        U8 bit5 : 1;
-        U8 bit6 : 1;
-        U8 bit7 : 1;
         U8 bit8 : 1;
+        U8 bit7 : 1;
+        U8 bit6 : 1;
+        U8 bit5 : 1;
+        U8 bit4 : 1;
+        U8 bit3 : 1;
+        U8 bit2 : 1;
+        U8 bit1 : 1;
     }bits;
     U8 byte;
 } DATA_BIT;

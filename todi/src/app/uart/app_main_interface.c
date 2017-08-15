@@ -20,7 +20,7 @@
 Main_Interface_Data_Struct main_interface_data =
 { 0 };
 
-#define MAIN_INTERFACE_DATA_LENGTH 40
+#define MAIN_INTERFACE_DATA_LENGTH 44
 #define MAIN_INTERFACE_FRAME_TYPE  CAR_INFO_TYPE
 
 extern U16 ad_data;
@@ -79,6 +79,7 @@ void main_interface_get_data(void)
 
 	//µµÎ»
 	main_interface_data.gear = VCU_Gear;  /*0000:¿Õµ² 0001: 1 µµ 0010: 2 µµ 0011: 3 µµ 0100: 4 µµ 0101: 5 µµ 0110: 6 µµ 1101: 13µ¹µµ*/
+	main_interface_data.reversed1 = VCU_Status_Flag1.byte;
 
 	//×ÜµçÁ÷
 	buf1 = BMS_Current;
@@ -257,7 +258,23 @@ void main_interface_get_data(void)
 	temp = g_u32_utcTime;
 	byte_order_change((U8*)&temp,4);
 	main_interface_data.utc_time_second = temp;     //
-
+	{
+		U32 u32tem;
+		u32tem = ADR[6];
+		u32tem = u32tem * 169 /10000;
+		u32tem = u32tem + 4;
+		if (u32tem<16)
+		{
+			u32tem = 16;
+		}
+		else if (u32tem>32)
+		{
+			u32tem = 32;
+		}
+		byte_order_change((U8*)&u32tem,4);
+		main_interface_data.vol = u32tem;
+		//dbg_printf("!!!!!----->>>> %d\n",ADR[6]);
+	}
 }
 void main_interface_send_data(void)
 {

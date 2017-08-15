@@ -178,6 +178,18 @@ void hal_gpio_Init(void)
     WriteKeyProtectedRegister( (unsigned int)&ADERH0, 0x0000, HALFWORD_ACCESS );
     WriteKeyProtectedRegister( (unsigned int)&ADERL1, 0, HALFWORD_ACCESS );
     WriteKeyProtectedRegister( (unsigned int)&PORTEN, 0xFD, BYTE_ACCESS);	//IO输入功能使能
+
+	/* hal can init */
+#if 1//
+    set_single_io_dir(9,6,IO_INPUT);	//RX0,IO_INPUT
+    PFR[9] |=BIT5;						//pin 9.5 special fun select
+    DDR[9] |=BIT5;						//pin 9.5 IO_GENERAL_OUTPUT
+    EPFR[86]|=BIT0|BIT5|BIT6|BIT7;		//bit5,6,7 default1
+    EPFR[86]&=MASK1;					//01:CAN channel TX0(128) IO_GENERAL_OUTPUT enabled
+    WriteKeyProtectedRegister(PFR_ADS[9],PFR[9],BYTE_ACCESS);		// write PFR
+    WriteKeyProtectedRegister((unsigned int )&EPFR86,EPFR[86],BYTE_ACCESS);	// write EPFR
+    WriteKeyProtectedRegister(DDR_ADS[9],DDR[9],BYTE_ACCESS);		// write DDR
+#endif
 }
 
 

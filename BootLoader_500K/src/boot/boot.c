@@ -5,7 +5,10 @@
 
 #include "open.h"
 
+
 #include "app_uart_cmd.h"
+#include "app_can.h"
+#include "protocol.h"
 
 #include "mid_pin.h"
 #include "mid_flash.h"
@@ -17,6 +20,7 @@
 #include "mid_serialport.h"
 #include "mid_interrupt.h"
 #include "mid_wdg.h"
+#include "mid_can.h"
 
 
 #define BOOT_IO_GROUP_SIZE 3
@@ -165,7 +169,7 @@ void CAN_Boot_Loader(void)
 #pragma segment CODE=CODE_CAN_Boot, attr=CODE
 void CAN_Boot_Process(void)
 {
-
+	U32 idx;
 	U64 offset			= 0;
 	U32 len_update_data = 0;
 	U8 boot_update_flag = 0;
@@ -195,13 +199,23 @@ void CAN_Boot_Process(void)
 	mid_Interrupt_Init();
 	mid_Serialport_Init(&serialPort_A20);
 	mid_Console_Init(&serialPort_Debug);
-	
+	app_init_can();
 	app_uart_frame_init();
 
 
-	
-	Console("Saber Bootloader in %s version %d.%d.%d\n",PROJECT ,BL_VER_MAJOR, BL_VER_MINOR, BL_VER_REV);
-
+	Console("Saber Bootloader in %s version %d.%d\n",PROJECT ,BL_VER_MAJOR, BL_VER_REV);
+	while(1)
+	{
+		U32 temp;
+		//app_can_get_task();
+		Protocol(&can_info);
+		temp = ProgramFlash();
+		if (temp != 0)
+		{
+			Console("\–¥»Î¥ÌŒÛ ¥ÌŒÛ¬Î:%d",temp); 
+		}
+		wdg_feed(); 
+	}
 
 #if 0   // just for first flash app into no core board
 
@@ -310,7 +324,7 @@ void CAN_Boot_Process(void)
 	}
 #endif
 
-
+#if 0
 	while (1)
 	{
 		wdg_feed();
@@ -318,7 +332,7 @@ void CAN_Boot_Process(void)
 		switch (boot_step)
 		{
 			case 0: /*≈–∂œ*/
-					boot_update_flag = Serial_Port_Upgrade_Condition_Judgment(); //Determine whether to upgrade
+					boot_update_flag = 0; //Serial_Port_Upgrade_Condition_Judgment(); //Determine whether to upgrade
 
 					if (boot_update_flag)
 					{
@@ -373,6 +387,7 @@ void CAN_Boot_Process(void)
 					break;
 
 			case 4: /*Ω¯»ÎFireWare*/
+					Console("to app.\n");
 #pragma asm
 	LDI:32 #080024H, R0;  //jmp to address 80024H to run
 	JMP @R0;
@@ -383,6 +398,9 @@ void CAN_Boot_Process(void)
 					break;
 		}
 	}
+#else
+
+#endif
 }
 
 

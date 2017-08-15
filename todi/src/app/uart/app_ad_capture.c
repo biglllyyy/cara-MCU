@@ -11,7 +11,7 @@ const Ad_Capture_Info ad_cap_info_arr[MCU_SER_ALL] =
 	{MCU_SER4,25},
 	{MCU_SER5,29},
 	//{MCU_SER6,30},
-	//{MCU_VBAT,12},
+	{MCU_VBAT,12},
 };
 
 
@@ -49,6 +49,13 @@ void ad_capture_info_get_data(void)
 	}
 	sum /= 0x20;
 	ADR[4] = sum;
+	sum = 0;
+	for (i=0;i<0x20;i++)
+	{
+		sum += AD_Value[2][i];
+	}
+	sum /= 0x20;
+	ADR[6] = sum;	
 
 }
 

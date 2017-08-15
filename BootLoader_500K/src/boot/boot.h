@@ -2,9 +2,11 @@
 #define  __BOOT_H__
 
 /* Saber Bootloader Version*/
-#define BL_VER_MAJOR 1
-#define BL_VER_MINOR 0
-#define BL_VER_REV	 8
+
+#define BL_VER_MAJOR (1u)
+#define BL_VER_REV	 (8u)
+#define CAN_BL_BOOT	(0x0u)
+#define CAN_TX_ID	(0x120)
 
 
 #define LIGHT_LCD_DELAY_TIME   20

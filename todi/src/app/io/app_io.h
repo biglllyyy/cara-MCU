@@ -30,7 +30,7 @@ extern io_type_t BUZ_CTL_IO;
 #endif
 
 
-#define    CAN_CHIP		TJA1042T   
+#define    CAN_CHIP		TJA1043
 #define    CAN_CFG      CFG_ON
 #if	(CAN_CFG == CFG_ON)
 extern io_type_t	io_can_stb;	 

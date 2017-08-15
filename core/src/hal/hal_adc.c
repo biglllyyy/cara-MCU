@@ -18,7 +18,7 @@
 static U16  REG_ADERLO = 0;
 static U16  REG_ADERH0 = 0;
 static U16  REG_ADERL1 = 0;
-U16 AD_Value[2][0x20] = {0};
+U16 AD_Value[3][0x20] = {0};
 U8          current_chn = 0;
 
 /*
@@ -207,7 +207,7 @@ __interrupt void  AD_Converter_interrupt_0_31(void)
 {
     U16 temp_value = 0;
     U16 *ptr = 0;
-	static U16 cont1 = 0,cont2 = 0;
+	static U16 cont1 = 0,cont2 = 0,cont3 = 0;
 	wdg_feed();
 	ptr = (U16 *)((U32)REG_ADTCS_0_31_ADDS(current_chn));	//get adtcs value
 	temp_value = *ptr;
@@ -226,6 +226,10 @@ __interrupt void  AD_Converter_interrupt_0_31(void)
 		else if (current_chn == 29)
 		{
 			AD_Value[1][cont2++&0x1F] = temp_value & 0x0FFF;
+		}
+		else if (current_chn == 12)
+		{
+			AD_Value[2][cont3++&0x1F] = temp_value & 0x0FFF;
 		}
 	}
 	else

@@ -16,6 +16,9 @@ $0
 -I "..\src\app\uart"
 -I "..\src\boot"
 -I "..\src\boot\open"
+-I "..\src\app\protocol"
+-I "..\src\app\can"
+-I "..\src\app\srec"
 -O 0
 -K LONGADDRESS
 -B
@@ -27,7 +30,7 @@ $0
 -K NOUNROLL
 $other
 $time
-1487906622
+1502351306
 $end
 $1
 -g
@@ -70,7 +73,7 @@ $other
 -sc CODE_START/code+CODE_CAN_Boot_Ready+@CODE_CAN_Boot =0x70024
 -sc CODE_CAN_Boot=_INRAM01
 $time
-1488183165
+1502351174
 $end
 $3
 -dt s,d,r,a
@@ -80,7 +83,7 @@ $3
 -Xdof
 $other
 $time
-1488183165
+1502351174
 $end
 $4
 -Xdof

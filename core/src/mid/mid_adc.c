@@ -72,10 +72,10 @@ void mid_adc_manager_task(void)//该任务的作用就是把所有配置了的AD输入使能了
 	{
 		
 		cur_chn_cnt = (cur_chn_cnt+1)%index;//!<限幅,防止数组角标越界
-		dbg_printf("+current_chn = %d\n",ad_chn_mgr.chn[cur_chn_cnt]);
 		if(ad_chn_mgr.chn[cur_chn_cnt] < 32)
 		{
 			hal_adc_init(AD_GROUP1,ad_chn_mgr.chn[cur_chn_cnt]);
+			
 			hal_adc_start(AD_GROUP1);
 		}
 		else if(ad_chn_mgr.chn[cur_chn_cnt] < 48)
@@ -83,7 +83,6 @@ void mid_adc_manager_task(void)//该任务的作用就是把所有配置了的AD输入使能了
 			hal_adc_init(AD_GROUP2,ad_chn_mgr.chn[cur_chn_cnt]);
 			hal_adc_start(AD_GROUP2);
 		}
-		dbg_printf("-current_chn = %d\n",ad_chn_mgr.chn[cur_chn_cnt]);
 	}
 }
 

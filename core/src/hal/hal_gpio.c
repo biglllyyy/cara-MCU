@@ -195,6 +195,13 @@ void hal_gpio_Init(void)
     WriteKeyProtectedRegister((unsigned int )&EPFR86,EPFR[86],BYTE_ACCESS);	// write EPFR
     WriteKeyProtectedRegister(DDR_ADS[9],DDR[9],BYTE_ACCESS);		// write DDR
 #endif
+    set_single_io_dir(11,1,IO_INPUT);	//RX0,IO_INPUT
+    PFR[11] |=BIT0;						//pin 11.0 special fun select
+    DDR[11] |=BIT0;						//pin 11.0 IO_GENERAL_OUTPUT
+    EPFR[86]|=BIT2|BIT4;		            //bit2,4 default1
+    WriteKeyProtectedRegister(PFR_ADS[11],PFR[11],BYTE_ACCESS);		// write PFR
+    WriteKeyProtectedRegister((unsigned int )&EPFR86,EPFR[86],BYTE_ACCESS);	// write EPFR
+    WriteKeyProtectedRegister(DDR_ADS[11],DDR[11],BYTE_ACCESS);		// write DDR    
 
 		/*hal uart debug init*/
 #if 1

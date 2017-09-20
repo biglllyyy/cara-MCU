@@ -203,7 +203,6 @@ __interrupt void ISR_FreeRunTimer0(void)
     if(FT0_TCCS0_ICLR)   //clear match interrupt flag
     {
         FT0_TCCS0_ICLR  = 0;
-        wdg_feed();
         func_app_beep_ctrl();
     }    
 }

@@ -250,7 +250,7 @@ static  void app_buz_init_sound_kind(void)
 		BEEP_SPD_120KMPH,
 		Hz(1666),
 		0,10,/* cycle index, total*/
-		0,2,/*  onoff index, length*/
+		0,2,/*  onoff index length*/
 		on(570),off(570),/* onoff.data[]  */
 		NULL
 	};
@@ -321,7 +321,6 @@ static  void app_buz_init_sound_kind(void)
 	};
 
 	init_buzzer();
-	
 	buz_init_beep_val(BEEP_TURN,&buzzer_turn);
 	buz_init_beep_val(BEEP_KEY_NOT_OUT,&buzzer_key_not_out);
 //	buz_init_beep_val(BEEP_SAFE_SELT_OFF_FIRST,&buzzer_safe_selt_off_first);		//buz beep sound variable init

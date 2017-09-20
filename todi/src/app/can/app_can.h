@@ -55,212 +55,145 @@ typedef enum
 	ID_18FF0DF9, //AIRDCAC22
 	ID_1801EFA9, //ICS01
 	ID_104C1000, //电池电压 100帧报文0x104C19A4-0x104C1A07 16帧电池温度0x104C1A18-0x104C1A24
+	ID_UPDATA,
 	CAN_ID_ALL
 } MSG_ID_TYPE;
 
 typedef enum
 {
 	//received frame
-	ID_100017EF_period = 100, //VCU2ICU01
-	ID_1801FBEF_period = 500, //
-	ID_1811FBEF_period = 500, //
-	ID_18FF08F2_period = 500, //
-	ID_10F8159E_Period = 100, //BMS STATUS 1
-	ID_10F8169E_Period = 100, //BMS STATUS 2
-	ID_18F8179E_Period = 1000, //BMS STATUS 3
-	ID_18F8189E_Period = 1000, //BMS STATUS 4
-	ID_18F8199E_Period = 1000, //BMS STATUS 5
-	ID_18F81A9E_Period = 1000, //BMS STATUS 6
-	ID_18FF12F7_Period = 500, //DCDC21
-	ID_18FF0AF8_Period = 500, //OILDCAC21
-	ID_18FF0BF8_Period = 500, //OILDCAC22
-	ID_18FF0CF9_Period = 500, //AIRDCAC21
-	ID_18FF0DF9_Period = 500, //AIRDCAC22
-	ID_1801EFA9_Period = 100, //ICS01
-	ID_104C1000_Period = 1000,
+	ID_0C03A1A7_period = 100,
+	ID_0C04A1A7_period = 100,
+	ID_0C05A1A7_period = 100,
+	ID_0C06A1A7_period = 100,
+	ID_0C07A1A7_Period = 100,
+	ID_0C08A1A7_Period = 100,
+	ID_1818D0F3_Period = 100,
+	ID_1819D0F3_Period = 100,
+	ID_181AD0F3_Period = 100,
+	ID_180028F3_Period = 100,
+	ID_180128F3_Period = 100,
+	ID_180228F3_Period = 100,
+	ID_180328F3_Period = 100,
+	ID_180428F3_Period = 100,
+	ID_180028F4_Period = 100,
+	ID_180128F4_Period = 100,
+	ID_180228F4_Period = 100,
+	ID_0C09A79B_period = 100,
+	ID_18FFC09E_period = 100,
+	ID_18FECA00_period = 100,
+
 	//send frame
-	ID_1801EF17_Period = 100,
-	ID_1802EF17_Period = 500,
 	
 } CAN_ID_PERIOD;
 
-typedef struct
-{
-	/*can msg receive*/
 
-	U8 ID_100017EF[8]; //VCU2ICU01
-	U8 ID_1801FBEF[8]; //
-	U8 ID_1811FBEF[8]; //
-	U8 ID_18FF08F2[8]; //
-	U8 ID_10F8159E[8]; //BMS STATUS 1
-	U8 ID_10F8169E[8]; //BMS STATUS 2
-	U8 ID_18F8179E[8]; //BMS STATUS 3
-	U8 ID_18F8189E[8]; //BMS STATUS 4
-	U8 ID_18F8199E[8]; //BMS STATUS 5
-	U8 ID_18F81A9E[8]; //BMS STATUS 6
-	U8 ID_18FF12F7[8]; //DCDC21
-	U8 ID_18FF0AF8[8]; //OILDCAC21
-	U8 ID_18FF0BF8[8]; //OILDCAC22
-	U8 ID_18FF0CF9[8]; //AIRDCAC21
-	U8 ID_18FF0DF9[8]; //AIRDCAC22
-	U8 ID_1801EFA9[8]; //ICS01
-	//U8 ID_104C1000[8]; //BATTERY V and temp
-
-} can_signal_t;
-
-extern DATA_BIT VCU_Status_Flag1; //状态1
-#define  CHARGE      VCU_Status_Flag1.bits.bit1
-#define  DCDC_EN     VCU_Status_Flag1.bits.bit2
-#define  BMS_OFFLINE VCU_Status_Flag1.bits.bit3
-#define  TM_OFFLINE  VCU_Status_Flag1.bits.bit4
-#define  DCAC_EN     VCU_Status_Flag1.bits.bit5
-#define  SPEED_EN    VCU_Status_Flag1.bits.bit6
-#define  BRAJE_EN    VCU_Status_Flag1.bits.bit7
-#define  ELE_BRAKE   VCU_Status_Flag1.bits.bit8
-
-extern U8 VCU_Gear; //档位
-
-extern DATA_BIT VCU_Mode; //整车模式
-
-extern U8 VCU_Life; //整车控制器LIFE
-
-extern DATA_BIT VCU_Status_Flag2;
-#define  READY       VCU_Status_Flag2.bits.bit6
-#define  CHARGE_OVERTIME VCU_Status_Flag2.bits.bit7  
-#define  VCU_FAULT   VCU_Status_Flag2.bits.bit8 
-
-extern U8 VCU_Code; //整车故障码
-
-extern U8 VCU_TM_Brake_percent; //制动踏板开度
-extern U8 VCU_TM_Speed_percent; //加速踏板开度
-
-// VCU2TERMINAL_MOTOR01
-extern U8 TM_Number; //电机个数
-extern U8 TM_Serial; //电机序号
-extern U8 TM_WorkStatus; //TM电机工作状态
-extern U8 TM_Control_Temp; //TM电机控制器温度
-extern U16 TM_Feedback_RPM; //TM电机反馈转速
-extern U16 TM_Feedback_NM; //TM电机反馈扭矩
-// VCU2TERMINAL_MOTOR02
-extern U8 TM_Temp; //TM电机温度
-extern U16 TM_Voltage_DC; //TM电机直流电压
-extern U16 TM_Current_DC; //TM电机直流电流
+/**********随州协议变量************/
 
 
-//IRM
-extern U32 IRM_Ohm_Positive; //总正绝缘阻值
-extern U32 IRM_Ohm_Negative; //总负绝缘阻值
-extern U8 IRM_Fault_Level; //设备故障等级
-extern U8 IRM_Insulation_Level; //绝缘等级
-extern U8 IRM_Life; //绝缘LIFE
+extern unsigned int moto_voltage; //电机电压
+extern unsigned int moto_current; //电机电流
+extern unsigned int moto_speed; //电动转速
+extern unsigned char Motor_Temperature; //电机温度
+extern unsigned char Inverter_t; //逆变器温度
 
+extern unsigned char Accelerator; //油门开度
+extern unsigned int Engine_Speed;//发动机转速
 
+extern unsigned int Fule_rate;//油耗
+extern unsigned char water_temp;//水温
+extern unsigned char Engine_Fuhe;//发动机负荷
+extern unsigned char Niaosu;//尿素;
+extern unsigned char Accelerator_Shiji; //油门踏板实际
+extern unsigned char Engine_oil_press; //机油压力
+extern unsigned char ambient_air_temperature; //周围空气温度
 
-extern U8 BMS_Mode; //电池充放电模式
-extern U8 BMS_Status; //电池状态
-extern U8 BAT_Temp_Average; //电池平均温度
-extern U8 BMS_SOC; //SOC
-extern U16 BMS_Current; //电池系统电流
-extern U16 BMS_Voltage; //电池系统内总电压
-extern U8 BMS_Kt; //高压继电器状态
+extern unsigned char Current_Gear; //档位
+extern unsigned char TCU_Position;//离合位置
+extern unsigned char TCU_warn;//变速箱故障
+extern unsigned char STOP;//停车故障
+extern unsigned int Speed_rmp; //输出轴转速
+extern unsigned char Car_mode;//整车模式
+extern unsigned char TCU_code;//变速箱故障代码
+extern unsigned char TCU_level;//变速箱故障等级
 
-extern U8 BAT_Temp_H_Limit; //最高允许电池单体温度
-extern U8 BAT_Temp_L_Limit; //最低允许电池单体温度
-extern U8 BMS_SOC_L_Limit; //最低允许SOC值
-extern U16 BAT_Current_Discharge_Limit; //最高允许放电电流
-extern U16 BAT_Current_Charge_Limit; //最高允许充电电流
+extern DATA_BIT CAN_KEY[4];
+#define  CAN_ON           CAN_KEY[0].bits.bit1
+#define  CAN_ACC          CAN_KEY[0].bits.bit2  
+#define  Diagnosis        CAN_KEY[0].bits.bit3  
+#define  Mode_S           CAN_KEY[0].bits.bit4  
+#define  AC_SWITCH        CAN_KEY[0].bits.bit5  
+#define  Hybrid           CAN_KEY[0].bits.bit6  
+#define  Electric         CAN_KEY[0].bits.bit7  
+#define  Tradition        CAN_KEY[0].bits.bit8  
 
-extern U8 BAT_Temp_L; //电池单体最低温度
-extern U8 BAT_Temp_L_Number; //电池单体低温度序号
-extern U8 BAT_Temp_L_Case; //电池单体低温度箱号
-extern U8 BAT_Temp_H; //电池单体最高温度
-extern U8 BAT_Temp_H_Number; //电池单体高温度序号
-extern U8 BAT_Temp_H_Case; //电池单体高温度箱号
+#define  High_Voltage     CAN_KEY[1].bits.bit5
+#define  Charge_Check     CAN_KEY[1].bits.bit6  
 
-extern U8 BAT_Voltage_Fault; //总压故障
-extern U8 BAT_Single_Fault; //单压故障
-extern U8 BAT_Temp_Fault; //温度故障
-extern U8 BAT_Insulation_Fault; //绝缘故障
-extern U8 BAT_Consistency_Fault; //电池一致性故障
-extern U8 BAT_SOC_Fault; //SOC故障
-extern U8 BAT_Current_Fault; //电流故障
-extern U8 BAT_Lock_Fault; //高压互锁故障
-extern U8 BMS_Comm_Fault; //BMS通讯故障
-extern U8 BMS_System_Fault; //BMS系统故障
+#define  Battery_Kt       CAN_KEY[2].bits.bit2  
 
-extern U16 BMS_Ohm; //绝缘阻值
-extern U8 BMS_Number; //单体电压数量
-extern U8 BMS_Temp_Number; //单体温度数量
-extern U8 BMS_System_Unit; //系统数量
-extern U8 BMS_System_Number; //系统号
+#define  Brake_Pedal      CAN_KEY[3].bits.bit1 
+extern unsigned char Brake_percent; //制动踏板开度
+extern unsigned char Speed_percent; //加速踏板开度
+extern unsigned char Digit_input3;//数字量输入3
 
-extern U16 BAT_Single_L; //电池单体低电压
-extern U8 BAT_Single_L_Number; //电池单体低电压位置
-extern U8 BAT_Single_L_Case; //电池单体低电压箱号
+extern unsigned long Program;//程序版本
+extern unsigned long tcu_spn; //TCU故障码
+extern unsigned char tcu_fmi;
+extern unsigned long tcu_cm; 
+extern unsigned char tcu_oc;
+extern unsigned char Car_LIFE;//整车控制器
 
-extern U16 BAT_Single_H; //电池单体高电压
-extern U8 BAT_Single_H_Number; //电池单体高电压位置
-extern U8 BAT_Single_H_Case; //电池单体高电压箱号
+extern unsigned int BMS_V; //电池电压
+extern unsigned char BMS_SOC; //电池SOC
+extern unsigned int BMS_A; //电池电流
+extern unsigned char Status_Flag1;
+extern unsigned char Status_Flag2;
+extern unsigned char Status_Flag3;
 
-extern U16 BAT_Cell_Voltage[400];
-extern U8 BAT_Cell_Temperature[128];
+extern unsigned int BMS_A_charge; //最大充电电流
+extern unsigned int BMS_A_discharge; //最大电流
+extern unsigned char Warn_level;//故障等级
+extern unsigned int BMS_V_average; //电池平均电压
+extern unsigned char BMS_T_H;//电池最高温度
 
-extern U16 DCDC_Voltage; //DCDC输出电压
-extern U16 DCDC_Current; //DCDC输出电流
-extern U8 DCDC_Status; //DCDC工作状态
-extern U8 DCDC_Output_Cut; //DCDC 输出切断
-extern U8 DCDC_intput_Cut; //DCDC 输入切断
-extern U8 DCDC_Fault_Code; //DCDC故障码
-extern U8 DCDC_Level_Fault; //DCDC故障等级
-extern U8 DCDC_Temp_Warn; //DCDC温度报警
-extern U8 DCDC_Fault_Warn; //DCDC故障报警
-extern U8 DCDC_Temp; //DCDC模块温度
+extern unsigned int Oum_zheng; //绝缘正阻值
+extern unsigned int Oum_fu; //绝缘负阻值
+extern unsigned int Battery_single_H; //电池单体高电压
+extern unsigned int Battery_single_L; //电池单体低电压
 
-extern U16 OILDCAC_U_Voltage; //DCAC输出U电压
-extern U16 OILDCAC_U_Current; //DCAC输出U电流
-extern U8 OILDCAC_Status; //DCAC工作状态
-extern U8 OILDCAC_Output_Cut; //DCAC 输出切断
-extern U8 OILDCAC_intput_Cut; //DCAC 输入切断
-extern U8 OILDCAC_Fault_Code; //DCAC故障代码
-extern U8 OILDCAC_Level_Fault; //DCAC故障等级
-extern U8 OILDCAC_Temp_Warn; //DCDC温度报警
-extern U8 OILDCAC_Fault_Warn; //DCDC故障报警
-extern U8 OILDCAC_Temp; //DCAC模块温度
+extern unsigned char Battery_number[10];//电池编号
+extern unsigned int Battery_voltage[10];//电池单体电压
 
-extern U16 OILDCAC_V_Voltage; //DCAC输出V电压
-extern U16 OILDCAC_V_Current; //DCAC输出V电流
-extern U16 OILDCAC_W_Voltage; //DCAC输出W电压
-extern U16 OILDCAC_W_Current; //DCAC输出W电流
+extern unsigned char Battery_number_t[10];//电池温度编号
+extern unsigned int Battery_temp[10];//电池单体温度
 
-extern U16 AIRDCAC_U_Voltage; //DCAC输出U电压
-extern U16 AIRDCAC_U_Current; //DCAC输出U电流
-extern U8 AIRDCAC_Status; //DCAC工作状态
-extern U8 AIRDCAC_Output_Cut; //DCAC 输出切断
-extern U8 AIRDCAC_intput_Cut; //DCAC 输入切断
-extern U8 AIRDCAC_Fault_Code; //DCAC故障代码
-extern U8 AIRDCAC_Level_Fault; //DCAC故障等级
-extern U8 AIRDCAC_Temp_Warn; //DCDC温度报警
-extern U8 AIRDCAC_Fault_Warn; //DCDC故障报警
-extern U8 AIRDCAC_Temp; //DCAC模块温度
+extern unsigned int DCAC_W;
+extern unsigned int DCAC_V;
+extern unsigned int DCAC_U;
+extern unsigned char Sanreqi_t;//散热器温度
+extern unsigned char DCAC_Warn_code;//故障代码
 
-extern U16 AIRDCAC_V_Voltage; //DCAC输出V电压
-extern U16 AIRDCAC_V_Current; //DCAC输出V电流
-extern U16 AIRDCAC_W_Voltage; //DCAC输出W电压
-extern U16 AIRDCAC_W_Current; //DCAC输出W电流
+extern unsigned char AC_Warn_code;//AC故障代码
+extern DATA_BIT AC_KEY[2];
+#define  AC_opean         AC_KEY[0].bits.bit6
+#define  AC_mind_speed    AC_KEY[0].bits.bit7
+#define  AC_High_speed    AC_KEY[0].bits.bit8
 
-extern DATA_DOUBLE ICS01_Status1; //高压采集状态1
-extern DATA_DOUBLE ICS01_Status2; //高压采集状态2
-extern DATA_DOUBLE ICS01_Status3; //高压采集状态3
-extern DATA_DOUBLE ICS01_Status4; //高压采集状态4
+#define  AC_warn1         AC_KEY[1].bits.bit1
+#define  AC_cold1_shuang  AC_KEY[1].bits.bit2
+#define  AC_wind          AC_KEY[1].bits.bit3
+#define  AC_save          AC_KEY[1].bits.bit4
+#define  AC_cold2_shuang  AC_KEY[1].bits.bit5
+#define  AC_cold2         AC_KEY[1].bits.bit6
+#define  AC_cold1         AC_KEY[1].bits.bit8
+extern unsigned char Indoor_t;//室内温度
+extern unsigned char Outdoor_t;//室外温度
+extern unsigned char Set_t;//设定
+extern unsigned char AC_req;//制冷请求
+extern unsigned char AC_LIFE;//AC生命
+/*******************************************/
 
-extern U16 ICS01_Voltage_Front; //前端电压
-extern U16 ICS01_Voltage_Rear; //后端电压
-extern U8 ICS01_LIFE; //LIFE
-
-
-
-
-/*******************************************************************************/
 typedef void (*pCanAnalyse)(can_msg_t *msg, can_pro_way_e way);
 
 void app_init_can(void);
@@ -269,11 +202,5 @@ void app_can_sent_task(void);
 
 void app_can_lost_time_cnt_100ms(void);
 
-extern can_signal_t can0;
-
-
-
-
-
-
+extern void mid_can1_prepare(can_msg_t*msg_tx,can_msg_t*msg_rx);
 #endif

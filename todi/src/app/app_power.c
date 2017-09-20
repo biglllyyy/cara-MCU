@@ -72,15 +72,13 @@ struct
         state_pwr_sleep,
     },
 };
-
+//!<链表构建的状态机，状态间切换在函数内部进行入口参数为当前状态机状态
 
 /* 关闭ARM电源 */
 void app_A20_power_off(void)
 {
    // MidSchDeleteTask(app_backlight_ctl);
 	MidSchDeleteTask(app_frame_sent_task);
-	//MidSchDeleteTask(app_frame_get_task);  for 206
-	//MidSchDeleteTask(app_frame_get_task20);
     if(is_timer_added(&lcd_on_time))
     {
         del_timer(&lcd_on_time);
@@ -107,8 +105,6 @@ void app_A20_power_on(void)
 	//app_backlight_init();
     g_u8_A20_power_sts= ON;
     g_u8_power_down_req = 0;
-	//MidSchAddTask(app_frame_get_task,20);//开始接受ARM发送的数据  for 206
-     //MidSchAddTask(app_frame_get_task20,20);
 //	g_u16_led_check_times = 0;
 //	led_check_time=0;
 }

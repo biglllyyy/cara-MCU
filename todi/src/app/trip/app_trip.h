@@ -49,5 +49,5 @@ U8 save_ee_sub_trip2(U16 trip);
 void app_info_task100(void);
 void app_rest_mile_cal_task(void);
 U16  app_rest_mile_get(void);
-
+void check_ee_data(void);
 #endif

@@ -28,6 +28,7 @@ void app_trip_init(void)
 	memset(&info,0,sizeof(info));
 	
 	aes_encrypt_init(); /*根据key生成expand key */
+	check_ee_data();
 	get_ee_total_trip(); /* 获取总里程 */
 	get_ee_sub_trip(); /* 获取里程小计 */ 
 	info.old_time = hal_timer_get_tick(); /* 获取当前系统节拍 */
@@ -356,5 +357,22 @@ void get_ee_total_trip(void)
 	}
 			
 	info.Odo = temp_odo;
+}
+/***********************************************
+ 
+ 判断内存中数据是否有效，无效则恢复默认值
+ 
+ **********************************************/
+extern T_DATA_STORE *get_data_store_ptr(void);
+void check_ee_data(void)
+{
+	T_DATA_STORE *sData;
+	sData = get_data_store_ptr();
+	if (0 == sData)
+	{
+	    //!<数据未初始化
+	    memset(&info,0,sizeof(info));
+		write_total_trip(0);//!<调用函数对数据进行保存
+	}
 }
 

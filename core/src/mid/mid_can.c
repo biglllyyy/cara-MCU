@@ -9,6 +9,8 @@
 
 
 pCanProcess  can_rx_pro =NULL;
+pCanProcess  can1_rx_pro = NULL;
+
 /*
 byte  =  0    1    2     3     4     5     6     7
 start = 7~0,15~8,23~16,31~24,39~32,47~40,55~48,63~56
@@ -57,6 +59,10 @@ static const U8 moto_format[64]=
 
 static U8 cntRecv, cntSend;
 static can_msg_t *can_msg;
+
+static can_msg_t *can1_tx_msg;
+static can_msg_t *can1_rx_msg;
+
 static U8 mPhyChip = 1;
 /****************************************************/
 /* motor format
@@ -185,6 +191,16 @@ void mid_can_prepare(U8 nRecv, U8 nSend,can_msg_t*msg)
 	hal_can_prepare(nRecv,nSend,msg);
 	wdg_feed();
 }
+void mid_can1_prepare(can_msg_t*msg_tx,can_msg_t*msg_rx)
+{
+
+	can1_tx_msg = msg_tx;
+	can1_rx_msg = msg_rx;
+
+	hal_can1_prepare(can1_tx_msg,can1_rx_msg);
+	wdg_feed();
+}
+
 void mid_can_init(U8 chn, U8 chip)
 {
 	mPhyChip = chip;
@@ -272,6 +288,75 @@ void mid_can_get_task10(void)
 			}
 		}
 	}while(0);	
+}
+void mid_can1_get_task10(void)
+{
+	U8		index = 0;
+	U32		nMob = 0;
+	static  U16  count = 0;
+	static  U16  max_count = 0;
+	can_msg_t can_msg_temp ={0};
+	/**
+	 * @TODO:数据超时处理
+	 * @{
+	 */
+	if (NULL != can1_rx_pro)
+	{
+		for(index =0; can1_rx_msg[index].id != 0; index++)
+    	{
+			 can1_rx_msg[index].count++;
+			 if ((can1_rx_msg[index].count*10) >= can1_rx_msg[index].period_ms)
+			 {
+			 	can1_rx_pro(&can1_rx_msg[index],CAN_LOST);
+				can1_rx_msg[index].lost = 1;
+				can1_rx_msg[index].count = 0;
+				can1_rx_msg[index].new_frame = 0;
+			 }
+    	}
+	}
+	/**
+	 * @}
+	 */
+	/**
+	 * @TODO:数据接收处理
+	 * @{
+	 */
+	if(hal_can_n_error_statecheck(1) == CAN_BOFF)   
+	{
+		return;
+	}
+	nMob = HalChkMob();
+	if(0 == nMob)
+	{
+		count++;
+		if(max_count < count)
+		{
+			max_count = count;
+		}
+		return;
+	}
+	count = 0;
+	for (index =0; can1_rx_msg[index].id != 0; index++)				    /* receive buffer frome buffer3 */
+	{
+		if (TRUE == ((nMob >> index) & 0x01))							/* 检测哪一个报文缓存器中存在信息*/
+		{
+			can_msg_temp.buffer_num = index+1;
+			if(TRUE == hal_can_n_get(1,&can_msg_temp))					/* 将接收数据放在tCanMsg结构里面,buffer start form 1*/
+			{
+				can1_rx_msg[index].new_frame = 1;
+				can1_rx_msg[index].lost = 0;
+				can1_rx_msg[index].count = 0; 
+				can_msg_temp.dlc = can1_rx_msg[index].dlc;
+				if(can1_rx_pro != NULL)
+				{
+					can1_rx_pro(&can_msg_temp,CAN_PARSE);
+				}
+			}
+		}
+	}
+	 /**
+	 * @}
+	 */
 }
 
 

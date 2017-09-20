@@ -84,7 +84,7 @@ void start_buzzer(U32 priority)
             g_buzzer.priority_bits |= MaskBits[priority];
 			//dbg_string("start buz top:%d, priority:%d g_buzzer.priority_bits:0x%x\n",top,priority,g_buzzer.priority_bits);
             /*third, switch to higher priority beep on/off*/
-            if((priority < top) || (top == 0))
+            if((priority < top/* ÅÐ¶ÏÓÅÏÈ¼¶ */) || (top == 0))
             {
                 switch_buzzer(g_buzzer.list[priority]);
             }

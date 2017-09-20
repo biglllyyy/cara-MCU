@@ -23,6 +23,7 @@ S16  far_strncmp(const CHAR* s1,const  CHAR* s2, S16 count);
 S16  sent_data(U8 chn, U8 *string, U8 len);
 void data_copy(U8 *dest,U8 *src,int count);
 void byte_order_change(U8 *data,U8 len);
+U8 * to_little_endian(U8 *dest,U32 data,U8 len);
 
 /*将字符串转换为10进制数*/
 extern S32 str_to_dec(const U8 *str);

@@ -8,164 +8,98 @@ typedef union
 	struct
 	{
 		U8 ok_key :1,						//key1
-				left_key :1,						//key2
-				right_key :1,						//key3
-				cancel_key :1,						//key4
-				keyRemain :4;						//key0
+		   left_key :1,						//key2
+           right_key :1,					//key3
+           cancel_key :1,					//key4
+           keyRemain :4;					//key0
 	} bits;
 } Key_Status;
+//!<小端数据
+#define WORD_WRITE(dest,data)	do{dest[0] = data&0xFF;(dest[1]=data>>8)&0xFF;}while(0)
+#define DWORD_WRITE(dest,data)	do{dest[0] = data&0xFF;(dest[1]=data>>8)&0xFF;(dest[2]=data>>16)&0xFF;(dest[3]=data>>24)&0xFF;}while(0)
 
-typedef union
-{
-	U32 data;
-	struct
-	{
-		U32 odo :20,						//总里程	0-999999
-				gear :2,							//档位	0：P档，1：R档，2：N档，3：D档
-				totalVoltage :10;					//总电压 0-1000
-
-	} bits;
-} Odo_Gear_TotalVol;
-
-typedef union
-{
-	U32 can_valid;
-		struct
-		{
-			U32 CAN_ID_REVERSED1 :1,    //0无效 1有效
-				CAN_ID_REVERSED2 :1,
-				CAN_ID_18AA28F3 :1,
-				CAN_ID_1818D0F3 :1,
-				CAN_ID_1819D0F3 :1,
-				CAN_ID_181AD0F3 :1,
-				CAN_ID_181BD0F3 :1,
-				CAN_ID_181CD0F3 :1,
-				CAN_ID_181DD0F3 :1,
-				CAN_ID_181ED0F3 :1,
-				CAN_ID_181FD0F3 :1,
-				/*BMS Interaction*/
-				//CAN_ID_1800F328,  send remove else will crash
-				CAN_ID_180028F3 :1,
-				CAN_ID_180028F4 :1,
-				/*电机*/
-				//CAN_ID_1882BBAB,  send remove else will crash
-				CAN_ID_1002FF1E :1,
-				CAN_ID_1003FF1E :1,
-				CAN_ID_1004FF1E :1,
-				/*气泵*/
-				//CAN_ID_18FF1103,
-				CAN_ID_1429289B :1,
-				CAN_ID_142A289B :1,
-				//CAN_ID_18AB9B28,   send remove else will crash
-				/*仪表与远程通讯*/
-				//CAN_ID_18FFA017,    send remove else will crash
-				/*DC-DC电源*/
-				CAN_ID_1828272B :1,
-				/*油泵控制器*/
-				CAN_ID_142A2895 :1,
-				CAN_ID_reversed:12;
-
-		} bits;
-
-
-
-} Can_Valid_Bits;
-
-typedef union
-{
-	U32 u32_switch_capture;
-		struct
-		{
-		   U32 MCU_IN1:1,     //前雾灯信号  高有效
-			   MCU_IN2:1,     //后雾灯信号  高有效
-			   MCU_IN3:1,     //小灯信号    高有效
-			   MCU_IN4 :1,   //前门开状态   高有效
-			   MCU_IN5 :1,   //中门开       高有效   
-			   MCU_IN6 :1,   //ABS报警的    高有效
-			   MCU_IN7 :1,   //前门安全阀打开报警  高有效
-			   MCU_IN8 :1,   //
-			   MCU_IN9 :1,   //前气压报警      低有效
-			   MCU_IN10:1,    //后气压报警     低有效
-			   MCU_IN11:1,    //手刹开关       低有效
-			   MCU_IN12:1,    //水位报警       低有效
-			   MCU_IN13:1,   //后仓门开信号    低有效
-			   MCU_IN14:1,    //
-			   MCU_IN15:1,    //远光灯信号     高有效
-			   MCU_IN16:1,    //左转向灯信号   高有效
-			   MCU_IN17:1,   //右转向灯信号    高有效
-			   MCU_IN18:1,    //近光灯信号     高有效
-			   MCU_IN19:1,    //刹车信号       高有效
-			   MCU_IN20:1,    //
-			   MCU_IN21:1,    //
-			   MCU_IN22:1,    //
-			   MCU_IN23:1,   //
-			   MCU_IN24:1,    //
-			   MCU_IN25:1,    //
-			   MCU_IN26:1,    // 
-			   MCU_IN27:1,    //左刹车片磨损   低有效
-			   MCU_IN28:1,   //右刹车片磨损    低有效
-			   MCU_IN29:1,   //
-			   MCU_IN30:1,    //
-			   MCU_IN31:1,    //
-			   MCU_IN32:1;     //
-	} bits;
-
-}Switch_Capture;
-
-typedef union
-{
-	U8 u8MotorContStatus;
-	struct
-	{
-		U8 bit1to3 :3,						//key1
-				bit4to5 :2,						//key2
-				bit6to8 :3;					//key3
-	} bits;
-}MotorContStatus;
-
-
+//!<小端
 typedef struct
 {
 	Key_Status key;					//key1
 //key0
-	U8 speed;							//车速	0-140
-	U16 rpm;							//转速	-20000 ~ 45531
-
-
-	U32 odo;	
-	
-	U16 totalVoltage;
-	U8  gear;
-	U8  reversed1;
-	
-
-	//Odo_Gear_TotalVol Odo_gear_totalVol;
-
-	U16 totalCurrent;                  //总电流	0-1000 <-500>
-	U16 trip;							//里程小计	0-9999 <0.1>
-
+	U8 speed;							//车速	1km/h
+	U8 rpm[2];							//转速	1r/min
+	U8 totalVoltage[2];                 // 0.1V/bit，-10000
+	U8 totalCurrent[2];				    //0.1A/bit，-10000
+	U8	gear;							/*0000:空挡 0001: 1 档 0010: 2 档 0011: 3 档 0100: 4 档 0101: 5 档 0110: 6 档 0111: 7倒档*/
+	U8 odo[4];							//0.4%/bit
+	U8 trip[2];							//里程小计	0-9999 <0.1>
 	U8 soc;							//系统SOC  0-100
-	U8 ready_signal;						//ready
 	U8 airPressure1;					//气压1	0-100
 	U8 airPressure2;					//气压2	0-100
-
-	U8 batteryTH;						//单体电池最高温度	0-240 <-40>
-	U8 batteryTL;						//单体电池最低温度	0-240 <-40>
-	U16 batteryVH;						//单体电池最高电压	0-50 <0.1>
-
-	U16 batteryVL;						//单体电池最低电压	0-50 <0.1>
-	U8  moter_control_temp;
-	U8  moter_temp;
-	
-	Switch_Capture switch_capture;
-	
-	U16  tm_zhuanju_nm;
-	U8  charge_overtime;
-	U8  vcu_fault;
-	U32  utc_time_second;
-	U32 vol;
-	
-
+	U8	moter_control_temp;        //电机控制器温度, 0 ℃
+	U8	moter_temp;                //电机温度, 0 ℃
+	U8
+		control_IN08:1, //近光灯开关
+		control_IN07:1, //远光灯开关
+		control_IN06:1, //小灯开关
+		control_IN05:1, //右转向开关
+		control_IN04:1, //钥匙ST开关
+		control_IN03:1, //保留
+		control_IN02:1, //保留
+		control_IN01:1; //左转向开关
+    U8
+		control_IN16:1, //雨刮高档开关
+		control_IN15:1, //雨刮间歇档开关
+		control_IN14:1, //雨刮低档开关
+		control_IN13:1, //保留
+		control_IN12:1, //广告灯开关
+		control_IN11:1, //保留
+		control_IN10:1, //后雾灯开关		
+		control_IN09:1; //前雾灯开关
+				
+	U8
+		control_IN24:1, //保留
+		control_IN23:1, //保留
+        control_IN22:1, //保留
+        control_IN21:1, //雨刮喷水开关
+        control_IN20:1, //前门开开关
+        control_IN19:1, //路牌开关
+        control_IN18:1, //保留		
+		control_IN17:1; //保留
+	U8
+        control_IN32:1, //保留
+        control_IN31:1, //保留
+        control_IN30:1, //保留
+        control_IN29:1, //燃油量过低报警
+        control_IN28:1, //前门关开关
+        control_IN27:1, //中门开开关
+        control_IN26:1, //中门关开关
+		control_IN25:1; //保留
+    U8  		
+		N1: 5,			//保留
+        control_IN35:1, //钥匙ON开关
+        control_IN34:1, //电源唤醒开关
+		control_IN33:1; //危险警报开关
+	U8
+		diagnostic_mode:1,	//诊断模式符号片
+        climbing_mode:1,	//爬坡模式符号片
+        HV_overhaul:1,		//高压检修指示符号片
+        main_power:1,		//总电源指示符号片
+        defroster:1,		//除霜器符号片
+        back_door:1,		//后舱门开符号片
+        park_brake:1,		//驻车制动符号片
+		brake_light:1;		//刹车灯符号片
+	U8  
+		N2: 2,		        //保留
+        ABS:1,				//ABS符号片
+        dryer:1,			//干燥器符号片
+        Kt:1,				//电池主接触器
+        power_mode:1,		//Power模式符号片(纯电动模式 or 混动模式 or 插电模式)
+        charge_confirm:1,	//充电确认符号片
+		AC:1;				//AC空调符号片
+	U8 fault_level[4];	//故障等级	
+	U8 fault_code[4];		//故障代码（界面中的系统代码,以10进制显示,代码颜色需随故障等级变化,相见车厂协议文档）
+	U8 SPN[4];			//SPN（16进制显示）
+	U8 urea_level[4];		//尿素液位, 0.0 %
+    U8 dateTime[4];		//时间
+    U8 battery[4];           //蓄电池电压
 } Main_Interface_Data_Struct;
 
 extern Main_Interface_Data_Struct main_interface_data;

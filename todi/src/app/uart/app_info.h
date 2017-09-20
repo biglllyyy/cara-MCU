@@ -91,10 +91,11 @@ extern U8  CurrentMenu;
 
 typedef struct
 {
-	
-	U8 u8TripClear:1;		/* clear trip */
+	U8 :6;
 	U8 time_set_enable:1;		/* clear trip */
-	U8 :6;                  /* 预留 */
+	U8 u8TripClear:1;		/* clear trip */
+	//U8 time_set_enable:1;		/* clear trip */
+	//U8 :6;                  /* 预留 */
 	U8  u8MenuNum;        /* 菜单信息请求 */
 	U8  u8BattBoxNum;      /* 电池箱号 */
 	U32 u32UTCTime;        /* UTC时间设置 */
@@ -103,21 +104,22 @@ typedef struct
 
 typedef enum
 {
-	//SUBINFO_WARN = 1,   /* 报警界面 */
-	SUBINFO_BMS = 1,   /* 电池管理系统界面信息 */
-	SUBINFO_BS,   /* 电池状态界面信息 */
-	SUBINFO_BSTEMP, /* 电池温度探头界面信息 */
-	SUBINFO_MOTOR,   /* 电机控制器界面信息 */
-	SUBINFO_AP,   /* 气泵控制器界面信息 */
-	SUBINFO_DMY,   /* 油泵控制器界面信息 */
-	SUBINFO_DCDC,   /* DCDC界面信息 */
-	SUBINFO_HIGH_PRESSURE,   /* 高压系统界面信息 */
-	SUBINFO_FRONT,   /* qian界面信息 */
+	//MENU_L2_NULL = 1,   /* NULL */
+	MENU_CONTROLSYSTEM = 1,   /* 控制系统信息 */
+	MENU_MOTORSYSTEM,   /* 发动机系统信息界面 */
+	MENU_AUXILIARYSYSTEM, /* 辅助系统信息界面 */
+	MENU_TCUSYSTEM,   /* tcu系统信息界面 */
+	MENU_BATTERYMANAGESYSTEM,   /* 电池管理系统信息界面 */
+	MENU_BATTERYSTATE,   /* 电池状态信息 */
+	MENU_AIRCONTROLSYSTEM,   /* 空调系统信息界面 */
+	MENU_FRONT_MODULE,		/* 前模块 */
+	MENU_MIDDLE_MODULE,/* 中模块 */
+	MENU_BACK_MODULE,/* 后模块 */
+	MENU_MODULE_MAX,
+
+	OnlineCheckCMD = 252,  /* 升级程序相关 */
+	ExcuteBootCMD = 250,    /* 升级程序相关 */
 	
-	SUBINFO_MIDDLE,   /* zhong界面信息 */
-	
-	SUBINFO_BACK,   /* hou界面信息 */
-	SUBINFO_ALL
 }SUBINFO_NUM;   /* 当前界面序号 */
 
 extern FRAMEA20TOMCU_t A20_mcu;

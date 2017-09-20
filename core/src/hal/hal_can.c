@@ -13,6 +13,8 @@
 #define SNE_MSG_NUM				1
 #define  CHN_0					0
 
+U32 sp_IO_CANn[] = {(U32)&IO_CAN0,(U32)&IO_CAN1,(U32)&IO_CAN2};
+
 
 /* set parameter for CAN error state judge */
 static U8 Error_State_0=0x00;
@@ -25,6 +27,10 @@ static void can_sent_object_init(U8 chn,U8 num,CAN_ID_FORMAT_e format,U32 id,U8 
 
 static U8 cntRecv = 0, cntSend = 0;
 static can_msg_t*can_msg=0;
+
+static can_msg_t* can1_rx_msg = NULL;
+static can_msg_t* can1_tx_msg = NULL;
+
 void hal_can_prepare(U8 nRecv, U8 nSend,can_msg_t*msg)
 {
 	
@@ -40,6 +46,19 @@ void hal_can_prepare(U8 nRecv, U8 nSend,can_msg_t*msg)
 	{
 		dbg_string("The Pointer of can_msg from mid_can is NULL\n");
 		return;
+	}
+}
+void hal_can1_prepare(can_msg_t*msg_tx,can_msg_t*msg_rx)
+{
+	can1_tx_msg = msg_tx;
+	can1_rx_msg = msg_rx;
+	if (NULL == can1_tx_msg)
+	{
+		dbg_string("The Pointer of can_msg from mid_can1 TX msg is NULL\n");
+	}
+	if (NULL == can1_rx_msg)
+	{
+		dbg_string("The Pointer of can_msg from mid_can1 RX msg is NULL\n");
 	}
 }
 
@@ -96,6 +115,28 @@ void hal_can_init(U8 chn)
         IO_CAN0.CTRLR.bit.Init = 0;				/* CAN Controller Start */
         break;
     case 1:
+		IO_CAN1.CTRLR.bit.Init = 1;               /* CAN Controller Stop £¬test mode */
+		for(i=0; can1_rx_msg[i].id != 0;i++)
+		{
+			can_receive_object_init(chn,can1_rx_msg[i].buffer_num,can1_rx_msg[i].format,can1_rx_msg[i].id,can1_rx_msg[i].dlc,can1_rx_msg[i].id_mask);  //from msgbox 1 rec 
+		}
+		for(i= 0; can1_tx_msg[i].id != 0;i++)
+		{
+			dbg_printf("init can buf = %d\n",can1_tx_msg[i].buffer_num);
+			can_sent_object_init(chn,can1_tx_msg[i].buffer_num,can1_tx_msg[i].format,can1_tx_msg[i].id,can1_tx_msg[i].dlc);		//·¢ËÍ
+		}
+        /* CAN bus setting */
+        IO_CAN1.CTRLR.hword = 0x0041;		/* BTR/BRPE Write Enable */
+#if (MCLK_FRQ == 4000000)
+        IO_CAN1.BTR.hword   = MCLK_8M_BTR_250K;		/* 500kbps change the Baud rate to 250K by niujianlong*/
+#elif(MCLK_FRQ == 8000000)
+        IO_CAN1.BTR.hword   = MCLK_8M_BTR_500K;
+#endif
+        IO_CAN1.BRPER.hword = 0x0000;		/* bord rate extern  */
+        IO_CAN1.CTRLR.hword = 0x0001;		/* BTR/BRPE Write Disable */
+        /* Normal mode */
+        IO_CAN1.CTRLR.hword = 0x0001;		/* Test=0 CCE=0 DAR=0 EIE=1 SIE=0 IE=1 Init=1*/	 //change 0x000B to 0x0001		
+        IO_CAN1.CTRLR.bit.Init = 0;				/* CAN Controller Start */		
         break;
     case 2:
         break;
@@ -114,6 +155,7 @@ dlc : data len
 
 **************************************************************************
 */
+#define CAN1_MSGB_SIZE 64
 void can_receive_object_init(U8 chn,U8 num,CAN_ID_FORMAT_e format,U32 id,U8 dlc,U32 id_mask)
 {
     switch(chn)
@@ -151,6 +193,38 @@ void can_receive_object_init(U8 chn,U8 num,CAN_ID_FORMAT_e format,U32 id,U8 dlc,
 
         break;
     case 1:
+		/*** Rx ***/
+		/*MSK select*/
+		IO_CAN1.IF2CMSK.hword = 0x00F0;			/*WR/RD=1 Mask=1 Arb=1 Control=1
+													CIP=0 TxRqst/NewDat=0 DataA=0 DataB=0*/
+
+		if(STAND_ID == format)
+		{
+			/*Arb Data*/
+			/*MSK Data*/
+			IO_CAN1.IF2MSK.word = 0xFFFC0000;				/*MXtd=1 MDir=1 res=1 MID28-MID18 all=1
+																MID17-MID0 all=0*/
+			IO_CAN1.IF2MSK.bit.MXtd = 0;    /* extened frame */
+			IO_CAN1.IF2ARB.word = 0x80000000|(id << 18);	/*MsgVal=1 Xtd=0 Dir=0 ID(28-18)=2*/
+		}
+		else
+		{
+			IO_CAN1.IF2MSK.word = id_mask;				/*MXtd=1 MDir=1 res=1 MID28-MID18 all=1
+															MID17-MID0 all=0*/
+			IO_CAN1.IF2MSK.bit.MXtd = 1;    /* extened frame */
+			IO_CAN1.IF2ARB.word = 0xC0000000|(id & 0x1FFFFFFF);	/*MsgVal=1 Xtd=1 Dir=0 ID(28-18)=1 TestMode Only*/
+		}
+
+		/*MCTR*/
+		IO_CAN1.IF2MCTR.hword = 0x1480 | dlc;	/*NewDat=Nouse MsgLst=0 IntPnd=0
+		UMask=1 TxIE=0 RxIE=1 RmtEn=0
+		TxRqst=Nouse EoB=1 DLC=8*/
+
+		/*CREQ*/
+		IO_CAN1.IF2CREQ.hword = num;		/*0x02,transmit IFx to message RAM use buffer2*/
+		break;
+	case 2:
+		break;
     default:
         break;
     }
@@ -192,6 +266,36 @@ void can_sent_object_init(U8 chn,U8 num,CAN_ID_FORMAT_e format,U32 id,U8 dlc)
         /*CREQ*/
         IO_CAN0.IF1CREQ.hword = num;			/*transmit IFx to message RAM use buffer1*/
         break;
+	case 1:
+        /*MSK select*/
+        IO_CAN1.IF1CMSK.hword = 0x00F0;		/*WR/RD=1 Mask=1 Arb=1 Control=1
+											CIP=0 TxRqst/NewDat=0 DataA=0 DataB=0*/
+        /*Arb Data*/
+		if(STAND_ID == format)
+		{
+        IO_CAN1.IF1ARB.word = 0xA0000000|(id<<18);	/* 0xA0040000;	MsgVal=1:msg object valid
+													Xtd=0:0:11 bit id,1:29 bit id
+													Dir=1:0:Indicates the reception direction.,1:Indicates the transmission direction.
+													ID(28-18)=1*/
+		}
+		else
+		{
+			IO_CAN1.IF1ARB.word = 0xE0000000|(id & 0x1FFFFFFF);  /* MsgVal:1,Xtd:1,Dir:1*/
+		}
+
+        /*MCTR*/
+        IO_CAN1.IF1MCTR.hword = 0x0080 | dlc;		/*NewDat=Nouse MsgLst=0 IntPnd=0
+													UMask=0 TxIE=0 RxIE=0 RmtEn=0
+													TxRqst=0(Nouse) EoB=1 DLC=8*/
+        /*Data*/
+        IO_CAN1.IF1DTA1.hword = 0x0000;
+        IO_CAN1.IF1DTA2.hword = 0x0000;
+        IO_CAN1.IF1DTB1.hword = 0x0000;
+        IO_CAN1.IF1DTB2.hword = 0x0000;
+
+        /*CREQ*/
+        IO_CAN1.IF1CREQ.hword = (CAN1_MSGB_SIZE-1) - num;			/*transmit IFx to message RAM use buffer1*/		
+		break;
     default:
         break;
     }
@@ -367,6 +471,8 @@ void hal_can_sent(U8 chn,can_msg_t *can_msg)
             break;
         case 1:
             IO_CAN1.IF1CMSK.hword = 0x0087;	/* only updata DATA */
+			CAN1_IF1ARB_Dir = 1;
+            CAN1_IF1ARB_MsgVal = 1;
             CAN1_IF1DTA1_IF1DTA1H = can_msg->data[0];
             CAN1_IF1DTA1_IF1DTA1L = can_msg->data[1];
             CAN1_IF1DTA2_IF1DTA2H = can_msg->data[2];
@@ -377,7 +483,7 @@ void hal_can_sent(U8 chn,can_msg_t *can_msg)
             CAN1_IF1DTB2_IF1DTB2L = can_msg->data[3];
             IO_CAN1.IF1MCTR.hword = 0x2988;		//NEWDAT=0 MSGLST=0 INTPND=1 UMASK=0
             //TXIE=1 RXIE=0 RMTEN=0 TXRQST=1 EOB=1 DLC=8
-            IO_CAN1.IF1CREQ.bit.MN=can_msg->buffer_num;		//IF -> RAM
+            IO_CAN1.IF1CREQ.bit.MN=CAN1_MSGB_SIZE -1 - can_msg->buffer_num;		//IF -> RAM
             break;
         default:
             break;
@@ -428,12 +534,69 @@ U8 hal_can_get(can_msg_t *can_rx_ptr)
 	return SUCCESS;
 
 }
+U8 hal_can_n_get(U8 chn,can_msg_t *can_rx_ptr)
+	{
+	CANSTR *p_IO_CANn;
+	if (chn>2)
+	{
+		return FAIL;
+	}
+	p_IO_CANn = (CANSTR *)sp_IO_CANn[chn];
+	p_IO_CANn->IF2CMSK.byte.IF2CMSKL = 0x3F;
+	p_IO_CANn->IF2CREQ.byte.IF2CREQL = can_rx_ptr->buffer_num;
+
+	if (p_IO_CANn->IF2MCTR.bit.MsgLst)    /* check whether or not a message was lost */
+	{
+		p_IO_CANn->IF2MCTR.bit.MsgLst = 0;   /*  clear MSGLST Flag */
+		p_IO_CANn->IF2CMSK.byte.IF2CMSKL = 0x90;
+		p_IO_CANn->IF2CREQ.byte.IF2CREQL = can_rx_ptr->buffer_num;
+	}
+	can_rx_ptr->dlc =  (U8)p_IO_CANn->IF2MCTR.bit.DLC;       /* data length */
+	can_rx_ptr->format = (p_IO_CANn->IF2ARB.bit.Xtd == 1)?EXTERN_ID:STAND_ID;
+	if(can_rx_ptr->format)	//extern id
+	{
+		can_rx_ptr->id = MSG2EXT( p_IO_CANn->IF2ARB.word);   /* Arbitration */
+		//dbg_printf("can_rx_ptr id = %08x",can_rx_ptr->id);
+	}
+	else
+	{
+		can_rx_ptr->id = MSG2STD(p_IO_CANn->IF2ARB.word);
+	}
+	switch(can_rx_ptr->dlc)
+	{
+		case 8: can_rx_ptr->data[7] = p_IO_CANn->IF2DTB2.byte.IF2DTB2L;//save data from buffer to RAM
+	    case 7: can_rx_ptr->data[6] = p_IO_CANn->IF2DTB2.byte.IF2DTB2H;
+	    case 6: can_rx_ptr->data[5] = p_IO_CANn->IF2DTB1.byte.IF2DTB1L;
+	    case 5: can_rx_ptr->data[4] = p_IO_CANn->IF2DTB1.byte.IF2DTB1H;
+	    case 4: can_rx_ptr->data[3] = p_IO_CANn->IF2DTA2.byte.IF2DTA2L;
+	    case 3: can_rx_ptr->data[2] = p_IO_CANn->IF2DTA2.byte.IF2DTA2H;
+	    case 2: can_rx_ptr->data[1] = p_IO_CANn->IF2DTA1.byte.IF2DTA1L;
+	    case 1: can_rx_ptr->data[0] = p_IO_CANn->IF2DTA1.byte.IF2DTA1H;
+	    default:break;
+	}       
+
+	return SUCCESS;
+
+	}
 
 
 U32 HalChkMob(void)
 {
 #ifndef WIN32
 	return  (CAN0_NEWDT12);
+#else
+
+   return 0;
+#endif
+
+}
+U32 HalCheckChnMob(U8 chn)
+{
+	CANSTR *p_IO_CANn;
+	p_IO_CANn = (CANSTR *)sp_IO_CANn[chn];
+#ifndef WIN32
+	return p_IO_CANn->NEWDT12.word;
+	//return  (CAN0_NEWDT12);
 #else
 
    return 0;
@@ -462,6 +625,40 @@ U8 hal_canerror_statecheck(void)
 	}
 
 	if(!((IO_CAN0.STATR.bit.BOff)|(IO_CAN0.STATR.bit.EWarn)|(IO_CAN0.STATR.bit.EPass))) //error active
+    {
+		u8Ret = CAN_EPASS;				//error active
+	}
+
+
+	return (u8Ret);
+}
+
+
+U8 hal_can_n_error_statecheck(U8 chn)
+{
+	U8 u8Ret = 0;
+	CANSTR *p_IO_CANn;
+	if (chn>2)
+	{
+		return CAN_BOFF;
+	}
+	p_IO_CANn = (CANSTR *)sp_IO_CANn[chn];
+	if(p_IO_CANn->STATR.bit.BOff==0x01)		//bus off
+	{
+		u8Ret = CAN_BOFF;
+
+		/*Restart bus*/
+		p_IO_CANn->CTRLR.bit.Init = 0;		/*enable CAN controller*/
+		while((p_IO_CANn->ERRCNT.bit.TEC!=0)||(p_IO_CANn->ERRCNT.bit.REC!=0));
+											//see if recovered
+	}
+
+	if(p_IO_CANn->STATR.bit.EWarn==0x01)		//error warning
+    {
+		u8Ret = CAN_EWARN;
+	}
+
+	if(!((p_IO_CANn->STATR.bit.BOff)|(p_IO_CANn->STATR.bit.EWarn)|(p_IO_CANn->STATR.bit.EPass))) //error active
     {
 		u8Ret = CAN_EPASS;				//error active
 	}

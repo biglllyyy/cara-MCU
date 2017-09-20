@@ -515,7 +515,6 @@ extern U16 can_id_7a6_lost_timecnt;
 
 void app_uart_frame_init(void);	 //init
 void app_frame_sent_task(void);	//sent
-void app_frame_get_task(void);	//get
 
 U8 app_uart_get_car_num(void);
 U8 app_uart_get_car_srv_num(void);
@@ -545,21 +544,20 @@ unsigned char get_uart_Overspeed(void);
 /*add for zhongkun 206*/
 typedef enum
 {
-	NULL_TYPE,			//00, NULL
-	CAR_INFO_TYPE,		//01，通用信息帧；
-	WARNING_TYPE,               //02, 报警信息帧;
-	MENU_BATMANAGE_TYPE,	//03，电池管理系统界面；
-	MENU_BATSTATUS_TYPE,	//04，电池状态信息界面；
-	MENU_BATTEMPERATURE_TYPE,   //05，电池状态信息界面；
-	MENU_MOTOR_TYPE,		//06，电机控制器信息界面；
-	MENU_AIRPUMP_TYPE,		//07，气泵控制器信息界面；
-	MENU_OILPUMP_TYPE,		//08，油泵控制器信息界面；
-	MENU_DCDC_TYPE,		//09，DC-DC电源信息界面；
-	MENU_HIGH_PRESSURE, //10, 高压系统信息
-	MENU_FRONT_MOUDLE,	//11，仪表诊断信息界面
-	MENU_MIDDLE_MOUDLE,	//12，仪表诊断信息界面
-	MENU_BACK_MOUDLE,	//13，仪表诊断信息界面
-	
+	FRAME_NULL_TYPE,                //最小无效
+	CAR_INFO_TYPE,                  //通用信息帧
+	WARNING_TYPE,                   //报警信息帧
+	CONTROL_SYSTEM_INFO_TYPE,       //控制系统信息帧
+	ENGINE_SYSTEM_INFO_TYPE,        //发动机系统信息帧
+	ASSIST_SYSTEM_INFO_TYPE,        //辅助系统信息帧
+	TCU_SYSTEM_INFO_TYPE,           //TCU系统信息帧
+	BMS_INFO_TYPE,                  //电池管理系统信息帧
+	BATTERY_INFO_TYPE,              //电池信息帧
+	AC_SYSTEM_INFO_TYPE,            //空调系统信息帧
+	FRONT_MODULE_TYPE,              //前模块帧
+	MIDDLE_MODULE_TYPE,             //中模块帧
+	BACK_MODULE_TYPE,               //后模块帧
+	FRAME_MAX_TYPE,                 //最大无效	
 } FRAME_TYPES;
 
 void app_farme_sent_task(void);
@@ -568,6 +566,9 @@ void app_uart_data_init(void);
 void uart_data_parse(UartQueue *p);
 U8   app_frame_sent_sub(void);
 void app_main_farme_sent_task(void);
+
+extern U32 app_uart_arm_send_parse(U8 *dest,const void *data,U8 cmd,U8 len);
+
 
 
 #endif // APP_UART_CMD_H

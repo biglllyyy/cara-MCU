@@ -67,6 +67,7 @@ typedef enum
     UN_KNOWN_ERR = 7
 } t_CAN_ERR_TYPE;
 
+extern U8 hal_can_n_error_statecheck(U8 chn);
 
 
 extern  void hal_can_prepare(U8 nRecv, U8 nSend,can_msg_t*can_msg);

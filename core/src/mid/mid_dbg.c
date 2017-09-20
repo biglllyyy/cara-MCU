@@ -15,7 +15,7 @@ void dbg_init(void)
 	dbg_string("Core lib version %d.%d.%d\n", CORE_VER_MAJOR, CORE_VER_MINOR, CORE_VER_REV);
 }
 
-#if 1
+#if 0
 void dbg_string(const char*fmt,...)
 {
 	va_list vp;
@@ -67,4 +67,20 @@ void dbg_hex(unsigned char*str,unsigned char len)
 	dbg_buf[i+1]=0x0;
 	uart_write(UART_DEBUG_CHN, (U8*)dbg_buf);
 }
+#ifdef USE_FULL_ASSERT
+
+/** 
+  * @brief  Reports the name of the source file and the source line number
+  *   where the assert_param error has occurred.
+  * @param file: pointer to the source file name
+  * @param line: assert_param error line source number
+  * @retval : None
+  */
+void assert_failed(u8* file, u32 line)
+{
+  /* User can add his own implementation to report the file name and line number,
+     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+     dbg_string("Wrong parameters value: file %s on line %d\r\n", file, line);
+}
+#endif
 

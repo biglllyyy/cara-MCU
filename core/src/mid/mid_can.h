@@ -31,5 +31,6 @@ extern void mid_can_get_test(void);
 extern void can_chip_mode_switch(io_type_t *io, io_type_t *en, can_mode_t mode);
 
 extern pCanProcess can_rx_pro;
+extern pCanProcess  can1_rx_pro;
 
 #endif

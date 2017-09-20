@@ -300,3 +300,26 @@ void byte_order_change(U8 *data,U8 len)
 		default:break;
 	}
 }
+/************************************************************************************
+*　函数名称: to_little_endian
+*  功　　能: 小端模式存放数据
+*  入口参数: *dest: 目的地址,dat:需要转化的数据;len:数据长度 (字节数)
+*  返 回 值: 数据地址
+*  备    注: len 长度有限制
+************************************************************************************/
+U8 * to_little_endian(U8 *dest,U32 data,U8 len)
+{
+	U8 i;
+	if ((len > 4)||(len == 0))
+	{
+		return	NULL;
+	}
+	for(i=0; i<len;i++)
+	{
+		dest[i] = data&0xFF;
+		data >>= 8;
+	}
+	return dest;
+}
+
+

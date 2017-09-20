@@ -54,7 +54,7 @@ U16 rFreq; //后模块频率
 U16 fSpeed; //前模块折算车速
 U16 mSpeed; //中（顶）模块折算车速
 U16 rSpeed; //后模块折算车速
-U8 pSpeed = 0; //外部CAN这算车速
+U8 pSpeed = 0; //外部CAN这算车速 KM/H
 
 U16 fADR[2]; //前模块电阻值
 U16 mADR[2]; //中（顶）模块电阻值
@@ -169,7 +169,7 @@ void SYSTME_Logic(void)
 	F_PO6 = (FLASH && (IN5 || wake_up1));//右转向灯 400ms闪一次
 	F_PO7 = (FLASH && (IN1 || wake_up1));//左转向灯 400ms闪一次
 
-	if(((TM_Feedback_RPM>=16300*2)||(TM_Feedback_RPM<=15700*2))&&((TM_Feedback_RPM!=0xffff)))
+	//if(((TM_Feedback_RPM>=16300*2)||(TM_Feedback_RPM<=15700*2))&&((TM_Feedback_RPM!=0xffff)))
 	{
 		if((tempcount<=9)&&(tempcount2<=(12000-1)))
 		{
@@ -187,7 +187,7 @@ void SYSTME_Logic(void)
 			tempcount = 0;
 		}
 	}
-	else
+	//else
 	{
 		tempcount = 0;
 		tempcount2 = 0;

@@ -61,14 +61,18 @@
 /* variable define */
 static U8 msg_buf_num = 0;	//record msg buf mum
 can_msg_t can_msg[ID_PROCESS_ALL] = { 0 };
-static can_msg_t can1_rx_msg[1]={{0}} ;
-static can_msg_t can1_tx_msg[2] = {
+static can_msg_t can1_rx_msg[]={{0}} ;
+static can_msg_t can1_tx_msg[] = {
 	{0},
-	{0}
+	{0},
+	{0},
 };
 
 static pCanAnalyse can_rx_handle[ID_RECV_NUM_ALL] = { NULL };
+
+
 U32 can_rx_msg_id_ads[ID_RECV_NUM_ALL] = { 0 };
+
 /*******************分包处理*****************/
 unsigned int moto_voltage; //电机电压 0.1v
 unsigned int moto_current=10000; //电机电流 0.1A
@@ -238,6 +242,29 @@ static  void can_updata_analyse(can_msg_t *msg, can_pro_way_e way);
 
 static void app_can_process(can_msg_t *msg, can_pro_way_e way);
 
+
+static void can_id_68X_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_67X_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_62X_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_63X_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_64X_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_65X_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_56X_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_45X_analyse(can_msg_t *msg, can_pro_way_e way);
+
+static pCanAnalyse can1_rx_handle[]=
+{
+	can_id_68X_analyse,
+	can_id_67X_analyse,
+	can_id_62X_analyse,
+	can_id_63X_analyse,
+	can_id_64X_analyse,
+	can_id_65X_analyse,
+	can_id_56X_analyse,
+	can_id_45X_analyse,
+	NULL,
+};
+
 static void app_bound_id(U32 id,U32 id_mask, U8 dlc, CAN_ID_FORMAT_e format, U8 msg_buf,
 		U16 period) {
 
@@ -260,17 +287,16 @@ static void app_configuration_can(can_msg_t *msg,U32 id,U32 id_mask, U8 dlc, CAN
 		U16 period)	
 {
 	
-	msg[msg_buf].id = id;
-	msg[msg_buf].id_mask= id_mask;
-	msg[msg_buf].dlc = dlc;
-	msg[msg_buf].format = format;
-	msg[msg_buf].buffer_num = msg_buf;
+	msg[0].id = id;
+	msg[0].id_mask= id_mask;
+	msg[0].dlc = dlc;
+	msg[0].format = format;
+	msg[0].buffer_num = msg_buf;
 	if (period >= PERIOD_MS(1000)) {
-		msg[msg_buf].period_ms = period >> 1;
+		msg[0].period_ms = period >> 1;
 	} else {
-		msg[msg_buf].period_ms = period;
+		msg[0].period_ms = period;
 	}
-	dbg_printf("msg_buf = %d,id = %d\n",msg_buf,msg[msg_buf].id );
 }
 
 void app_init_variable(void) {
@@ -357,7 +383,20 @@ void app_init_can(void) {
 
 	mid_can1_prepare(can1_tx_msg,can1_rx_msg);
 
-	app_configuration_can(can1_tx_msg,ID_REC_01_0C03A1A7, 0x1FFFFFFF, 8, EXTERN_ID, 0 , (ID_0C03A1A7_period*50));
+	app_configuration_can(&can1_rx_msg[0],ID_REC_01_68X, 0x7F0, 8, STAND_ID, 3	, (ID_0C03A1A7_period*50));
+	app_configuration_can(&can1_rx_msg[1],ID_REC_02_67X, 0x7F0, 8, STAND_ID, 4	, (ID_0C03A1A7_period*50));
+	app_configuration_can(&can1_rx_msg[2],ID_REC_03_62X, 0x7F0, 8, STAND_ID, 5	, (ID_0C03A1A7_period*50));
+	app_configuration_can(&can1_rx_msg[3],ID_REC_04_63X, 0x7F0, 8, STAND_ID, 6	, (ID_0C03A1A7_period*50));
+	app_configuration_can(&can1_rx_msg[4],ID_REC_05_64X, 0x7F0, 8, STAND_ID, 7	, (ID_0C03A1A7_period*50));
+	app_configuration_can(&can1_rx_msg[5],ID_REC_06_65X, 0x7F0, 8, STAND_ID, 8	, (ID_0C03A1A7_period*50));
+	app_configuration_can(&can1_rx_msg[6],ID_REC_07_56X, 0x7F0, 8, STAND_ID, 9	, (ID_0C03A1A7_period*50));
+	app_configuration_can(&can1_rx_msg[7],ID_REC_08_45X, 0x7F0, 8, STAND_ID, 10 , (ID_0C03A1A7_period*50));
+
+
+	app_configuration_can(&can1_tx_msg[0],BCAN_ID_SEND_6A4, 0x7FF, 8, STAND_ID, 1 , (ID_0C03A1A7_period*50));
+	app_configuration_can(&can1_tx_msg[1],BCAN_ID_SEND_454, 0x7FF, 8, STAND_ID, 2 , (ID_0C03A1A7_period*50));
+	can1_rx_pro = can1_rx_handle;
+	
 	hal_can_init(1);
 	wdg_feed();
 
@@ -931,16 +970,54 @@ void MCU_TO_PC_send(void) {  //对应报文0x7EF
 	hal_can_sent(CAN_CHN, &can_msg[msg_box - 1]);
 }
 
+/*********************************************************************/
+
+void BCAN_SendCtl(void) {
+    can_msg[0].data[0] = gCTL[0].byte;
+    can_msg[0].data[1] = gCTL[1].byte;
+    can_msg[0].data[2] = gCTL[2].byte;
+    can_msg[0].data[3] = gCTL[3].byte;
+    can_msg[0].data[4] = gCTL[4].byte;
+    can_msg[0].data[5] = gCTL[5].byte;
+    can_msg[0].data[6] = ((M_ON && wake_up3) || wake_up2) + (IN14 << 1)+(IN15 << 2)+(IN16 << 3)+(IN21 << 4);//模块雨刮控制
+    can_msg[0].data[7] = 0;
+	hal_can_sent(1, &can_msg[0]);
+}
+
+void BCAN_send_mile(void) {
+	 can_msg[1].data[0] = (unsigned char) (e_total_miles); //低八位
+	 can_msg[1].data[1] = (unsigned char) (e_total_miles >> 8); //二级八位
+	 can_msg[1].data[2] = (unsigned char) (e_total_miles >> 16); //三级八位
+	 can_msg[1].data[3] = (unsigned char) (e_total_miles >> 24); //高八位
+	 can_msg[1].data[4] = 0; 
+	 can_msg[1].data[5] = 0;
+	 can_msg[1].data[6] = 0;
+	 can_msg[1].data[7] = 0;
+	 hal_can_sent(1, &can_msg[1]);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 void app_can_sent_task(void) {
-	dbg_printf("send can 1 data\n");
-	dbg_printf("can1 statr = %x\n",IO_CAN1.STATR);
+	BCAN_SendCtl();
+	BCAN_send_mile();
 
-	hal_can_sent(1, &can1_tx_msg[0]);
-	hal_can_sent(0, &can1_tx_msg[0]);
+
 }
 
 void app_can_lost_time_cnt_100ms(void) 

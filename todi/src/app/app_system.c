@@ -211,6 +211,7 @@ void app_task_10ms(void)
 	app_power_manager_task10(); /* 实现系统电源状态的切换 */
 	dbg_string(">>mid_can_get_task10\n");
 	mid_can_get_task10(); /* 实现CAN 报文的解析 */
+	mid_can1_get_task10(); /* 实现CAN 报文的解析 */
 	//app_lin_task10(); /* 实现LIN报文的解析 */
 	dbg_string(">>app_buz_ctl\n");
 	app_buz_ctl();	

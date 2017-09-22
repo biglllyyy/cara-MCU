@@ -23,22 +23,10 @@ Exec=0
 AutoLoad=1
 
 [DirInfo]
-WSP=E:\WorkSpace\Virtual Instrument\mcu-tongchang\
+WSP=E:\WorkSpace\Virtual Instrument\test\mcu-tongchang\
 
 [EditState]
-STATE-1=todi\src\main.c:21
-STATE-2=todi\src\app\uart\app_uart_cmd.c:379
-STATE-3=todi\src\app\uart\app_moudle.c:191
-STATE-4=todi\src\app\uart\app_moudle.h:1
-STATE-5=todi\src\app\uart\app_main_interface.c:148
-STATE-6=todi\src\app\uart\app_info.h:1
-STATE-7=todi\src\app\uart\app_info.c:1
-STATE-8=todi\src\app\uart\app_ad_capture.h:1
-STATE-9=todi\src\app\uart\app_ad_capture.c:1
-STATE-10=todi\src\app\uart\app_warning.h:1
-STATE-11=todi\src\app\uart\uart_cfg.h:5
-STATE-12=todi\src\app\can\app_can.c:58
-STATE-13=core\src\hal\hal_can.c:670
-STATE-14=core\src\mid\mid_can.c:336
-Count=14
+STATE-1=todi\src\app\uart\app_moudle.h:73
+STATE-2=todi\src\app\can\app_can.c:948
+Count=2
 

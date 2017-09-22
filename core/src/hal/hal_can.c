@@ -122,7 +122,6 @@ void hal_can_init(U8 chn)
 		}
 		for(i= 0; can1_tx_msg[i].id != 0;i++)
 		{
-			dbg_printf("init can buf = %d\n",can1_tx_msg[i].buffer_num);
 			can_sent_object_init(chn,can1_tx_msg[i].buffer_num,can1_tx_msg[i].format,can1_tx_msg[i].id,can1_tx_msg[i].dlc);		//·¢ËÍ
 		}
         /* CAN bus setting */
@@ -294,7 +293,7 @@ void can_sent_object_init(U8 chn,U8 num,CAN_ID_FORMAT_e format,U32 id,U8 dlc)
         IO_CAN1.IF1DTB2.hword = 0x0000;
 
         /*CREQ*/
-        IO_CAN1.IF1CREQ.hword = (CAN1_MSGB_SIZE-1) - num;			/*transmit IFx to message RAM use buffer1*/		
+        IO_CAN1.IF1CREQ.hword = num;			/*transmit IFx to message RAM use buffer1*/		
 		break;
     default:
         break;
@@ -321,6 +320,17 @@ void State_judge_0(void)
     if(!((IO_CAN0.STATR.bit.BOff)|(IO_CAN0.STATR.bit.EWarn)|(IO_CAN0.STATR.bit.EPass))) //error active
     {
         Error_State_0 = 0x03;				//error active
+    }
+}
+void State_judge_1(void)
+{
+    U32 count = 0;
+
+    if(IO_CAN1.STATR.bit.BOff==0x01)		//bus off
+    {
+        /*Restart bus*/
+        IO_CAN1.CTRLR.bit.Init = 0;		/*enable CAN controller*/
+        while(((IO_CAN1.ERRCNT.bit.TEC!=0)||(IO_CAN1.ERRCNT.bit.REC!=0)) && (count++ <= 0xFFFFF));//see if recovered
     }
 }
 
@@ -470,6 +480,10 @@ void hal_can_sent(U8 chn,can_msg_t *can_msg)
 
             break;
         case 1:
+			if(IO_CAN1.INTR.hword == 0x8000)		/* status int */
+            {
+                State_judge_1();
+            }
             IO_CAN1.IF1CMSK.hword = 0x0087;	/* only updata DATA */
 			CAN1_IF1ARB_Dir = 1;
             CAN1_IF1ARB_MsgVal = 1;
@@ -483,7 +497,7 @@ void hal_can_sent(U8 chn,can_msg_t *can_msg)
             CAN1_IF1DTB2_IF1DTB2L = can_msg->data[3];
             IO_CAN1.IF1MCTR.hword = 0x2988;		//NEWDAT=0 MSGLST=0 INTPND=1 UMASK=0
             //TXIE=1 RXIE=0 RMTEN=0 TXRQST=1 EOB=1 DLC=8
-            IO_CAN1.IF1CREQ.bit.MN=CAN1_MSGB_SIZE -1 - can_msg->buffer_num;		//IF -> RAM
+            IO_CAN1.IF1CREQ.bit.MN = can_msg->buffer_num;		//IF -> RAM
             break;
         default:
             break;

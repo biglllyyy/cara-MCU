@@ -193,6 +193,7 @@ extern unsigned char Set_t;//设定
 extern unsigned char AC_req;//制冷请求
 extern unsigned char AC_LIFE;//AC生命
 /*******************************************/
+extern unsigned char PRESS[2]; //气压值
 
 typedef void (*pCanAnalyse)(can_msg_t *msg, can_pro_way_e way);
 

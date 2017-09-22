@@ -72,6 +72,9 @@ static pCanAnalyse can_rx_handle[ID_RECV_NUM_ALL] = { NULL };
 
 
 U32 can_rx_msg_id_ads[ID_RECV_NUM_ALL] = { 0 };
+unsigned int Fcan_count = 0; //Ç°²¿Ä£¿
+unsigned int Rcan_count = 0; //¶¥²¿Ä£¿
+unsigned int Mcan_count = 0; //ÖĞ²¿Ä£¿
 
 /*******************·Ö°ü´¦Àí*****************/
 unsigned int moto_voltage; //µç»úµçÑ¹ 0.1v
@@ -208,6 +211,8 @@ U32 Vcan_timeout_cfg;
 U32 Bcan_timeout_cfg;
 
 /******************************************/
+unsigned char PRESS[2]; //ÆøÑ¹Öµ
+unsigned char ccvs_eng_req; //Æô¶¯ÇëÇó
 
 
 //UDS_id_766  uds766;
@@ -972,6 +977,292 @@ void MCU_TO_PC_send(void) {  //¶ÔÓ¦±¨ÎÄ0x7EF
 
 /*********************************************************************/
 
+
+static void can_id_68X_analyse(can_msg_t *msg, can_pro_way_e way){
+	U8 i  = 0;
+	switch (way) {
+	case CAN_PARSE:
+			switch (msg->id) {
+	            case 0x681:
+	                Fcan_count = 0;
+	                fKEY.BYTES[0] = msg->data[0];
+	                fKEY.BYTES[1] = msg->data[1];
+	                fKEY.BYTES[2] = msg->data[2];
+	                fFreq = msg->data[3]+((unsigned int)msg->data[4] << 8);
+	                fSpeed = msg->data[5]+((unsigned int) msg->data[6] << 8);
+	                break;
+	            case 0x682:
+	                Mcan_count = 0;
+	                mKEY.BYTES[0] = msg->data[0];
+	                mKEY.BYTES[1] = msg->data[1];
+	                mKEY.BYTES[2] = msg->data[2];
+	                mFreq = msg->data[3]+((unsigned int) msg->data[4] << 8);
+	                mSpeed = msg->data[5]+((unsigned int) msg->data[6] << 8);
+	                break;
+	            case 0x683:
+	                Rcan_count = 0;
+	                rKEY.BYTES[0] = msg->data[0];
+	                rKEY.BYTES[1] = msg->data[1];
+	                rKEY.BYTES[2] = msg->data[2];
+	                rFreq = msg->data[3]+((unsigned int) msg->data[4] << 8);
+	                rSpeed = msg->data[5]+((unsigned int) msg->data[6] << 8);
+	                break;
+				default:
+				     break;
+		     }
+		break;
+	case CAN_LOST: 
+		break;
+	default:
+		break;
+	}
+}
+	
+static void can_id_67X_analyse(can_msg_t *msg, can_pro_way_e way){
+	U8 i  = 0;
+	switch (way) {
+	case CAN_PARSE:
+		switch (msg->id) {
+			case 0x671:
+				Fcan_count = 0;
+				fADR[0] =msg->data[0]+((unsigned int) msg->data[1] << 8);
+				fADR[1] = msg->data[2]+((unsigned int) msg->data[3] << 8);
+				break;
+			case 0x672:
+				Mcan_count = 0;
+				mADR[0] = msg->data[0]+((unsigned int) msg->data[1] << 8);
+				mADR[1] = msg->data[2]+((unsigned int) msg->data[3] << 8);
+				break;
+			case 0x673:
+				Rcan_count = 0;
+				rADR[0] = msg->data[0]+((unsigned int) msg->data[1] << 8);
+				rADR[1] = msg->data[2]+((unsigned int) msg->data[3] << 8);
+				break;
+			 default:
+				break;
+		}
+		break;
+	case CAN_LOST:
+		break;
+	default:
+		break;
+	}
+}
+static void can_id_62X_analyse(can_msg_t *msg, can_pro_way_e way){
+	U8 i  = 0;
+	switch (way) {
+	case CAN_PARSE:
+		switch (msg->id) {
+			case 0x621:
+                Fcan_count = 0;
+                fpcur[0] = msg->data[0]+((unsigned int) msg->data[1] << 8);
+                fpcur[1] = msg->data[2]+((unsigned int) msg->data[3] << 8);
+                fpcur[2] = msg->data[4]+((unsigned int) msg->data[5] << 8);
+                fpcur[3] = msg->data[6]+((unsigned int) msg->data[7] << 8);
+                break;
+			case 0x622:
+                Mcan_count = 0;
+                mpcur[0] = msg->data[0]+((unsigned int) msg->data[1] << 8);
+                mpcur[1] = msg->data[2]+((unsigned int) msg->data[3] << 8);
+                mpcur[2] = msg->data[4]+((unsigned int) msg->data[5] << 8);
+                mpcur[3] = msg->data[6]+((unsigned int) msg->data[7] << 8);
+                break;
+			case 0x623:
+                Rcan_count = 0;
+                rpcur[0] = msg->data[0]+((unsigned int) msg->data[1] << 8);
+                rpcur[1] = msg->data[2]+((unsigned int) msg->data[3] << 8);
+                rpcur[2] = msg->data[4]+((unsigned int) msg->data[5] << 8);
+                rpcur[3] = msg->data[6]+((unsigned int) msg->data[7] << 8);
+                break;
+			default:
+				break;
+		}
+		break;
+	case CAN_LOST:
+		break;
+	default:
+		break;
+	}
+}
+static void can_id_63X_analyse(can_msg_t *msg, can_pro_way_e way){
+	U8 i  = 0;
+	switch (way) {
+	case CAN_PARSE:
+		switch (msg->id) {
+			case 0x631:
+                Fcan_count = 0;
+                fpcur[4] = msg->data[0]+((unsigned int) msg->data[1] << 8);
+                fpcur[5] = msg->data[2]+((unsigned int) msg->data[3] << 8);
+                fpcur[6] = msg->data[4]+((unsigned int) msg->data[5] << 8);
+                fpcur[7] = msg->data[6]+((unsigned int) msg->data[7] << 8);
+                break;
+			case 0x632:
+                Mcan_count = 0;
+                mpcur[4] = msg->data[0]+((unsigned int) msg->data[1] << 8);
+                mpcur[5] = msg->data[2]+((unsigned int) msg->data[3] << 8);
+                mpcur[6] = msg->data[4]+((unsigned int) msg->data[5] << 8);
+                mpcur[7] = msg->data[6]+((unsigned int) msg->data[7] << 8);
+                break;
+			case 0x633:
+                Rcan_count = 0;
+                rpcur[4] = msg->data[0]+((unsigned int) msg->data[1] << 8);
+                rpcur[5] = msg->data[2]+((unsigned int) msg->data[3] << 8);
+                rpcur[6] = msg->data[4]+((unsigned int) msg->data[5] << 8);
+                rpcur[7] = msg->data[6]+((unsigned int) msg->data[7] << 8);
+                break;
+			default:
+				break;
+		}
+		break;
+	case CAN_LOST:
+		break;
+	default:
+		break;
+	}
+}
+static void can_id_64X_analyse(can_msg_t *msg, can_pro_way_e way){
+	U8 i  = 0;
+	switch (way) {
+	case CAN_PARSE:
+		switch (msg->id) {
+			case 0x641:
+                Fcan_count = 0;
+                fpcur[8] = msg->data[0]+((unsigned int) msg->data[1] << 8);
+                fpcur[9] = msg->data[2]+((unsigned int) msg->data[3] << 8);
+                fpcur[10] = msg->data[4]+((unsigned int) msg->data[5] << 8);
+                fpcur[11] = msg->data[6]+((unsigned int) msg->data[7] << 8);
+                break;
+			case 0x642:
+                Mcan_count = 0;
+                mpcur[8] = msg->data[0]+((unsigned int) msg->data[1] << 8);
+                mpcur[9] = msg->data[2]+((unsigned int) msg->data[3] << 8);
+                mpcur[10] = msg->data[4]+((unsigned int) msg->data[5] << 8);
+                mpcur[11] = msg->data[6]+((unsigned int) msg->data[7] << 8);
+                break;
+			case 0x643:
+                Rcan_count = 0;
+                rpcur[8] = msg->data[0]+((unsigned int) msg->data[1] << 8);
+                rpcur[9] = msg->data[2]+((unsigned int) msg->data[3] << 8);
+                rpcur[10] = msg->data[4]+((unsigned int) msg->data[5] << 8);
+                rpcur[11] = msg->data[6]+((unsigned int) msg->data[7] << 8);
+                break;
+			default:
+				break;
+		}
+
+		break;
+	case CAN_LOST:
+		break;
+	default:
+		break;
+	}
+}
+static void can_id_65X_analyse(can_msg_t *msg, can_pro_way_e way){
+	U8 i  = 0;
+	switch (way) {
+	case CAN_PARSE:
+		switch (msg->id) {
+			case 0x651:
+                Fcan_count = 0;
+                fpcur[12] = msg->data[0]+((unsigned int) msg->data[1] << 8);
+                fpcur[13] = msg->data[2]+((unsigned int) msg->data[3] << 8);
+                fpcur[14] = msg->data[4]+((unsigned int) msg->data[5] << 8);
+                break;
+			case 0x652:
+                Mcan_count = 0;
+                mpcur[12] = msg->data[0]+((unsigned int) msg->data[1] << 8);
+                mpcur[13] = msg->data[2]+((unsigned int) msg->data[3] << 8);
+                mpcur[14] = msg->data[4]+((unsigned int) msg->data[5] << 8);
+                break;
+			case 0x653:
+                Rcan_count = 0;
+                rpcur[12] = msg->data[0]+((unsigned int) msg->data[1] << 8);
+                rpcur[13] = msg->data[2]+((unsigned int) msg->data[3] << 8);
+                rpcur[14] = msg->data[4]+((unsigned int) msg->data[5] << 8);
+                break;
+			default:
+				break;	
+		}
+		break;
+	case CAN_LOST:
+		break;
+	default:
+		break;
+	}
+}
+static void can_id_56X_analyse(can_msg_t *msg, can_pro_way_e way){
+	U8 i  = 0,j=0;
+	switch (way) {
+	case CAN_PARSE:
+		switch (msg->id) {
+			case 0x561:
+				Fcan_count = 0;
+                fPOUT.BYTES[0] = msg->data[0];
+                fPOUT.BYTES[1] = msg->data[1];
+                for (j = 0; j < 4; j++) {//Êä³ö×´Ì¬²É¼¯
+                    for (i = 0; i < 4; i++) {
+                        fPF[i + 4 * j] = (msg->data[j + 2] >> (i * 2))&0x03;
+                    }
+                }
+                break;
+            case 0x562:
+                Mcan_count = 0;
+                mPOUT.BYTES[0] = msg->data[0];
+                mPOUT.BYTES[1] = msg->data[1];
+                for (j = 0; j < 4; j++) {
+                    for (i = 0; i < 4; i++) {
+                        mPF[i + 4 * j] = (msg->data[j + 2] >> (i * 2))&0x03;
+                    }
+                }
+                break;
+            case 0x563:
+                Rcan_count = 0;
+                rPOUT.BYTES[0] = msg->data[0];
+                rPOUT.BYTES[1] = msg->data[1];
+                for (j = 0; j < 4; j++) {
+                    for (i = 0; i < 4; i++) {
+                        rPF[i + 4 * j] = (msg->data[j + 2] >> (i * 2))&0x03;
+                    }
+                }
+                break;
+			default:
+				break;
+		}
+		break;
+	case CAN_LOST:
+		break;
+	default:
+		break;
+	}
+}
+static void can_id_45X_analyse(can_msg_t *msg, can_pro_way_e way){
+	U8 i  = 0;
+	switch (way) {
+	case CAN_PARSE:
+		switch (msg->id) {
+			 case 0x451:
+                Fcan_count = 0;
+                fSingle_miles = msg->data[4]+((unsigned int) msg->data[5] << 8);
+                break;
+            case 0x452:
+                Mcan_count = 0;
+                mSingle_miles = msg->data[4]+((unsigned int) msg->data[5] << 8);
+                break;
+            case 0x453:
+                Rcan_count = 0;
+                rSingle_miles = msg->data[4]+((unsigned int) msg->data[5] << 8);
+                break;
+			default:
+				break;
+		}
+		break;
+	case CAN_LOST:
+		break;
+	default:
+		break;
+	}
+}
+
 void BCAN_SendCtl(void) {
     can_msg[0].data[0] = gCTL[0].byte;
     can_msg[0].data[1] = gCTL[1].byte;
@@ -996,28 +1287,75 @@ void BCAN_send_mile(void) {
 	 hal_can_sent(1, &can_msg[1]);
 }
 
+void PCAN_CCVS(void) {
+	U8 msg_box;
 
+	msg_box = ID_RECV_NUM_ALL + 2;
+	can_msg[msg_box - 1].buffer_num = msg_box;
+    can_msg[msg_box - 1].data[0] = (unsigned char) (M_ON << 6)//ONµµ
+            + (unsigned char) (IN4 << 5)//STµµ
+            + (unsigned char) (IN27 << 4)//ºóÃÅ¿ªĞÅºÅ
+            + (unsigned char) (IN20 << 3)//Ç°Ãæ¿ªĞÅºÅ
+            + (unsigned char) (rKL15 << 2)//ºó²ÕÃÅ¿ªĞÅºÅ
+            + (unsigned char) (rKL8 << 1)//×¤³µĞÅºÅ
+            + (unsigned char) (rKL10 || rKL12) ;//ÆøÑ¹µÍ±¨¾¯ĞÅºÅ
+   can_msg[msg_box - 1].data[1] = (unsigned char) (LED4 << 7)//×ó×ªÏò
+            + (unsigned char) (LED17 << 6)//Ô¶¹âµÆ
+            + (unsigned char) (LED19 << 5)//Ç°ÎíµÆ
+            + (unsigned char) (LED8 << 4)//ÓÒ×ªÏò
+            + (unsigned char) (IN33 << 3)//ÓÍÁ¿±¨¾¯
+            + (unsigned char) (0 << 2)//·¢¶¯»úÔ¤ÈÈ
+            + (unsigned char) (LED22 << 1)//½ü¹âµÆ
+            + (unsigned char) (rLED_flag) ;//ºóÎíµÆ
+    can_msg[msg_box - 1].data[2] = 0xff;
+    can_msg[msg_box - 1].data[3] = (unsigned char) (pSpeed * 2);
+    can_msg[msg_box - 1].data[4] = PRESS[0]*100;
+    can_msg[msg_box - 1].data[5] = (unsigned char) (PRESS[0]*100 >> 8);
+    can_msg[msg_box - 1].data[6] = PRESS[1]*100;
+    can_msg[msg_box - 1].data[7] = (unsigned char) (PRESS[1]*100 >> 8);
+    hal_can_sent(CAN_CHN, &can_msg[msg_box - 1]);
+}
+void PCAN_send_mile(void) {
+	U8 msg_box;
+    msg_box = ID_RECV_NUM_ALL + 3;
+	can_msg[msg_box - 1].buffer_num = msg_box;;
+    can_msg[msg_box - 1.data[0] = (unsigned char) (e_total_miles); //µÍ°ËÎ»
+    can_msg[msg_box - 1.data[1] = (unsigned char) (e_total_miles >> 8); //¶ş¼¶°ËÎ»
+    can_msg[msg_box - 1.data[2] = (unsigned char) (e_total_miles >> 16); //Èı¼¶°ËÎ»
+    can_msg[msg_box - 1.data[3] = (unsigned char) (e_total_miles >> 24); //¸ß°ËÎ»
+    can_msg[msg_box - 1.data[4] = 0; 
+    can_msg[msg_box - 1.data[5] = 0;
+    can_msg[msg_box - 1.data[6] = 0;
+    can_msg[msg_box - 1.data[7] = 0;
+    hal_can_sent(CAN_CHN, &can_msg[msg_box - 1]);
 
+}
+void PCAN_send_req(void) {
 
+	U8 msg_box;
+    msg_box = ID_RECV_NUM_ALL + 4;
+    can_msg[msg_box - 1].data[0] = 0xff;
+    can_msg[msg_box - 1].data[1] = (unsigned char) 0x0f
+            + (unsigned char) ((ccvs_eng_req & 0x03) << 4)
+            +(unsigned char) (0x03 << 6);
+    can_msg[msg_box - 1].data[2] = 0xFF;
+    can_msg[msg_box - 1].data[3] = 0xFF;
+    can_msg[msg_box - 1].data[4] = 0xFF;
+    can_msg[msg_box - 1].data[5] = 0xFF;
+    can_msg[msg_box - 1].data[6] = 0xFF;
+    can_msg[msg_box - 1].data[7] = 0xFF;
+    hal_can_sent(CAN_CHN, &can_msg[msg_box - 1]);
 
-
-
-
-
-
-
-
-
-
-
+}
 
 
 
 void app_can_sent_task(void) {
 	BCAN_SendCtl();
 	BCAN_send_mile();
-
-
+ 	PCAN_CCVS();
+	PCAN_send_mile();
+	PCAN_send_req();
 }
 
 void app_can_lost_time_cnt_100ms(void) 

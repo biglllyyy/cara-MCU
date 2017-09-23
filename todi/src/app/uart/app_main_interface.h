@@ -28,9 +28,9 @@ typedef struct
 	U8 totalVoltage[2];                 // 0.1V/bit，-10000
 	U8 totalCurrent[2];				    //0.1A/bit，-10000
 	U8	gear;							/*0000:空挡 0001: 1 档 0010: 2 档 0011: 3 档 0100: 4 档 0101: 5 档 0110: 6 档 0111: 7倒档*/
-	U8 odo[4];							//0.4%/bit
+	U8 odo[4];							
 	U8 trip[2];							//里程小计	0-9999 <0.1>
-	U8 soc;							//系统SOC  0-100
+	U8 soc;							//系统SOC  0.4%/bit
 	U8 airPressure1;					//气压1	10 kpa/bit，0
 	U8 airPressure2;					//气压2	10 kpa/bit，0
 	U8	moter_control_temp;        //电机控制器温度, 1℃/bit，-40 

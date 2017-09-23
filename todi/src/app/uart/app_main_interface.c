@@ -84,7 +84,6 @@ void main_interface_get_data(void)
 
 	
 
-
 	//电机控制器温度
 	{
 		main_interface_data.moter_control_temp = Inverter_t;
@@ -144,8 +143,8 @@ void main_interface_get_data(void)
 	main_interface_data.diagnostic_mode = Diagnosis;
 	main_interface_data.climbing_mode = Mode_S;
 	main_interface_data.HV_overhaul = High_Voltage;
-	main_interface_data.main_power = M_ON;//!<点火信号
-	main_interface_data.defroster = 0;//!<未定义
+	main_interface_data.main_power = M_ON;     //!<点火信号
+	main_interface_data.defroster = 0;         //!<未定义
 	main_interface_data.back_door = rKL15;                                                                 
 	main_interface_data.park_brake=;		   //驻车制动符号片                                                                   
 	main_interface_data.brake_light=;		   //刹车灯符号片                                                                                                                                                                                                                                                         
@@ -165,8 +164,22 @@ void main_interface_get_data(void)
 	DWORD_WRITE(main_interface_data.urea_level,temp);
 	temp = g_u32_utcTime;
 	DWORD_WRITE(main_interface_data.dateTime,temp);
-	temp = 0;
-	DWORD_WRITE(main_interface_data.battery,temp);
+	{
+		temp = ADR[MCU_VBAT];
+		temp = temp * 169 /10000;
+		temp = temp + 4;
+		if (temp<16)
+		{
+			temp = 16;
+		}
+		else if (temp>32)
+		{
+			temp = 32;
+		}
+		DWORD_WRITE(main_interface_data.battery,temp);
+	}
+	
+	
 }
 void main_interface_send_data(void)
 {

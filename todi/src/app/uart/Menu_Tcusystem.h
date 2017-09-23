@@ -18,7 +18,14 @@ typedef struct {
 static TCUSystemInfoFrame s_TCU_para;
 void get_TCU_system(void)
 {
+	U32 u32temp;
 	memset(&s_TCU_para,0,MENU_TCUSYSTEM_DATA_LENGTH);
+	s_TCU_para.actual_clutch_position = TCU_Position;
+	u32temp = TCU_warn;DWORD_WRITE(s_TCU_para.TCU_fault_code,u32temp);
+	u32temp = Speed_rmp;WORD_WRITE(s_TCU_para.axis_rpm,u32temp);
+	u32temp = tcu_fmi;DWORD_WRITE(s_TCU_para.FMI,u32temp);
+	u32temp = tcu_cm;DWORD_WRITE(s_TCU_para.CM,u32temp);
+	u32temp = tcu_oc;DWORD_WRITE(s_TCU_para.OC,u32temp);
 }
 void send_TCU_system(void)
 {

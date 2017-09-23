@@ -37,6 +37,7 @@ static BackModuleFrame s_back_module_para;
 void get_back_module_system(void)
 {
 	memset(&s_back_module_para,0,MENU_BACK_MODULE_DATA_LENGTH);
+	
 }
 void send_back_module_system(void)
 {

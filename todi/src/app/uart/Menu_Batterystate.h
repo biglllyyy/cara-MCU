@@ -4,8 +4,8 @@
 
 /* 电池信息,对应BATTERY_INFO_TYPE */
 typedef struct {
-    U8 bat_voltage[10][4];	//电池电压, 0.00 V
-    U8 bat_temp[10][4];		//电池温度, 0 ℃
+    U8 bat_voltage[10][4];	//电池电压, 0.00 V  0.01V/ bit，-10000
+    U8 bat_temp[10][4];		//电池温度, 0 ℃    1℃/bit，-40
 } BatteryInfoFrame;
 
 
@@ -13,7 +13,19 @@ typedef struct {
 static BatteryInfoFrame s_battery_info_para;
 void get_battery_info_system(void)
 {
+	U32 u32temp;
+	U8 i;
 	memset(&s_battery_info_para,0,MENU_BATTERY_INFO_DATA_LENGTH);
+	for(i=0; i<10; i++)
+	{
+		u32temp = Battery_voltage[i];
+		DWORD_WRITE(s_battery_info_para.bat_voltage[i],u32temp);
+	}
+	for(i=0; i<10; i++)
+	{
+		u32temp = Battery_temp[i];
+		DWORD_WRITE(s_battery_info_para.bat_temp[i],u32temp);
+	}
 }
 void send_battery_info_system(void)
 {

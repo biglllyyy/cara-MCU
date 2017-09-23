@@ -25,6 +25,7 @@ typedef struct
 
 
 
+
 extern WarningDataStruct warning_data;
 void warning_get_data(void);
 void warning_send_data(void);

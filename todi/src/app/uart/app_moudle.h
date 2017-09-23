@@ -189,22 +189,22 @@ void LED_Out(void);
 #define PO1   alarm_led[0].bits.bit6 //功率输出    
 #define PO2   alarm_led[0].bits.bit7 //功率输出  
 
-/*
-#define LED1  BLED1 //前门开指示        
-#define LED2  BLED2 //中门开指示                         
-#define LED3  BLED3 //空挡指示  
-#define LED4  BLED4 //左转向报警      
-#define LED5  BLED5 //前进挡指示    
-#define LED6  BLED6 //电量不足报警 
-#define LED7  BLED7 //充电指示  
-#define LED8  BLED8 //右转向报警  
-#define LED9  BLED9 //气压低报警
-#define LED10 BLED10 //总电源指示              
-#define LED11 BLED11 //气压低报警
-#define LED12 BLED12 //SOC报警   
-#define LED13 BLED13 //电机故障报警            
-#define LED14 BLED14 //动力电池故障报警                 
-#define LED15 BLED15 //小灯 */
+
+#define LED1  0 //前门开指示        
+#define LED2  0 //中门开指示                         
+#define LED3  0 //空挡指示  
+#define LED4  0 //左转向报警      
+#define LED5  0 //前进挡指示    
+#define LED6  0 //电量不足报警 
+#define LED7  0 //充电指示  
+#define LED8  0 //右转向报警  
+#define LED9  0 //气压低报警
+#define LED10 0 //总电源指示              
+#define LED11 0 //气压低报警
+#define LED12 0 //SOC报警   
+#define LED13 0 //电机故障报警            
+#define LED14 0 //动力电池故障报警                 
+#define LED15 0 //小灯 
 
 #define LED16 alarm_led[2].bits.bit7 //蓄电池充电指示                
 #define LED17 alarm_led[3].bits.bit0 //远光灯报警  
@@ -236,6 +236,11 @@ typedef union {
 
 extern SW_DATA sw_input[5]; //开关采集全局变量
 void SW_Input(void);
+#define e_total_miles      0
+#define DMC_Gear           0
+#define	DMC_Status         0
+#define DMC_Level 		   0
+#define DMC_Rpm            0   //电机转速
 
 
 #define IN1   (!MCU_IN1)     //左转向开关

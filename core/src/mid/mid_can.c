@@ -325,7 +325,7 @@ void mid_can1_get_task10(void)
 	{
 		return;
 	}
-	nMob = HalChkMob();
+	nMob = HalCheckChnMob(1);
 	if(0 == nMob)
 	{
 		count++;

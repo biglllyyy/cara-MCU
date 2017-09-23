@@ -77,74 +77,96 @@ void main_interface_get_data(void)
 	main_interface_data.soc = temp2; /* Soc 百分之0-100  */
 
 
-	//气压 电路分压10倍，
-	{
-		U32 u32temp;
-		ADV[4] = (ADR[4]*3300*11/4096);
-		if (ADV[4]>2100)
-		{
-			ADV[4] += 500;
-		}
-		else if (ADV[4]>1600)
-		{
-			ADV[4] += 400;
-		}
-		else
-		{
-			ADV[4] +=200;
-		}
-		u32temp = ADV[4]/100;
+	//气压 ，
 
-		if (u32temp>=33)
-		{
-			u32temp = 33;
-		}
-		main_interface_data.airPressure1 = (U8)u32temp;//(U8)(ADR[4]*330/4096);//(U8)((ADR[4]/(4095)*3.3)*10); /* 气压1 电压值扩大了10倍   */
-		dbg_printf("ad1 = %d\n",ADR[4]);
-	}
-	{
-		U32 u32temp;
-		ADV[3] = (ADR[3]*3300*11/4096);
-		if (ADV[3]>2100)
-		{
-			ADV[3] += 500;
-		}
-		else if (ADV[4]>1600)
-		{
-			ADV[3] += 400;
-		}
-		else
-		{
-			ADV[3] +=200;
-		}
-		u32temp = ADV[3]/100;
-		if (u32temp>=33)
-		{
-			u32temp = 33;
-		}
-		main_interface_data.airPressure2 = (U8)u32temp;//(U8)(ADR[4]*330/4096);//(U8)((ADR[4]/(4095)*3.3)*10); /* 气压1 电压值扩大了10倍   */
-		
-		dbg_printf("ad2 = %d\n",ADR[3]);
-	}
+	main_interface_data.airPressure1 = PRESS[0]; /* 气压1    */
+	main_interface_data.airPressure1 = PRESS[1]; /* 气压1	 */
+
 	
 
 
 	//电机控制器温度
 	{
-		main_interface_data.moter_control_temp = 250;
+		main_interface_data.moter_control_temp = Inverter_t;
 	}
 
 
 	//电机温度
 	{
-		main_interface_data.moter_temp = 250;
+		main_interface_data.moter_temp = Motor_Temperature;
 	}
 
 	//开关采集
 	{
 		//!<需要查询硬件端口
+
+ 		main_interface_data.control_IN01 = MCU_IN4;  //左转向开
+		main_interface_data.control_IN02 = 0;        //保留    
+		main_interface_data.control_IN03 = 0;        //保留    
+		main_interface_data.control_IN04 = MCU_IN1 ; //钥匙ST开
+		main_interface_data.control_IN05 = MCU_IN5 ; //右转向开
+		main_interface_data.control_IN06 = MCU_IN6 ; //小灯开关
+		main_interface_data.control_IN07 = MCU_IN7 ; //远光灯开
+		main_interface_data.control_IN08 = MCU_IN8 ; //近光灯开
+		
+		main_interface_data.control_IN09 = MCU_IN9 ; //前雾灯开
+		main_interface_data.control_IN10 = MCU_IN10; //后雾灯开
+		main_interface_data.control_IN11 = 0;        //保留    
+		main_interface_data.control_IN12 = MCU_IN12; //广告灯开
+		main_interface_data.control_IN13 = 0;        //保留    
+		main_interface_data.control_IN14 = MCU_IN14; //雨刮低档
+		main_interface_data.control_IN15 = MCU_IN15; //雨刮间歇
+		main_interface_data.control_IN16 = MCU_IN16; //雨刮高档
+		
+		main_interface_data.control_IN17 = 0;        //保留    
+		main_interface_data.control_IN18 = 0;        //保留    
+		main_interface_data.control_IN19 = MCU_IN23; //路牌开关
+		main_interface_data.control_IN20 = MCU_IN24; //前门开开
+		main_interface_data.control_IN21 = MCU_IN17; //雨刮喷水
+		main_interface_data.control_IN22 = 0;        //保留    
+		main_interface_data.control_IN23 = 0;        //保留    
+		main_interface_data.control_IN24 = 0;        //保留 
+		
+		main_interface_data.control_IN25 = 0;        //保留    
+		main_interface_data.control_IN26 = MCU_IN26; //中门关开
+		main_interface_data.control_IN27 = MCU_IN27; //中门开开
+		main_interface_data.control_IN28 = MCU_IN25; //前门关开
+		main_interface_data.control_IN29 = 0;        //燃油量过
+		main_interface_data.control_IN30 = 0;        //保留    
+		main_interface_data.control_IN31 = 0;        //保留    
+		main_interface_data.control_IN32 = 0;        //保留    
+		
+		main_interface_data.control_IN33 = 0;        //危险警报
+		main_interface_data.control_IN34 = 0;        //电源唤醒
+		main_interface_data.control_IN35 = 0;        //钥匙ON开	
+		
 	}
-	
+	main_interface_data.diagnostic_mode = Diagnosis;
+	main_interface_data.climbing_mode = Mode_S;
+	main_interface_data.HV_overhaul = High_Voltage;
+	main_interface_data.main_power = M_ON;//!<点火信号
+	main_interface_data.defroster = 0;//!<未定义
+	main_interface_data.back_door = rKL15;                                                                 
+	main_interface_data.park_brake=;		   //驻车制动符号片                                                                   
+	main_interface_data.brake_light=;		   //刹车灯符号片                                                                                                                                                                                                                                                         
+	main_interface_data.ABS=;				       //ABS符号片                                                                          
+	main_interface_data.dryer=;			       //干燥器符号片                                                                         
+	main_interface_data.Kt=Battery_Kt;				       //电池主接触器                                                                         
+	main_interface_data.power_mode=Electric;		   //Power模式符号片(纯电动模式 or 混动模式 or 插电模式)                              
+	main_interface_data.charge_confirm=Charge_Check;	//充电确认符号片                                                                 
+	main_interface_data.AC=AC_SWITCH;				      //AC空调符号片
+	temp = TCU_level;
+	DWORD_WRITE(main_interface_data.fault_level,temp);
+	temp = TCU_code;
+	DWORD_WRITE(main_interface_data.fault_code,temp);
+	temp = tcu_spn;
+	DWORD_WRITE(main_interface_data.SPN,temp);
+	temp = Niaosu;
+	DWORD_WRITE(main_interface_data.urea_level,temp);
+	temp = g_u32_utcTime;
+	DWORD_WRITE(main_interface_data.dateTime,temp);
+	temp = 0;
+	DWORD_WRITE(main_interface_data.battery,temp);
 }
 void main_interface_send_data(void)
 {

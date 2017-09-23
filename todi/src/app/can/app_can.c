@@ -61,7 +61,7 @@
 /* variable define */
 static U8 msg_buf_num = 0;	//record msg buf mum
 can_msg_t can_msg[ID_PROCESS_ALL] = { 0 };
-static can_msg_t can1_rx_msg[]={{0}} ;
+static can_msg_t can1_rx_msg[20]={{0}} ;
 static can_msg_t can1_tx_msg[] = {
 	{0},
 	{0},
@@ -72,9 +72,9 @@ static pCanAnalyse can_rx_handle[ID_RECV_NUM_ALL] = { NULL };
 
 
 U32 can_rx_msg_id_ads[ID_RECV_NUM_ALL] = { 0 };
-unsigned int Fcan_count = 0; //Ç°²¿Ä£¿
-unsigned int Rcan_count = 0; //¶¥²¿Ä£¿
-unsigned int Mcan_count = 0; //ÖÐ²¿Ä£¿
+unsigned int Fcan_count = 0; //Ç°²¿Ä£ 
+unsigned int Rcan_count = 0; //¶¥²¿Ä£ 
+unsigned int Mcan_count = 0; //ÖÐ²¿Ä£ 
 
 /*******************·Ö°ü´¦Àí*****************/
 unsigned int moto_voltage; //µç»úµçÑ¹ 0.1v
@@ -388,17 +388,19 @@ void app_init_can(void) {
 
 	mid_can1_prepare(can1_tx_msg,can1_rx_msg);
 
-	app_configuration_can(&can1_rx_msg[0],ID_REC_01_68X, 0x7F0, 8, STAND_ID, 3	, (ID_0C03A1A7_period*50));
-	app_configuration_can(&can1_rx_msg[1],ID_REC_02_67X, 0x7F0, 8, STAND_ID, 4	, (ID_0C03A1A7_period*50));
-	app_configuration_can(&can1_rx_msg[2],ID_REC_03_62X, 0x7F0, 8, STAND_ID, 5	, (ID_0C03A1A7_period*50));
-	app_configuration_can(&can1_rx_msg[3],ID_REC_04_63X, 0x7F0, 8, STAND_ID, 6	, (ID_0C03A1A7_period*50));
-	app_configuration_can(&can1_rx_msg[4],ID_REC_05_64X, 0x7F0, 8, STAND_ID, 7	, (ID_0C03A1A7_period*50));
-	app_configuration_can(&can1_rx_msg[5],ID_REC_06_65X, 0x7F0, 8, STAND_ID, 8	, (ID_0C03A1A7_period*50));
-	app_configuration_can(&can1_rx_msg[6],ID_REC_07_56X, 0x7F0, 8, STAND_ID, 9	, (ID_0C03A1A7_period*50));
-	app_configuration_can(&can1_rx_msg[7],ID_REC_08_45X, 0x7F0, 8, STAND_ID, 10 , (ID_0C03A1A7_period*50));
+	app_configuration_can(&can1_rx_msg[0],ID_REC_01_68X, 0x7F0, 8, STAND_ID, 3, (ID_0C03A1A7_period*50));  
+	app_configuration_can(&can1_rx_msg[1],ID_REC_02_67X, 0x7F0, 8, STAND_ID, 4, (ID_0C03A1A7_period*50));  
+	app_configuration_can(&can1_rx_msg[2],ID_REC_03_62X, 0x7F0, 8, STAND_ID, 5, (ID_0C03A1A7_period*50));  
+	app_configuration_can(&can1_rx_msg[3],ID_REC_04_63X, 0x7F0, 8, STAND_ID, 6, (ID_0C03A1A7_period*50));  
+	app_configuration_can(&can1_rx_msg[4],ID_REC_05_64X, 0x7F0, 8, STAND_ID, 7, (ID_0C03A1A7_period*50));  
+	app_configuration_can(&can1_rx_msg[5],ID_REC_06_65X, 0x7F0, 8, STAND_ID, 8, (ID_0C03A1A7_period*50));  
+	app_configuration_can(&can1_rx_msg[6],ID_REC_07_56X, 0x7F0, 8, STAND_ID, 9, (ID_0C03A1A7_period*50));  
+	app_configuration_can(&can1_rx_msg[7],ID_REC_08_45X, 0x7F0, 8, STAND_ID, 10, (ID_0C03A1A7_period*50)); 
+                                                                                                         
 
 
-	app_configuration_can(&can1_tx_msg[0],BCAN_ID_SEND_6A4, 0x7FF, 8, STAND_ID, 1 , (ID_0C03A1A7_period*50));
+
+	app_configuration_can(&can1_tx_msg[0],BCAN_ID_SEND_6A4, 0x7FF, 8, STAND_ID,  1 , (ID_0C03A1A7_period*50));
 	app_configuration_can(&can1_tx_msg[1],BCAN_ID_SEND_454, 0x7FF, 8, STAND_ID, 2 , (ID_0C03A1A7_period*50));
 	can1_rx_pro = can1_rx_handle;
 	
@@ -1319,14 +1321,14 @@ void PCAN_send_mile(void) {
 	U8 msg_box;
     msg_box = ID_RECV_NUM_ALL + 3;
 	can_msg[msg_box - 1].buffer_num = msg_box;;
-    can_msg[msg_box - 1.data[0] = (unsigned char) (e_total_miles); //µÍ°ËÎ»
-    can_msg[msg_box - 1.data[1] = (unsigned char) (e_total_miles >> 8); //¶þ¼¶°ËÎ»
-    can_msg[msg_box - 1.data[2] = (unsigned char) (e_total_miles >> 16); //Èý¼¶°ËÎ»
-    can_msg[msg_box - 1.data[3] = (unsigned char) (e_total_miles >> 24); //¸ß°ËÎ»
-    can_msg[msg_box - 1.data[4] = 0; 
-    can_msg[msg_box - 1.data[5] = 0;
-    can_msg[msg_box - 1.data[6] = 0;
-    can_msg[msg_box - 1.data[7] = 0;
+    can_msg[msg_box - 1].data[0] = (unsigned char) (e_total_miles); //µÍ°ËÎ»
+    can_msg[msg_box - 1].data[1] = (unsigned char) (e_total_miles >> 8); //¶þ¼¶°ËÎ»
+    can_msg[msg_box - 1].data[2] = (unsigned char) (e_total_miles >> 16); //Èý¼¶°ËÎ»
+    can_msg[msg_box - 1].data[3] = (unsigned char) (e_total_miles >> 24); //¸ß°ËÎ»
+    can_msg[msg_box - 1].data[4] = 0; 
+    can_msg[msg_box - 1].data[5] = 0;
+    can_msg[msg_box - 1].data[6] = 0;
+    can_msg[msg_box - 1].data[7] = 0;
     hal_can_sent(CAN_CHN, &can_msg[msg_box - 1]);
 
 }

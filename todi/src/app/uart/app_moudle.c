@@ -13,11 +13,7 @@
 #define BMS_Status_Flag3  0
 #define BMS_Status_Flag5  0
 
-#define e_total_miles      0
-#define DMC_Gear           0
-#define	DMC_Status         0
-#define DMC_Level 		   0
-#define DMC_Rpm            0   //电机转速
+
 
 U8 Fversion;
 U8 Mversion;

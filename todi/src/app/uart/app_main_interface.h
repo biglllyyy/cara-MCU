@@ -31,10 +31,10 @@ typedef struct
 	U8 odo[4];							//0.4%/bit
 	U8 trip[2];							//里程小计	0-9999 <0.1>
 	U8 soc;							//系统SOC  0-100
-	U8 airPressure1;					//气压1	0-100
-	U8 airPressure2;					//气压2	0-100
-	U8	moter_control_temp;        //电机控制器温度, 0 ℃
-	U8	moter_temp;                //电机温度, 0 ℃
+	U8 airPressure1;					//气压1	10 kpa/bit，0
+	U8 airPressure2;					//气压2	10 kpa/bit，0
+	U8	moter_control_temp;        //电机控制器温度, 1℃/bit，-40 
+	U8	moter_temp;                //电机温度, 1℃/bit，-40
 	U8
 		control_IN08:1, //近光灯开关
 		control_IN07:1, //远光灯开关
@@ -82,7 +82,7 @@ typedef struct
         climbing_mode:1,	//爬坡模式符号片
         HV_overhaul:1,		//高压检修指示符号片
         main_power:1,		//总电源指示符号片
-        defroster:1,		//除霜器符号片
+        defroster:1,		//除霜器符号片   未定义
         back_door:1,		//后舱门开符号片
         park_brake:1,		//驻车制动符号片
 		brake_light:1;		//刹车灯符号片
@@ -97,7 +97,7 @@ typedef struct
 	U8 fault_level[4];	//故障等级	
 	U8 fault_code[4];		//故障代码（界面中的系统代码,以10进制显示,代码颜色需随故障等级变化,相见车厂协议文档）
 	U8 SPN[4];			//SPN（16进制显示）
-	U8 urea_level[4];		//尿素液位, 0.0 %
+	U8 urea_level[4];		//尿素液位, 0.4 %
     U8 dateTime[4];		//时间
     U8 battery[4];           //蓄电池电压
 } Main_Interface_Data_Struct;

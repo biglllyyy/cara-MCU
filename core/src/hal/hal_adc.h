@@ -67,7 +67,7 @@ enum
     COUNT_DISABLE = 3
 };
 
-extern U16 AD_Value[3][0x20];
+extern U16 AD_Value[MAX_AD_CHN];
 
 void hal_adc_init(ad_group_t group, U8 single_chn);
 void hal_adc_start(ad_group_t group);

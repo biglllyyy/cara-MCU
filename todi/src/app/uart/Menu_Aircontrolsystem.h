@@ -22,9 +22,9 @@ void get_AC_system(void)
 	memset(&s_AC_para,0,MENU_ACSYSTEM_DATA_LENGTH);
 	u32temp = AC_Warn_code;
 	DWORD_WRITE(s_AC_para.ac_fault_code,u32temp);
-	u32temp = AC_KEY[0];
+	u32temp = AC_KEY[0].byte;
 	DWORD_WRITE(s_AC_para.ac_fan_status,u32temp);
-	u32temp = AC_KEY[1];
+	u32temp = AC_KEY[1].byte;
 	DWORD_WRITE(s_AC_para.ac_work_status,u32temp);
 	u32temp = AC_LIFE;
 	DWORD_WRITE(s_AC_para.ac_Life,u32temp);
@@ -36,7 +36,7 @@ void get_AC_system(void)
 }
 void send_AC_system(void)
 {
-	U8 data[MENU_MOTORSYSTEM_DATA_LENGTH + 6];
+	U8 data[MENU_MOTORSYSTEM_DATA_LENGTH + A20_MCU_DATA_LENTH];
 	U32 parse_len;
     parse_len = app_uart_arm_send_parse(data,(void*)&s_AC_para,MENU_ACSYSTEM_FRAME_TYPE,MENU_ACSYSTEM_DATA_LENGTH);
 	sent_data(UART_A20_CHN, data, parse_len); /* data sent */

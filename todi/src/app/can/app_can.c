@@ -246,6 +246,7 @@ static  void can_updata_analyse(can_msg_t *msg, can_pro_way_e way);
 
 
 static void app_can_process(can_msg_t *msg, can_pro_way_e way);
+static void app_can1_process(can_msg_t *msg, can_pro_way_e way);
 
 
 static void can_id_68X_analyse(can_msg_t *msg, can_pro_way_e way);
@@ -387,7 +388,8 @@ void app_init_can(void) {
 	mid_can_init(CAN_CHN, CAN_CHIP);
 
 	mid_can1_prepare(can1_tx_msg,can1_rx_msg);
-
+	memset(can1_rx_msg,0,sizeof(can1_rx_msg));
+	memset(can1_tx_msg,0,sizeof(can1_tx_msg));
 	app_configuration_can(&can1_rx_msg[0],ID_REC_01_68X, 0x7F0, 8, STAND_ID, 3, (ID_0C03A1A7_period*50));  
 	app_configuration_can(&can1_rx_msg[1],ID_REC_02_67X, 0x7F0, 8, STAND_ID, 4, (ID_0C03A1A7_period*50));  
 	app_configuration_can(&can1_rx_msg[2],ID_REC_03_62X, 0x7F0, 8, STAND_ID, 5, (ID_0C03A1A7_period*50));  
@@ -402,7 +404,7 @@ void app_init_can(void) {
 
 	app_configuration_can(&can1_tx_msg[0],BCAN_ID_SEND_6A4, 0x7FF, 8, STAND_ID,  1 , (ID_0C03A1A7_period*50));
 	app_configuration_can(&can1_tx_msg[1],BCAN_ID_SEND_454, 0x7FF, 8, STAND_ID, 2 , (ID_0C03A1A7_period*50));
-	can1_rx_pro = can1_rx_handle;
+	can1_rx_pro = app_can1_process;
 	
 	hal_can_init(1);
 	wdg_feed();
@@ -411,12 +413,20 @@ void app_init_can(void) {
 }
 
 static void app_can_process(can_msg_t *msg, can_pro_way_e way) {
-	if (msg->buffer_num <= ID_RECV_NUM_ALL) {
+	{
 		if (can_rx_handle[msg->buffer_num - 1] != NULL) {
 			can_rx_handle[msg->buffer_num - 1](msg, way);
 		}
 	}
 }
+static void app_can1_process(can_msg_t *msg, can_pro_way_e way) {
+	if (msg->buffer_num <= ID1_RECV_NUM_ALL) {
+		if (can1_rx_handle[msg->buffer_num - ID1_SENT_NUM_ALL - 1] != NULL) {
+			can1_rx_handle[msg->buffer_num - ID1_SENT_NUM_ALL - 1](msg, way);
+		}
+	}
+}
+
 static void can_id_7E7_analyse(can_msg_t *msg, can_pro_way_e way) {
 	switch (way) {
 	case CAN_PARSE:

@@ -39,14 +39,14 @@ void get_control_system(void)
 	u32temp = 0;DWORD_WRITE(s_control_para.din1,u32temp);
 	u32temp = 0;DWORD_WRITE(s_control_para.din2,u32temp);
 	u32temp = Digit_input3;DWORD_WRITE(s_control_para.din3,u32temp);
-	u32temp = CAN_KEY[2];DWORD_WRITE(s_control_para.dout1,u32temp);
+	u32temp = CAN_KEY[2].byte;DWORD_WRITE(s_control_para.dout1,u32temp);
 	u32temp = 0;DWORD_WRITE(s_control_para.dout2,u32temp);
 	u32temp = 0;DWORD_WRITE(s_control_para.dout3,u32temp);
 
 }
 void send_control_system(void)
 {
-	U8 data[MENU_CONTROLSYSTEM_DATA_LENGTH + 6];
+	U8 data[MENU_CONTROLSYSTEM_DATA_LENGTH + A20_MCU_DATA_LENTH];
 	U32 parse_len;
     parse_len = app_uart_arm_send_parse(data,(void*)&s_control_para,MENU_CONTROLSYSTEM_FRAME_TYPE,MENU_CONTROLSYSTEM_DATA_LENGTH);
 	sent_data(UART_A20_CHN, data, parse_len); /* data sent */

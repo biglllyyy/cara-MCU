@@ -23,13 +23,12 @@ void get_engine_system(void)
 	s_engine_para.engine_water_temp = water_temp;
 	s_engine_para.engine_load = Engine_Fuhe;
 	u32temp = Accelerator_Shiji;DWORD_WRITE(s_engine_para.engine_actual_throttle,u32temp);
-	u32temp = Engine_oil_press;DWORD_WRITE(s_engine_para.engine_actual_throttle,u32temp);
-	u32temp = ambient_air_temperature;DWORD_WRITE(s_engine_para.engine_inlet_temp,u32temp);
-	
+	u32temp = Engine_oil_press;DWORD_WRITE(s_engine_para.engine_oil_pressure,u32temp);
+	s_engine_para.engine_inlet_temp = ambient_air_temperature;
 }
 void send_engine_system(void)
 {
-	U8 data[MENU_MOTORSYSTEM_DATA_LENGTH + 6];
+	U8 data[MENU_MOTORSYSTEM_DATA_LENGTH + A20_MCU_DATA_LENTH];
 	U32 parse_len;
     parse_len = app_uart_arm_send_parse(data,(void*)&s_engine_para,MENU_MOTORSYSTEM_FRAME_TYPE,MENU_MOTORSYSTEM_DATA_LENGTH);
 	sent_data(UART_A20_CHN, data, parse_len); /* data sent */

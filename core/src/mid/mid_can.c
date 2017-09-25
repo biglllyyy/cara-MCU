@@ -225,7 +225,7 @@ void mid_can_get_task10(void)
     	break;
     	for(index =0; index < cntRecv; index++)
     	{
-        	can_msg[index].count++;
+        	        can_msg[index].count++;
 					if((can_msg[index].count*10) >= can_msg[index].period_ms)
 					{	
 						can_rx_pro(&can_msg[index],CAN_LOST);
@@ -239,6 +239,7 @@ void mid_can_get_task10(void)
 						can_lost.id_lost_cnt++;
 					}
     	}
+		wdg_feed();
     	if(can_lost.id_lost_cnt >= cntRecv)
     	{
         	can_lost.all_lost_flg = 1;
@@ -272,6 +273,7 @@ void mid_can_get_task10(void)
 		{
 			if (TRUE == ((nMob >> index) & 0x01))							/* 检测哪一个报文缓存器中存在信息*/
 			{
+				wdg_feed();
 				can_msg_temp.buffer_num = index+1;
 				if(TRUE == hal_can_get(&can_msg_temp))					/* 将接收数据放在tCanMsg结构里面,buffer start form 1*/
 				{
@@ -307,6 +309,7 @@ void mid_can1_get_task10(void)
 			 can1_rx_msg[index].count++;
 			 if ((can1_rx_msg[index].count*10) >= can1_rx_msg[index].period_ms)
 			 {
+
 			 	can1_rx_pro(&can1_rx_msg[index],CAN_LOST);
 				can1_rx_msg[index].lost = 1;
 				can1_rx_msg[index].count = 0;
@@ -336,6 +339,7 @@ void mid_can1_get_task10(void)
 		return;
 	}
 	count = 0;
+	
 	for (index =0; can1_rx_msg[index].id != 0; index++)				    /* receive buffer frome buffer3 */
 	{
 		if (TRUE == ((nMob >> index) & 0x01))							/* 检测哪一个报文缓存器中存在信息*/

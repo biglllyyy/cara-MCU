@@ -9,6 +9,13 @@
 #define    ID_SENT_NUM_ALL  5
 #define    ID_PROCESS_ALL	(ID_RECV_NUM_ALL + ID_SENT_NUM_ALL)
 
+#define    CAN_CH1			1
+#define    ID1_RECV_NUM_ALL	(8)
+#define    ID1_SENT_NUM_ALL  2
+#define    ID1_PROCESS_ALL	(ID_RECV_NUM_ALL + ID_SENT_NUM_ALL)
+
+
+
 /*ip receive*/
 #define    PC_T0_MCU_ID		  	 0x7E7
 #define ID_REC_01_0C03A1A7       0x0C03A1A7

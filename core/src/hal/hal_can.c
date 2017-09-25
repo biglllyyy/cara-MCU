@@ -629,6 +629,7 @@ U8 hal_canerror_statecheck(void)
 
 		/*Restart bus*/
 		IO_CAN0.CTRLR.bit.Init = 0;		/*enable CAN controller*/
+		dbg_string("-->see if recovered\n");
 		while((IO_CAN0.ERRCNT.bit.TEC!=0)||(IO_CAN0.ERRCNT.bit.REC!=0));
 											//see if recovered
 	}

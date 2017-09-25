@@ -28,5 +28,10 @@ WSP=E:\WorkSpace\Virtual Instrument\test\mcu-tongchang\
 [EditState]
 STATE-1=todi\src\app\uart\app_moudle.h:73
 STATE-2=todi\src\app\can\app_can.c:948
-Count=2
+STATE-3=todi\src\app\uart\app_main_interface.c:120
+STATE-4=todi\src\app\uart\Menu_Controlsystem.h:42
+STATE-5=todi\src\app\uart\Menu_Motorsystem.h:27
+STATE-6=todi\src\app\uart\Menu_Aircontrolsystem.h:11
+STATE-7=core\src\mid\mid_can.c:313
+Count=7
 

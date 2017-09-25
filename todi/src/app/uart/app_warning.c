@@ -44,7 +44,7 @@ void warning_send_data(void)
 {
 
 
-	U8 data[WARNING_DATA_LENGTH + 6];
+	U8 data[WARNING_DATA_LENGTH + A20_MCU_DATA_LENTH];
 	U32 parse_len;
     parse_len = app_uart_arm_send_parse(data,(void*)&warning_data,WARNING_FRAME_TYPE,WARNING_DATA_LENGTH);
 	sent_data(UART_A20_CHN, data, parse_len); /* data sent */

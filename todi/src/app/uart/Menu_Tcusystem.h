@@ -29,7 +29,7 @@ void get_TCU_system(void)
 }
 void send_TCU_system(void)
 {
-	U8 data[MENU_MOTORSYSTEM_DATA_LENGTH + 6];
+	U8 data[MENU_MOTORSYSTEM_DATA_LENGTH + A20_MCU_DATA_LENTH];
 	U32 parse_len;
     parse_len = app_uart_arm_send_parse(data,(void*)&s_TCU_para,MENU_TCUSYSTEM_FRAME_TYPE,MENU_TCUSYSTEM_DATA_LENGTH);
 	sent_data(UART_A20_CHN, data, parse_len); /* data sent */

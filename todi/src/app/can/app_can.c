@@ -211,7 +211,7 @@ U32 Vcan_timeout_cfg;
 U32 Bcan_timeout_cfg;
 
 /******************************************/
-unsigned int PRESS[2]; //气压值
+unsigned int PRESS[2]; //气压值 KPA/BIT
 unsigned char ccvs_eng_req; //启动请求
 
 
@@ -1304,26 +1304,26 @@ void PCAN_CCVS(void) {
 
 	msg_box = ID_RECV_NUM_ALL + 2;
 	can_msg[msg_box - 1].buffer_num = msg_box;
-    can_msg[msg_box - 1].data[0] = (unsigned char) (M_ON << 6)//ON档
+    can_msg[msg_box - 1].data[0] = (unsigned char) (wake_up3 << 6)//ON档
             + (unsigned char) (IN4 << 5)//ST档
             + (unsigned char) (IN27 << 4)//后门开信号
             + (unsigned char) (IN20 << 3)//前面开信号
             + (unsigned char) (rKL15 << 2)//后舱门开信号
             + (unsigned char) (rKL8 << 1)//驻车信号
             + (unsigned char) (rKL10 || rKL12) ;//气压低报警信号
-   can_msg[msg_box - 1].data[1] = (unsigned char) (LED4 << 7)//左转向
-            + (unsigned char) (LED17 << 6)//远光灯
-            + (unsigned char) (LED19 << 5)//前雾灯
-            + (unsigned char) (LED8 << 4)//右转向
-            + (unsigned char) (IN33 << 3)//油量报警
+   can_msg[msg_box - 1].data[1] = (unsigned char) (IN1 << 7)//左转向
+            + (unsigned char) (IN7 << 6)//远光灯
+            + (unsigned char) (IN9 << 5)//前雾灯
+            + (unsigned char) (IN5 << 4)//右转向
+            + (unsigned char) (IN3 << 3)//油量报警
             + (unsigned char) (0 << 2)//发动机预热
-            + (unsigned char) (LED22 << 1)//近光灯
-            + (unsigned char) (rLED_flag) ;//后雾灯
+            + (unsigned char) (IN8 << 1)//近光灯
+            + (unsigned char) (IN10) ;//后雾灯
     can_msg[msg_box - 1].data[2] = 0xff;
     can_msg[msg_box - 1].data[3] = (unsigned char) (pSpeed * 2);
-    can_msg[msg_box - 1].data[4] = PRESS[0]*100;
+    can_msg[msg_box - 1].data[4] = PRESS[0]*10;
     can_msg[msg_box - 1].data[5] = (unsigned char) (PRESS[0]*100 >> 8);
-    can_msg[msg_box - 1].data[6] = PRESS[1]*100;
+    can_msg[msg_box - 1].data[6] = PRESS[1]*10;
     can_msg[msg_box - 1].data[7] = (unsigned char) (PRESS[1]*100 >> 8);
     hal_can_sent(CAN_CHN, &can_msg[msg_box - 1]);
 }

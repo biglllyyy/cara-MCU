@@ -245,7 +245,7 @@ void SW_Input(void);
 
 #define IN1   (!MCU_IN1)     //左转向开关
 #define IN2   (!MCU_IN2)     //保留开关
-#define IN3   (MCU_IN3)     //中门开状态 控火有效 不用取反
+#define IN3   (!MCU_IN3)     //中门开状态 控火有效 不用取反
 #define IN4   (MCU_IN4)     //前门开状态 控火有效 不用取反
 #define IN5   (!MCU_IN5)     //右转向开关
 #define IN6   (!MCU_IN6)     //小灯开关

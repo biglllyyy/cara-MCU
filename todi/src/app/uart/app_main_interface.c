@@ -88,18 +88,47 @@ void main_interface_get_data(void)
 
 
 	//气压 ，
-	temp = ADR[MCU_SER1]*3300/4096;
+//	temp = ADV[MCU_SER1]*3300/4096;
+//	PRESS[0] = temp;
+//	temp = ADR[MCU_SER2]*3300/4096;
+//	PRESS[1] = temp;
+//	temp = PRESS[0];WORD_WRITE(main_interface_data.airPressure1,temp);
+//	temp = PRESS[1];WORD_WRITE(main_interface_data.airPressure2,temp);
+	if ( ADV[MCU_SER1] == 4096)
+	{
+		ADR[MCU_SER1] = 0XFFFF;
+	}
+	else
+	{
+		temp=ADV[MCU_SER1]*100/(4096-ADV[MCU_SER1]);
+		ADR[MCU_SER1] = temp;
+	}
+	if (ADR[MCU_SER1] < 10)
+	{
+		ADR[MCU_SER1] = 10;
+	}
+	temp = (ADR[MCU_SER1] - 10)*1000 / 174;
 	PRESS[0] = temp;
-	temp = ADR[MCU_SER2]*3300/4096;
+	
+	if ( ADV[MCU_SER2] == 4096)
+	{
+		ADR[MCU_SER2] = 0XFFFF;
+	}
+	else
+	{
+		temp=ADV[MCU_SER2]*100/(4096-ADV[MCU_SER1]);
+		ADR[MCU_SER2] = temp;
+	}
+	if (ADR[MCU_SER2] < 10)
+	{
+		ADR[MCU_SER2] = 10;
+	}
+	temp = (ADR[MCU_SER2] - 10)*1000 / 174;
 	PRESS[1] = temp;
-	temp = PRESS[0];WORD_WRITE(main_interface_data.airPressure1,temp);
-	temp = PRESS[1];WORD_WRITE(main_interface_data.airPressure2,temp);
-	dbg_string("#################\n");
-	dbg_string("adc : %8d;%8d\n",PRESS[0],PRESS[1]);
-	dbg_string("#################\n");
+	WORD_WRITE(main_interface_data.airPressure1,PRESS[0]);
+	WORD_WRITE(main_interface_data.airPressure2,PRESS[1]);
 
 	
-
 	//电机控制器温度
 	{
 		temp = Inverter_t;WORD_WRITE(main_interface_data.moter_control_temp,temp);
@@ -115,10 +144,10 @@ void main_interface_get_data(void)
 	{
 		//!<需要查询硬件端口
 
- 		main_interface_data.control_IN01 = MCU_IN4;  //左转向开
+ 		main_interface_data.control_IN01 = MCU_IN1;  //左转向开
 		main_interface_data.control_IN02 = 0;        //保留    
 		main_interface_data.control_IN03 = 0;        //保留    
-		main_interface_data.control_IN04 = MCU_IN1 ; //钥匙ST开
+		main_interface_data.control_IN04 = MCU_IN4 ; //钥匙ST开
 		main_interface_data.control_IN05 = MCU_IN5 ; //右转向开
 		main_interface_data.control_IN06 = MCU_IN6 ; //小灯开关
 		main_interface_data.control_IN07 = MCU_IN7 ; //远光灯开
@@ -135,9 +164,9 @@ void main_interface_get_data(void)
 		                                                                                                                               
 		main_interface_data.control_IN17 = 0;        //保留    
 		main_interface_data.control_IN18 = 0;        //保留    
-		main_interface_data.control_IN19 = MCU_IN23; //路牌开关
-		main_interface_data.control_IN20 = MCU_IN24; //前门开开
-		main_interface_data.control_IN21 = MCU_IN17; //雨刮喷水
+		main_interface_data.control_IN19 = MCU_IN19; //路牌开关
+		main_interface_data.control_IN20 = MCU_IN20; //前门开开
+		main_interface_data.control_IN21 = MCU_IN21; //雨刮喷水
 		main_interface_data.control_IN22 = 0;        //保留    
 		main_interface_data.control_IN23 = 0;        //保留    
 		main_interface_data.control_IN24 = 0;        //保留 
@@ -145,8 +174,8 @@ void main_interface_get_data(void)
 		main_interface_data.control_IN25 = 0;        //保留    
 		main_interface_data.control_IN26 = MCU_IN26; //中门关开
 		main_interface_data.control_IN27 = MCU_IN27; //中门开开
-		main_interface_data.control_IN28 = MCU_IN25; //前门关开
-		main_interface_data.control_IN29 = MCU_IN2;  //燃油量过
+		main_interface_data.control_IN28 = MCU_IN28; //前门关开
+		main_interface_data.control_IN29 = MCU_IN3;  //燃油量过
 		main_interface_data.control_IN30 = 0;        //保留    
 		main_interface_data.control_IN31 = 0;        //保留    
 		main_interface_data.control_IN32 = 0;        //保留    

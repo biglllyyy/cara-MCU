@@ -16,6 +16,7 @@
 #include "mid_filter.h"
 #include "app_ad_capture.h"
 #include "io_cfg.h"
+#include "mid_switch.h"
 
 
 Main_Interface_Data_Struct main_interface_data =
@@ -26,6 +27,8 @@ Main_Interface_Data_Struct main_interface_data =
 
 extern U16 ad_data;
 U32 ad_data_group[4];
+
+extern pin_filter_t    pin_filter_in[];
 
 void main_interface_get_data(void)
 {
@@ -79,21 +82,21 @@ void main_interface_get_data(void)
 
 
 	//气压 ，
+	temp = PRESS[0];WORD_WRITE(main_interface_data.airPressure1,temp);
+	temp = PRESS[1];WORD_WRITE(main_interface_data.airPressure2,temp);
 
-	main_interface_data.airPressure1 = PRESS[0]; /* 气压1    */
-	main_interface_data.airPressure1 = PRESS[1]; /* 气压1	 */
 
 	
 
 	//电机控制器温度
 	{
-		main_interface_data.moter_control_temp = Inverter_t;
+		temp = Inverter_t;WORD_WRITE(main_interface_data.moter_control_temp,temp);
 	}
 
 
 	//电机温度
 	{
-		main_interface_data.moter_temp = Motor_Temperature;
+		temp = Motor_Temperature;WORD_WRITE(main_interface_data.moter_temp,temp);
 	}
 
 	//开关采集
@@ -136,9 +139,9 @@ void main_interface_get_data(void)
 		main_interface_data.control_IN31 = 0;        //保留    
 		main_interface_data.control_IN32 = 0;        //保留    
 		
-		main_interface_data.control_IN33 = 0;//pin_filter_in[PIN_IN_WAKEUP1].result;        //危险警报
-		main_interface_data.control_IN34 = 0;//pin_filter_in[PIN_IN_WAKEUP2].result;        //电源唤醒
-		main_interface_data.control_IN35 = 0;//pin_filter_in[PIN_IN_WAKEUP3].result;        //钥匙ON开	
+		main_interface_data.control_IN33 = mid_get_io_filtered(pin_filter_in, PIN_IN_WAKEUP1);        //危险警报
+		main_interface_data.control_IN34 = mid_get_io_filtered(pin_filter_in, PIN_IN_WAKEUP2);        //电源唤醒
+		main_interface_data.control_IN35 = mid_get_io_filtered(pin_filter_in, PIN_IN_WAKEUP3);	/*获取滤波后IGN输入*/        //钥匙ON开	
 		
 	}
 	main_interface_data.diagnostic_mode = Diagnosis;
@@ -147,8 +150,8 @@ void main_interface_get_data(void)
 	main_interface_data.main_power = M_ON;     //!<点火信号
 	main_interface_data.defroster = 0;         //!<未定义
 	main_interface_data.back_door = rKL15;                                                                 
-	main_interface_data.park_brake=0;		   //驻车制动符号片                                                                   
-	main_interface_data.brake_light=0;		   //刹车灯符号片                                                                                                                                                                                                                                                         
+	main_interface_data.park_brake=rKEY.BITS.kl8;		   //驻车制动符号片                                                                   
+	main_interface_data.brake_light=rKEY.BITS.kl6;		   //刹车灯符号片                                                                                                                                                                                                                                                         
 	main_interface_data.ABS=0;				       //ABS符号片                                                                          
 	main_interface_data.dryer=0;			       //干燥器符号片                                                                         
 	main_interface_data.Kt=Battery_Kt;				       //电池主接触器                                                                         

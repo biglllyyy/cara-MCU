@@ -8,8 +8,8 @@
 typedef struct {
     U8 motor_in_voltage[4];			//电机输入电压, 0 V 0～999V，-10000，0.1V/位
     U8 motor_in_current[4];			//电机输入电流, 0 A -999～999A，-10000，0.1A/位
-    U8 motor_temp;					//电机温度, 0 ℃ 1℃/bit，-40
-    U8 motor_controller_temp;		//电机控制器温度, 0 ℃ 
+    U8 motor_temp[2];					//电机温度, 0 ℃ 1℃/bit，-40
+    U8 motor_controller_temp[2];		//电机控制器温度, 0 ℃ 
     U8 car_mode[4];					//整车模式, 0
     U8 version[4];					//程序版本, 0.00
     U8 car_Life[4];					//整车控制器Life, 0
@@ -29,8 +29,8 @@ void get_control_system(void)
 	memset(&s_control_para,0,MENU_CONTROLSYSTEM_DATA_LENGTH);
 	u32temp = moto_voltage;DWORD_WRITE(s_control_para.motor_in_voltage,u32temp);
 	u32temp = moto_current;DWORD_WRITE(s_control_para.motor_in_current,u32temp);
-	s_control_para.motor_temp = Motor_Temperature;
-	s_control_para.motor_controller_temp = Inverter_t;
+	u32temp = Motor_Temperature;WORD_WRITE(s_control_para.motor_temp,u32temp);
+	u32temp = Inverter_t;WORD_WRITE(s_control_para.motor_controller_temp,u32temp);
 	u32temp = Car_mode;DWORD_WRITE(s_control_para.car_mode,u32temp);
 	u32temp = Program;DWORD_WRITE(s_control_para.version,u32temp);
 	u32temp = Car_LIFE;DWORD_WRITE(s_control_para.car_Life,u32temp);

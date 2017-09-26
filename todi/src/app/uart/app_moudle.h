@@ -426,6 +426,9 @@ extern U16 ADV[8]; //模拟量采集
 
 
 //extern const U8 BMP_LOGO[];
+extern unsigned int Fcan_count ; //前部模 
+extern unsigned int Rcan_count ; //顶部模 
+extern unsigned int Mcan_count ; //中部模
 
 void BCAN_Lost_handle(void);
 void Moudle_Logic_handle(void); 

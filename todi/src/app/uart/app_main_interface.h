@@ -31,10 +31,10 @@ typedef struct
 	U8 odo[4];							
 	U8 trip[2];							//里程小计	0-9999 <0.1>
 	U8 soc;							//系统SOC  0.4%/bit
-	U8 airPressure1;					//气压1	10 kpa/bit，0
-	U8 airPressure2;					//气压2	10 kpa/bit，0
-	U8	moter_control_temp;        //电机控制器温度, 1℃/bit，-40 
-	U8	moter_temp;                //电机温度, 1℃/bit，-40
+	U8 airPressure1[2];					//气压1	10 kpa/bit，0
+	U8 airPressure2[2];					//气压2	10 kpa/bit，0
+	U8	moter_control_temp[2];        //电机控制器温度, 1℃/bit，-40 
+	U8	moter_temp[2];                //电机温度, 1℃/bit，-40
 	U8
 		control_IN08:1, //近光灯开关
 		control_IN07:1, //远光灯开关

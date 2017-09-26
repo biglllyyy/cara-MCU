@@ -5,8 +5,8 @@
 /* 电池管理系统信息,对应BMS_INFO_TYPE */
 typedef struct {
     //int16_t totalVoltage;				//电池总电压, 0.0 V,通用帧已存在该变量 
-    U8 bat_max_charge_current[2];	    //最大允许充电电流,, 0.0 A 0.1A/bit，-10000
-    U8 bat_max_discharge_current[2];	//最大允许放电电流,, 0.0 A 0.1A/bit，-10000
+    U8 bat_max_charge_current[4];	    //最大允许充电电流,, 0.0 A 0.1A/bit，-10000
+    U8 bat_max_discharge_current[4];	//最大允许放电电流,, 0.0 A 0.1A/bit，-10000
     U8 bat_average_voltage[4];		//单体平均电压, 0.00 V  0.01V/ bit，-10000
     U8 bat_status1[4];				//电池状态1, 00000000（2进制显示）
     U8 bat_status2[4];				//电池状态2, 00000000（2进制显示）
@@ -25,11 +25,12 @@ static BmsInfoFrame s_bms_info_para;
 void get_bms_info_system(void)
 {
 	U32 u32temp;
+
 	memset(&s_bms_info_para,0,MENU_BMS_INFO_DATA_LENGTH);
 	u32temp = BMS_A_charge;
-	WORD_WRITE(s_bms_info_para.bat_max_charge_current,u32temp);
+	DWORD_WRITE(s_bms_info_para.bat_max_charge_current,u32temp);
 	u32temp = BMS_A_discharge;
-	WORD_WRITE(s_bms_info_para.bat_max_discharge_current,u32temp);
+	DWORD_WRITE(s_bms_info_para.bat_max_discharge_current,u32temp);
 	u32temp = BMS_V_average;
 	DWORD_WRITE(s_bms_info_para.bat_average_voltage,u32temp);
 	u32temp =Status_Flag1;
@@ -48,11 +49,13 @@ void get_bms_info_system(void)
 	DWORD_WRITE(s_bms_info_para.bat_min_voltage,u32temp);
 	u32temp =  BMS_T_H;
 	DWORD_WRITE(s_bms_info_para.batteryTH,u32temp);
+
 }
 void send_bms_info_system(void)
 {
-	U8 data[MENU_MOTORSYSTEM_DATA_LENGTH + A20_MCU_DATA_LENTH];
+	U8 data[MENU_BMS_INFO_DATA_LENGTH + A20_MCU_DATA_LENTH];
 	U32 parse_len;
+	
     parse_len = app_uart_arm_send_parse(data,(void*)&s_bms_info_para,MENU_BMS_INFO_FRAME_TYPE,MENU_BMS_INFO_DATA_LENGTH);
 	sent_data(UART_A20_CHN, data, parse_len); /* data sent */
 }

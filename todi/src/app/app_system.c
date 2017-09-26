@@ -188,7 +188,7 @@ void app_sys_init(void)
 /* ig off -> on action */
 void app_igon_action(void) /*IGN 从OFF 到ON之后 */
 {
-   	MidSchAddTask(app_can_sent_task,50);
+   	MidSchAddTask(app_can_sent_task,100);
     MidSchAddTask(app_io_task,10);
 	//app_A20_power_on();
 	//MidSchAddTask(app_backlight_ctl,100);

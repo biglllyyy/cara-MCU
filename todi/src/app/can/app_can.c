@@ -147,9 +147,9 @@ unsigned char DCAC_Warn_code; //故障代码
 
 unsigned char AC_Warn_code; //AC故障代码
 DATA_BIT AC_KEY[2];
-unsigned char Indoor_t=60; //室内温度
-unsigned char Outdoor_t=60; //室外温度
-unsigned char Set_t=60; //设定
+unsigned char Indoor_t=30; //室内温度
+unsigned char Outdoor_t=30; //室外温度
+unsigned char Set_t=30; //设定
 unsigned char AC_req; //制冷请求
 unsigned char AC_LIFE; //AC生命
 
@@ -641,7 +641,7 @@ static void can_id_1819D0F3_analyse(can_msg_t *msg, can_pro_way_e way){
 		BMS_A_discharge = 10000;
 		Warn_level = 0;
 		BMS_V_average = 10000;
-		BMS_T_H = 0;
+		BMS_T_H = 40;
 		break;
 	default:
 		break;
@@ -683,9 +683,9 @@ static void can_id_180028F3_analyse(can_msg_t *msg, can_pro_way_e way){
 		break;
 	case CAN_LOST:
 		Battery_number[0] = 0;
-		Battery_voltage[0] = 0;
+		Battery_voltage[0] = 10000;
 		Battery_number[1] = 0;
-		Battery_voltage[1] = 0;
+		Battery_voltage[1] = 10000;
 		break;
 	default:
 		break;
@@ -704,9 +704,9 @@ static void can_id_180128F3_analyse(can_msg_t *msg, can_pro_way_e way){
 		break;
 	case CAN_LOST:
 		Battery_number[2] = 0;
-		Battery_voltage[2] = 0;
+		Battery_voltage[2] = 10000;
 		Battery_number[3] = 0;
-		Battery_voltage[3] = 0;
+		Battery_voltage[3] = 10000;
 		break;
 	default:
 		break;
@@ -725,9 +725,9 @@ static void can_id_180228F3_analyse(can_msg_t *msg, can_pro_way_e way){
 		break;
 	case CAN_LOST:
 		Battery_number[4] = 0;
-		Battery_voltage[4] = 0;
+		Battery_voltage[4] = 10000;
 		Battery_number[5] = 0;
-		Battery_voltage[5] = 0;
+		Battery_voltage[5] = 10000;
 		break;
 	default:
 		break;
@@ -746,9 +746,9 @@ static void can_id_180328F3_analyse(can_msg_t *msg, can_pro_way_e way){
 		break;
 	case CAN_LOST:
 		Battery_number[6] = 0;
-		Battery_voltage[6] = 0;
+		Battery_voltage[6] = 10000;
 		Battery_number[7] = 0;
-		Battery_voltage[7] = 0;
+		Battery_voltage[7] = 10000;
 		break;
 	default:
 		break;
@@ -767,9 +767,9 @@ static void can_id_180428F3_analyse(can_msg_t *msg, can_pro_way_e way){
 		break;
 	case CAN_LOST:
 		Battery_number[8] = 0;
-		Battery_voltage[8] = 0;
+		Battery_voltage[8] = 10000;
 		Battery_number[9] = 0;
-		Battery_voltage[9] = 0;
+		Battery_voltage[9] = 10000;
 		break;
 	default:
 		break;
@@ -790,13 +790,13 @@ static void can_id_180028F4_analyse(can_msg_t *msg, can_pro_way_e way){
 		break;
 	case CAN_LOST:
 		Battery_number_t[0] = 0;
-		Battery_temp[0] = 0;
+		Battery_temp[0] = 40;
 		Battery_number_t[1] = 0;
-		Battery_temp[1] = 0;
+		Battery_temp[1] = 40;
 		Battery_number_t[2] = 0;
-		Battery_temp[2] = 0;
+		Battery_temp[2] = 40;
 		Battery_number_t[3] = 0;
-		Battery_temp[3] = 0;
+		Battery_temp[3] = 40;
 		break;
 	default:
 		break;
@@ -817,13 +817,13 @@ static void can_id_180128F4_analyse(can_msg_t *msg, can_pro_way_e way){
 		break;
 	case CAN_LOST:
 		Battery_number_t[4] = 0;
-		Battery_temp[4] = 0;
+		Battery_temp[4] = 40;
 		Battery_number_t[5] = 0;
-		Battery_temp[5] = 0;
+		Battery_temp[5] = 40;
 		Battery_number_t[6] = 0;
-		Battery_temp[6] = 0;
+		Battery_temp[6] = 40;
 		Battery_number_t[7] = 0;
-		Battery_temp[7] = 0;
+		Battery_temp[7] = 40;
 		break;
 	default:
 		break;
@@ -840,9 +840,9 @@ static void can_id_180228F4_analyse(can_msg_t *msg, can_pro_way_e way){
 		break;
 	case CAN_LOST:
 		Battery_number_t[8] = 0;
-		Battery_temp[8] = 0;
+		Battery_temp[8] = 40;
 		Battery_number_t[9] = 0;
-		Battery_temp[9] = 0;
+		Battery_temp[9] = 40;
 		break;
 	default:
 		break;
@@ -898,9 +898,9 @@ static void can_id_18FFC09E_analyse(can_msg_t *msg, can_pro_way_e way){
 		AC_Warn_code = 0;
 		AC_KEY[0].byte = 0;
 		AC_KEY[1].byte = 0;
-		Indoor_t = 60;
-		Outdoor_t = 60;
-		Set_t = 60;
+		Indoor_t = 30;
+		Outdoor_t = 30;
+		Set_t = 30;
 		AC_req = 0;
 		AC_LIFE = 0;
 		break;
@@ -1363,8 +1363,6 @@ void PCAN_send_req(void) {
 
 
 void app_can_sent_task(void) {
-	BCAN_SendCtl();
-	BCAN_send_mile();
  	PCAN_CCVS();
 	PCAN_send_mile();
 	PCAN_send_req();

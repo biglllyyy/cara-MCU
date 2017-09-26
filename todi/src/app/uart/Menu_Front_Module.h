@@ -63,7 +63,7 @@ void get_front_module_system(void)
 }
 void send_front_module_system(void)
 {
-	U8 data[MENU_MOTORSYSTEM_DATA_LENGTH + A20_MCU_DATA_LENTH];
+	U8 data[MENU_FRONT_MODULE_DATA_LENGTH + A20_MCU_DATA_LENTH];
 	U32 parse_len;
     parse_len = app_uart_arm_send_parse(data,(void*)&s_front_module_para,MENU_FRONT_MODULE_FRAME_TYPE,MENU_FRONT_MODULE_DATA_LENGTH);
 	sent_data(UART_A20_CHN, data, parse_len); /* data sent */

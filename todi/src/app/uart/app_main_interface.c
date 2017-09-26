@@ -42,17 +42,23 @@ void main_interface_get_data(void)
 
 	//车速
 
+	temp1 = (unsigned int) (Speed_rmp * 0.508 * 2 * 60 * 3.14159 / 1000 / 5.63 * 1.05); //半径*2*π*60/1000/减速比
 
-	tempSpeed = pSpeed;  //车速单位1KM/H
-	if (tempSpeed > 140)
+//	tempSpeed = pSpeed;  //车速单位1KM/H
+	if (temp1 > 140)
 	{
-		tempSpeed = 140;
+		temp1 = 140;
 	}
-	main_interface_data.speed = tempSpeed; /* 车速0-140km/h */
+	pSpeed = temp1;
+	main_interface_data.speed = temp1; /* 车速0-140km/h */
 
 
 	//电机转速
 	temp1 = moto_speed;
+	if (temp1 > 4000)
+	{
+		temp1 = 4000;
+	}
 	WORD_WRITE(main_interface_data.rpm,temp1);
 	//总电压
 	buf1 = BMS_V;  //总电压
@@ -82,9 +88,15 @@ void main_interface_get_data(void)
 
 
 	//气压 ，
+	temp = ADR[MCU_SER1]*3300/4096;
+	PRESS[0] = temp;
+	temp = ADR[MCU_SER2]*3300/4096;
+	PRESS[1] = temp;
 	temp = PRESS[0];WORD_WRITE(main_interface_data.airPressure1,temp);
 	temp = PRESS[1];WORD_WRITE(main_interface_data.airPressure2,temp);
-
+	dbg_string("#################\n");
+	dbg_string("adc : %8d;%8d\n",PRESS[0],PRESS[1]);
+	dbg_string("#################\n");
 
 	
 
@@ -155,9 +167,10 @@ void main_interface_get_data(void)
 	main_interface_data.ABS=0;				       //ABS符号片                                                                          
 	main_interface_data.dryer=0;			       //干燥器符号片                                                                         
 	main_interface_data.Kt=Battery_Kt;				       //电池主接触器                                                                         
-	main_interface_data.power_mode=Electric;		   //Power模式符号片(纯电动模式 or 混动模式 or 插电模式)                              
+	main_interface_data.power_mode=(CAN_KEY[0].byte>>5)&0x07;		   //Power模式符号片(纯电动模式 or 混动模式 or 插电模式)                              
 	main_interface_data.charge_confirm=Charge_Check;	//充电确认符号片                                                                 
 	main_interface_data.AC=AC_SWITCH;				      //AC空调符号片
+	temp = water_temp;WORD_WRITE(main_interface_data.engine_water_temp,temp);
 	temp = TCU_level;
 	DWORD_WRITE(main_interface_data.fault_level,temp);
 	temp = TCU_code;

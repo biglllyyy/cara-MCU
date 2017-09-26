@@ -211,7 +211,7 @@ U32 Vcan_timeout_cfg;
 U32 Bcan_timeout_cfg;
 
 /******************************************/
-unsigned char PRESS[2]; //气压值
+unsigned int PRESS[2]; //气压值
 unsigned char ccvs_eng_req; //启动请求
 
 

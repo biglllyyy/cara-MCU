@@ -5,7 +5,7 @@
 /* 发动机系统信息,对应ENGINE_SYSTEM_INFO_TYPE */
 typedef struct {
     U8 engine_fuel_consumption[2];         //发动机油耗, 0.00 L/H 12.8L/h /bit
-    U8 engine_water_temp[2];				//发动机水温, 0 ℃
+
     U8 engine_load;					    //发动机负荷, 0 %
     //int32_t urea_level;					//尿素液位, 0.0 %,通用帧已存在该变量
     U8 engine_target_throttle[4];			//发动机目标油门, 0.0 %
@@ -20,7 +20,7 @@ void get_engine_system(void)
 	U32 u32temp;
 	memset(&s_engine_para,0,MENU_CONTROLSYSTEM_DATA_LENGTH);
 	u32temp = Fule_rate;WORD_WRITE(s_engine_para.engine_fuel_consumption,u32temp);
-	u32temp = water_temp;WORD_WRITE(s_engine_para.engine_water_temp,u32temp);
+	
 	s_engine_para.engine_load = Engine_Fuhe;
 	u32temp = Accelerator;DWORD_WRITE(s_engine_para.engine_target_throttle,u32temp);
 	u32temp = Accelerator_Shiji;DWORD_WRITE(s_engine_para.engine_actual_throttle,u32temp);

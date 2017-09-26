@@ -36,47 +36,47 @@ typedef struct
 	U8	moter_control_temp[2];        //电机控制器温度, 1℃/bit，-40 
 	U8	moter_temp[2];                //电机温度, 1℃/bit，-40
 	U8
-		control_IN08:1, //近光灯开关
-		control_IN07:1, //远光灯开关
-		control_IN06:1, //小灯开关
-		control_IN05:1, //右转向开关
-		control_IN04:1, //钥匙ST开关
+		control_IN08:1, //近光灯开关    L
+		control_IN07:1, //远光灯开关    L
+		control_IN06:1, //小灯开关      L
+		control_IN05:1, //右转向开关    L
+		control_IN04:1, //钥匙ST开关    H
 		control_IN03:1, //保留
 		control_IN02:1, //保留
-		control_IN01:1; //左转向开关
+		control_IN01:1; //左转向开关    L
     U8
-		control_IN16:1, //雨刮高档开关
-		control_IN15:1, //雨刮间歇档开关
-		control_IN14:1, //雨刮低档开关
+		control_IN16:1, //雨刮高档开关    L
+		control_IN15:1, //雨刮间歇档开关  L
+		control_IN14:1, //雨刮低档开关    L
 		control_IN13:1, //保留
-		control_IN12:1, //广告灯开关
+		control_IN12:1, //广告灯开关      L
 		control_IN11:1, //保留
-		control_IN10:1, //后雾灯开关		
+		control_IN10:1, //后雾灯开关	  L
 		control_IN09:1; //前雾灯开关
 				
 	U8
 		control_IN24:1, //保留
 		control_IN23:1, //保留
         control_IN22:1, //保留
-        control_IN21:1, //雨刮喷水开关
-        control_IN20:1, //前门开开关
-        control_IN19:1, //路牌开关
+        control_IN21:1, //雨刮喷水开关    L
+        control_IN20:1, //前门开开关      L
+        control_IN19:1, //路牌开关        L
         control_IN18:1, //保留		
 		control_IN17:1; //保留
 	U8
         control_IN32:1, //保留
         control_IN31:1, //保留
         control_IN30:1, //保留
-        control_IN29:1, //燃油量过低报警
-        control_IN28:1, //前门关开关
-        control_IN27:1, //中门开开关
-        control_IN26:1, //中门关开关
+        control_IN29:1, //燃油量过低报警   L
+        control_IN28:1, //前门关开关       L
+        control_IN27:1, //中门开开关       L
+        control_IN26:1, //中门关开关       L
 		control_IN25:1; //保留
     U8  		
 		N1: 5,			//保留
-        control_IN35:1, //钥匙ON开关
-        control_IN34:1, //电源唤醒开关
-		control_IN33:1; //危险警报开关
+        control_IN35:1, //钥匙ON开关       H
+        control_IN34:1, //电源唤醒开关     H
+		control_IN33:1; //危险警报开关     H
 	U8
 		diagnostic_mode:1,	//诊断模式符号片
         climbing_mode:1,	//爬坡模式符号片
@@ -87,13 +87,14 @@ typedef struct
         park_brake:1,		//驻车制动符号片
 		brake_light:1;		//刹车灯符号片
 	U8  
-		N2: 2,		        //保留
+		//N2: 2,		        //保留
         ABS:1,				//ABS符号片
         dryer:1,			//干燥器符号片
         Kt:1,				//电池主接触器
-        power_mode:1,		//Power模式符号片(纯电动模式 or 混动模式 or 插电模式)
+        power_mode:3,		//Power模式符号片(纯电动模式 or 混动模式 or 插电模式)
         charge_confirm:1,	//充电确认符号片
 		AC:1;				//AC空调符号片
+	U8 engine_water_temp[2];				//发动机水温, 0 ℃
 	U8 fault_level[4];	//故障等级	
 	U8 fault_code[4];		//故障代码（界面中的系统代码,以10进制显示,代码颜色需随故障等级变化,相见车厂协议文档）
 	U8 SPN[4];			//SPN（16进制显示）

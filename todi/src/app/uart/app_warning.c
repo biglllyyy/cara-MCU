@@ -31,6 +31,10 @@ void warning_get_data(void)
 	warning_data.right_brake_shoe_warn    = 0;   //右刹车蹄片报警                                                   
 	warning_data.air_filter_warn          = 0;   //空滤报警                                                         
 	warning_data.after_treat_warn         = 0;   //后处理故障 
+
+	warning_data.bat_status1 = Status_Flag1;
+	warning_data.bat_status2 = Status_Flag2;
+	warning_data.bat_status3 = Status_Flag3;
 }
 
 #define WARNING_DATA_LENGTH   (sizeof(WarningDataStruct))

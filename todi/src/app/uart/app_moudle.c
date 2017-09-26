@@ -316,30 +316,7 @@ void BCAN_SendCtl_722(void)
 	#endif
 }
 
-void BCAN_send_mile(void)
-{
-	#if 0
-	CAN_MESSAGE msg;
-	stcCANId_t tSendID;
-	strCANData_t tSendData;
-	msg.data[0] = (U8) (e_total_miles); //低八位
-	msg.data[1] = (U8) (e_total_miles >> 8); //二级八位
-	msg.data[2] = (U8) (e_total_miles >> 16); //三级八位
-	msg.data[3] = (U8) (e_total_miles >> 24); //高八位
-	msg.data[4] = 0;
-	msg.data[5] = 0;
-	msg.data[6] = 0;
-	msg.data[7] = 0;
-	memcpy(&tSendData.ui8byte[0], &msg.data[0], 8);
-	tSendID.ui32Id = 0x454;
-	tSendID.ui8IdType = MSGTYPE_STD;
-	tSendData.ui8NumberOfBytes = 0x08;
-	//msg.type = 0x01;
 
-	CAN_UpdateAndSendMessage(CAN1, 3, tSendID, tSendData);
-	//CAN1_SendMessage(&msg);
-#endif
-}
 
 void BCAN_Lost_handle(void)   //100ms moudle task
 {

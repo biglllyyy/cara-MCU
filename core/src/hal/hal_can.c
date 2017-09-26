@@ -178,7 +178,7 @@ void can_receive_object_init(U8 chn,U8 num,CAN_ID_FORMAT_e format,U32 id,U8 dlc,
 	{
 		IO_CAN0.IF2MSK.word = id_mask;				/*MXtd=1 MDir=1 res=1 MID28-MID18 all=1
 														MID17-MID0 all=0*/
-		IO_CAN0.IF2MSK.bit.MXtd = 1;    /* extened frame */
+		IO_CAN0.IF2MSK.bit.MXtd = 0;    /* extened frame */
         IO_CAN0.IF2ARB.word = 0xC0000000|(id & 0x1FFFFFFF);	/*MsgVal=1 Xtd=1 Dir=0 ID(28-18)=1 TestMode Only*/
 	}
 
@@ -201,9 +201,9 @@ void can_receive_object_init(U8 chn,U8 num,CAN_ID_FORMAT_e format,U32 id,U8 dlc,
 		{
 			/*Arb Data*/
 			/*MSK Data*/
-			IO_CAN1.IF2MSK.word = 0xFFFC0000;				/*MXtd=1 MDir=1 res=1 MID28-MID18 all=1
+			IO_CAN1.IF2MSK.word = id_mask<< 18;				/*MXtd=1 MDir=1 res=1 MID28-MID18 all=1
 																MID17-MID0 all=0*/
-			IO_CAN1.IF2MSK.bit.MXtd = 0;    /* extened frame */
+			IO_CAN1.IF2MSK.bit.MXtd = 1;    /* extened frame */
 			IO_CAN1.IF2ARB.word = 0x80000000|(id << 18);	/*MsgVal=1 Xtd=0 Dir=0 ID(28-18)=2*/
 		}
 		else
@@ -574,7 +574,7 @@ U8 hal_can_n_get(U8 chn,can_msg_t *can_rx_ptr)
 	}
 	else
 	{
-		can_rx_ptr->id = MSG2STD(p_IO_CANn->IF2ARB.word);
+		can_rx_ptr->id = STD2MSG(p_IO_CANn->IF2ARB.word);
 	}
 	switch(can_rx_ptr->dlc)
 	{

@@ -339,12 +339,12 @@ void mid_can1_get_task10(void)
 		return;
 	}
 	count = 0;
-	
 	for (index =0; can1_rx_msg[index].id != 0; index++)				    /* receive buffer frome buffer3 */
 	{
-		if (TRUE == ((nMob >> index) & 0x01))							/* 检测哪一个报文缓存器中存在信息*/
+		
+		if (TRUE == ((nMob >> index+2) & 0x01))							/* 检测哪一个报文缓存器中存在信息*/
 		{
-			can_msg_temp.buffer_num = index+1;
+			can_msg_temp.buffer_num = index+3;
 			if(TRUE == hal_can_n_get(1,&can_msg_temp))					/* 将接收数据放在tCanMsg结构里面,buffer start form 1*/
 			{
 				can1_rx_msg[index].new_frame = 1;

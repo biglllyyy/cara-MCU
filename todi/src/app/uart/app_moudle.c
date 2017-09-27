@@ -5,6 +5,7 @@
 #include "mb91520.h"
 
 //U8 pSpeed = 0; //外部CAN这算车速
+DATA_BIT gCTL[8];
 
 #if 1
 
@@ -156,53 +157,57 @@ void SW_Input_Init(void)
 void SYSTME_Logic(void)
 {
 	// F_PO1 = (IN16 && M_ON); //雨刮快档
-    // F_PO2 = (IN14 && M_ON); //雨刮慢档
-    // F_PO3 = (IN21 && M_ON); //喷水电机
-    F_PO4 = (IN6 && IN9); //左前雾灯
-    F_PO5 = (fKH1); //倒车灯
-    F_PO6 = (FLASH && (IN5 || wake_up1)); //右转向灯
-    F_PO7 = (FLASH && (IN1 || wake_up1)); //左转向灯
-    F_PO8 = M_ON; //液位显示电源
-    F_PO9 = (IN7); //左远关灯
-    F_PO10 = (IN6 && IN9); //右前雾灯
-    F_PO11 = (IN7); //右远光灯
-    F_PO12 = M_ON; //行车记录仪电源
-    F_PO13 = (IN8); //左近光
-    F_PO14 = (IN6); //位置灯
-    F_PO15 = (IN8); //右近光
+	// F_PO2 = (IN14 && M_ON); //雨刮慢档
+	// F_PO3 = (IN21 && M_ON); //喷水电机
+	
+	F_PO4 = (IN6 && IN9); //左前雾灯
+	F_PO5 = (fKH1); //倒车灯
+	
+	F_PO6 = (FLASH && (IN5 || wake_up1)); //右转向灯
+	F_PO7 = (FLASH && (IN1 || wake_up1)); //左转向灯
+	F_PO8 = M_ON; //液位显示电源
+	F_PO9 = (IN7); //左远关灯
+	F_PO10 = (IN6 && IN9); //右前雾灯
+	F_PO11 = (IN7); //右远光灯
+	F_PO12 = M_ON; //行车记录仪电源
+	F_PO13 = (IN8); //左近光
+	F_PO14 = (IN6); //位置灯
+	F_PO15 = (IN8); //右近光
 
-    M_PO1 = (IN12); //广告灯
-    M_PO2 = (FLASH && (IN5 || wake_up1)); //右转向灯
-    M_PO3 = ((mKH1 || mKL15)); //车内指示灯电源
-    M_PO4 = ((fKL6 || rKL6)); //制动灯
-    M_PO5 = (IN20 && (moto_speed < 1000)); //前门开电磁阀
-    M_PO6 = (IN19); //前路牌
-    M_PO7 = (IN28); //前门关电磁阀
-    M_PO8 = (IN19); //侧路牌
-    M_PO9 = (IN27 && (moto_speed < 1000)); //中门开电磁阀
-    M_PO10 = (IN19); //后路牌
-    M_PO11 = (IN26); //中门关电磁阀
-    M_PO12 = (IN19); //滚动电子
-    M_PO13 = (IN6); //小灯
-    M_PO14 = (IN19); //后广告屏
-    M_PO15 = (FLASH && (IN1 || wake_up1)); //左转向灯
+	M_PO1 = (IN12); //广告灯
+	M_PO2 = (FLASH && (IN5 || wake_up1)); //右转向灯
+	M_PO3 = ((mKH1 || mKL15)); //车内指示灯电源
+	M_PO4 = ((fKL6 || rKL6)); //制动灯
+	M_PO5 = (IN20 && (moto_speed < 1000)); //前门开电磁阀
+	M_PO6 = (IN19); //前路牌
+	M_PO7 = (IN28); //前门关电磁阀
+	M_PO8 = (IN19); //侧路牌
+	M_PO9 = (IN27 && (moto_speed < 1000)); //中门开电磁阀
+	M_PO10 = (IN19); //后路牌
+	M_PO11 = (IN26); //中门关电磁阀
+	M_PO12 = (IN19); //滚动电子
+	M_PO13 = (IN6); //小灯
+	M_PO14 = (IN19); //后广告屏
+	M_PO15 = (FLASH && (IN1 || wake_up1)); //左转向灯
 
-    R_PO1 = ((fKL6 || rKL6)); //制动灯
-    //R_PO2 = (FLASH && IN5 && M_ON); 
-    R_PO3 = (rLED_flag); //后雾灯       
-    //R_PO4 = (fKL6 && M_ON); 
-    R_PO5 = (FLASH && (IN1 || wake_up1)); //左转向灯
-    //R_PO6 = (IN19 && M_ON); 
-    R_PO7 = (FLASH && (IN5 || wake_up1)); //右转向
-    R_PO8 = M_ON; //干燥器电源
-    R_PO9 = (fKH1); //倒车灯
-    //R_PO10 = (IN19 && M_ON); 
-    R_PO11 = (mKL15 && IN6); //前门踏步灯
-    R_PO12 = (IN6); //位置灯示高灯
-    R_PO13 = (mKH1 && IN6); //中门踏步灯
-    //R_PO14 = (IN19 && M_ON);
-    //R_PO15 = (FLASH && IN1 && M_ON); 
+	R_PO1 = ((fKL6 || rKL6)); //制动灯
+	//R_PO2 = (FLASH && IN5 && M_ON); 
+	R_PO3 = (rLED_flag); //后雾灯		
+	//R_PO4 = (fKL6 && M_ON); 
+	R_PO5 = (FLASH && (IN1 || wake_up1)); //左转向灯
+	//R_PO6 = (IN19 && M_ON); 
+	R_PO7 = (FLASH && (IN5 || wake_up1)); //右转向
+	R_PO8 = M_ON; //干燥器电源
+	R_PO9 = (fKH1); //倒车灯
+	//R_PO10 = (IN19 && M_ON); 
+	R_PO11 = (mKL15 && IN6); //前门踏步灯
+	R_PO12 = (IN6); //位置灯示高灯
+	R_PO13 = (mKH1 && IN6); //中门踏步灯
+	//R_PO14 = (IN19 && M_ON);
+	//R_PO15 = (FLASH && IN1 && M_ON); 
+	dbg_printf("fKH1 = %x;\n",gCTL[0].byte);
 }
+
 
 void LED_Logic(void)
 {}
@@ -331,6 +336,7 @@ void BCAN_Lost_handle(void)   //100ms moudle task
 	
 }
 
+
 void Moudle_Logic_handle(void)  //50ms Logic handle
 {
 	//BCAN_send_mile(); 
@@ -341,9 +347,12 @@ void Moudle_Logic_handle(void)  //50ms Logic handle
 //		LED_Out();  //这个只要打开就会导致频繁重启 因为这个是空函数
 		SYSTME_Logic();
 	}
-
+	SYSTME_Logic();
+	dbg_printf("-->fKH1 = %x;\n",gCTL[0].byte);
 	BCAN_send_mile();
+	dbg_printf("-->fKH2 = %x;\n",gCTL[0].byte);
 	BCAN_SendCtl();
+	dbg_printf("-->fKH3 = %x;\n",gCTL[0].byte);
 
 	//F50ms= 1;
 }

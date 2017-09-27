@@ -120,7 +120,7 @@ extern DATA_BIT gKEY[5];
 
 
 
-DATA_BIT gCTL[8]; //仪表输出控制信息
+extern DATA_BIT gCTL[8]; //仪表输出控制信息
 
 extern U8 pSpeed; //外部CAN这算车速
 

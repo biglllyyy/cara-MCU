@@ -491,10 +491,10 @@ void hal_can_sent(U8 chn,can_msg_t *can_msg)
             CAN1_IF1DTA1_IF1DTA1L = can_msg->data[1];
             CAN1_IF1DTA2_IF1DTA2H = can_msg->data[2];
             CAN1_IF1DTA2_IF1DTA2L = can_msg->data[3];
-            CAN1_IF1DTB1_IF1DTB1H = can_msg->data[0];
-            CAN1_IF1DTB1_IF1DTB1L = can_msg->data[1];
-            CAN1_IF1DTB2_IF1DTB2H = can_msg->data[2];
-            CAN1_IF1DTB2_IF1DTB2L = can_msg->data[3];
+            CAN1_IF1DTB1_IF1DTB1H = can_msg->data[4];
+            CAN1_IF1DTB1_IF1DTB1L = can_msg->data[5];
+            CAN1_IF1DTB2_IF1DTB2H = can_msg->data[6];
+            CAN1_IF1DTB2_IF1DTB2L = can_msg->data[7];
             IO_CAN1.IF1MCTR.hword = 0x2988;		//NEWDAT=0 MSGLST=0 INTPND=1 UMASK=0
             //TXIE=1 RXIE=0 RMTEN=0 TXRQST=1 EOB=1 DLC=8
             IO_CAN1.IF1CREQ.bit.MN = can_msg->buffer_num;		//IF -> RAM

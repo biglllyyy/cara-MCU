@@ -29,6 +29,7 @@
 #include "app_info.h"
 #include "app_moudle.h"
 #include "Fw_version.h"
+#include "app_moudle.h"
 
 #define  PERIOD_MS(time)		(time)
 
@@ -997,6 +998,7 @@ static void can_id_68X_analyse(can_msg_t *msg, can_pro_way_e way){
 	case CAN_PARSE:
 			switch (msg->id) {
 	            case 0x681:
+					//dbg_printf("data =%2x,%2x,%2x,%2x,%2x,%2x,%2x,%2x",msg->data[0],msg->data[1],msg->data[2],msg->data[3],msg->data[4],msg->data[5],msg->data[6],msg->data[7]);
 	                Fcan_count = 0;
 	                fKEY.BYTES[0] = msg->data[0];
 	                fKEY.BYTES[1] = msg->data[1];
@@ -1285,27 +1287,28 @@ static void can_id_45X_analyse(can_msg_t *msg, can_pro_way_e way){
 }
 
 void BCAN_SendCtl(void) {
-    can_msg[0].data[0] = gCTL[0].byte;
-    can_msg[0].data[1] = gCTL[1].byte;
-    can_msg[0].data[2] = gCTL[2].byte;
-    can_msg[0].data[3] = gCTL[3].byte;
-    can_msg[0].data[4] = gCTL[4].byte;
-    can_msg[0].data[5] = gCTL[5].byte;
-    can_msg[0].data[6] = ((M_ON && wake_up3) || wake_up2) + (IN14 << 1)+(IN15 << 2)+(IN16 << 3)+(IN21 << 4);//模块雨刮控制
-    can_msg[0].data[7] = 0;
-	hal_can_sent(1, &can_msg[0]);
+	dbg_printf("gCTL[0] = %x\n",gCTL[0].byte);
+    can1_tx_msg[0].data[0] = gCTL[0].byte;
+    can1_tx_msg[0].data[1] = gCTL[1].byte;
+    can1_tx_msg[0].data[2] = gCTL[2].byte;
+    can1_tx_msg[0].data[3] = gCTL[3].byte;
+    can1_tx_msg[0].data[4] = gCTL[4].byte;
+    can1_tx_msg[0].data[5] = gCTL[5].byte;
+    can1_tx_msg[0].data[6] = ((M_ON && wake_up3) || wake_up2) + (IN14 << 1)+(IN15 << 2)+(IN16 << 3)+(IN21 << 4);//模块雨刮控制
+    can1_tx_msg[0].data[7] = 2;
+	hal_can_sent(1, &can1_tx_msg[0]);
 }
 
 void BCAN_send_mile(void) {
-	 can_msg[1].data[0] = (unsigned char) (e_total_miles); //低八位
-	 can_msg[1].data[1] = (unsigned char) (e_total_miles >> 8); //二级八位
-	 can_msg[1].data[2] = (unsigned char) (e_total_miles >> 16); //三级八位
-	 can_msg[1].data[3] = (unsigned char) (e_total_miles >> 24); //高八位
-	 can_msg[1].data[4] = 0; 
-	 can_msg[1].data[5] = 0;
-	 can_msg[1].data[6] = 0;
-	 can_msg[1].data[7] = 0;
-	 hal_can_sent(1, &can_msg[1]);
+	 can1_tx_msg[1].data[0] = (unsigned char) (e_total_miles); //低八位
+	 can1_tx_msg[1].data[1] = (unsigned char) (e_total_miles >> 8); //二级八位
+	 can1_tx_msg[1].data[2] = (unsigned char) (e_total_miles >> 16); //三级八位
+	 can1_tx_msg[1].data[3] = (unsigned char) (e_total_miles >> 24); //高八位
+	 can1_tx_msg[1].data[4] = 0; 
+	 can1_tx_msg[1].data[5] = 0;
+	 can1_tx_msg[1].data[6] = 0;
+	 can1_tx_msg[1].data[7] = 0;
+	 hal_can_sent(1, &can1_tx_msg[1]);
 }
 
 void PCAN_CCVS(void) {

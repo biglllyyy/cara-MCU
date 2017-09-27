@@ -210,6 +210,8 @@ unsigned char Engine_warn; //发动机故障
 
 U32 Vcan_timeout_cfg;
 U32 Bcan_timeout_cfg;
+U32 Dcan_timeout_cfg;
+U32 Acan_timeout_cfg;
 
 /******************************************/
 unsigned int PRESS[2]; //气压值 KPA/BIT
@@ -443,7 +445,7 @@ static void can_id_7E7_analyse(can_msg_t *msg, can_pro_way_e way) {
 		//dbg_string("CAN CMD:%s\n", msg->data);
 		break;
 	case CAN_LOST:
-
+		
 		break;
 	default:
 		break;
@@ -455,6 +457,7 @@ static void can_id_0C03A1A7_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+			Vcan_timeout_cfg = 0;
 			moto_voltage = (unsigned char) msg->data[0]+((unsigned int) msg->data[1] << 8);
 			moto_current = (unsigned char) msg->data[2]+((unsigned int) msg->data[3] << 8);
             moto_speed = (unsigned char) msg->data[4]+((unsigned int) msg->data[5] << 8)/2;
@@ -462,6 +465,7 @@ static void can_id_0C03A1A7_analyse(can_msg_t *msg, can_pro_way_e way){
             Inverter_t = msg->data[7];
 		break;
 	case CAN_LOST:
+			Vcan_timeout_cfg = 1;
 			moto_voltage = 10000;
 			moto_current = 10000;
 			moto_speed = 0;
@@ -476,10 +480,12 @@ static void can_id_0C04A1A7_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Vcan_timeout_cfg = 0;
 		Accelerator = (unsigned char) msg->data[4];
         Engine_Speed = ((unsigned char) msg->data[5]+((unsigned int) msg->data[6] << 8))/8;
 		break;
 	case CAN_LOST:
+		Vcan_timeout_cfg = 1;
 		Accelerator = 0;
 		Engine_Speed = 0;
 		break;
@@ -491,6 +497,7 @@ static void can_id_0C05A1A7_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Vcan_timeout_cfg = 0;
 		Fule_rate = (unsigned char) msg->data[0]+((unsigned int) msg->data[1] << 8);
         water_temp = msg->data[2];
         Engine_Fuhe = msg->data[3];
@@ -500,6 +507,7 @@ static void can_id_0C05A1A7_analyse(can_msg_t *msg, can_pro_way_e way){
         ambient_air_temperature = msg->data[7]; //周围空气温度
 		break;
 	case CAN_LOST:
+		Vcan_timeout_cfg = 1;
 		Fule_rate = 0;
 		water_temp = 40;
 		Engine_Fuhe = 0;
@@ -516,6 +524,7 @@ static void can_id_0C06A1A7_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Vcan_timeout_cfg = 0;
 		Current_Gear = msg->data[1]&0x0f;
         TCU_Position = (msg->data[1] >> 4)&0x0f;
         TCU_warn = msg->data[2]&0x03;
@@ -526,6 +535,7 @@ static void can_id_0C06A1A7_analyse(can_msg_t *msg, can_pro_way_e way){
         TCU_level = msg->data[7];
 		break;
 	case CAN_LOST:
+		Vcan_timeout_cfg = 1;
 		Current_Gear = 0;
 		TCU_Position = 0;
 		TCU_warn =0 ;
@@ -543,6 +553,7 @@ static void can_id_0C07A1A7_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Vcan_timeout_cfg = 0;
 		CAN_ON = msg->data[0]&0x01;
         CAN_ACC = (msg->data[0] >> 1)&0x01;
         Diagnosis = (msg->data[0] >> 2)&0x01;
@@ -560,6 +571,7 @@ static void can_id_0C07A1A7_analyse(can_msg_t *msg, can_pro_way_e way){
         Brake_percent = msg->data[6];
 		break;
 	case CAN_LOST:
+		Vcan_timeout_cfg =1;
 		CAN_KEY[0].byte = 0;
 		CAN_KEY[1].byte = 0;
 		Digit_input3 = 0;
@@ -576,6 +588,7 @@ static void can_id_0C08A1A7_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Vcan_timeout_cfg = 0;
 		Program = ((unsigned char) msg->data[0]
                 +((unsigned int) msg->data[1] << 8)
                 +((unsigned long) msg->data[2] << 16));
@@ -588,6 +601,7 @@ static void can_id_0C08A1A7_analyse(can_msg_t *msg, can_pro_way_e way){
         Car_LIFE = msg->data[7];
 		break;
 	case CAN_LOST:
+		Vcan_timeout_cfg = 1;
 		Program = 0;
 		tcu_spn = 0;
 		tcu_fmi = 0;
@@ -603,6 +617,7 @@ static void can_id_1818D0F3_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Bcan_timeout_cfg = 0;
 		BMS_V = ((unsigned char) msg->data[0]
                 +((unsigned int) msg->data[1] << 8));
         BMS_A = ((unsigned char) msg->data[2]
@@ -613,6 +628,7 @@ static void can_id_1818D0F3_analyse(can_msg_t *msg, can_pro_way_e way){
         Status_Flag3 = msg->data[7]&0x0C;
 		break;
 	case CAN_LOST:
+		Bcan_timeout_cfg = 1;
 		BMS_V = 10000;
 		BMS_A = 10000;
 		BMS_SOC = 0;
@@ -628,6 +644,7 @@ static void can_id_1819D0F3_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Bcan_timeout_cfg = 0;
 		BMS_A_charge = ((unsigned char) msg->data[0]
                 +((unsigned int) msg->data[1] << 8));
         BMS_A_discharge = ((unsigned char) msg->data[2]
@@ -638,6 +655,7 @@ static void can_id_1819D0F3_analyse(can_msg_t *msg, can_pro_way_e way){
         BMS_T_H = msg->data[7];
 		break;
 	case CAN_LOST:
+		Bcan_timeout_cfg = 1;
 		BMS_A_charge = 10000;
 		BMS_A_discharge = 10000;
 		Warn_level = 0;
@@ -652,6 +670,7 @@ static void can_id_181AD0F3_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Bcan_timeout_cfg = 0;
 		Oum_zheng = ((unsigned char) msg->data[0]
                 +((unsigned int) msg->data[1] << 8));
         Oum_fu = ((unsigned char) msg->data[2]
@@ -662,6 +681,7 @@ static void can_id_181AD0F3_analyse(can_msg_t *msg, can_pro_way_e way){
                 +((unsigned int) msg->data[7] << 8));
 		break;
 	case CAN_LOST:
+		Bcan_timeout_cfg = 1;
 		Oum_zheng = 0;
 		Oum_fu = 0;
 		Battery_single_H = 10000;
@@ -675,6 +695,7 @@ static void can_id_180028F3_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Bcan_timeout_cfg = 0;
 		Battery_number[0] = msg->data[0];
         Battery_voltage[0] = ((unsigned char) msg->data[1]
                 +((unsigned int) msg->data[2] << 8));
@@ -683,6 +704,7 @@ static void can_id_180028F3_analyse(can_msg_t *msg, can_pro_way_e way){
                 +((unsigned int) msg->data[5] << 8));
 		break;
 	case CAN_LOST:
+		Bcan_timeout_cfg = 1;
 		Battery_number[0] = 0;
 		Battery_voltage[0] = 10000;
 		Battery_number[1] = 0;
@@ -696,6 +718,7 @@ static void can_id_180128F3_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Bcan_timeout_cfg = 0;
 		Battery_number[2] = msg->data[0];
         Battery_voltage[2] = ((unsigned char) msg->data[1]
                 +((unsigned int) msg->data[2] << 8));
@@ -704,6 +727,7 @@ static void can_id_180128F3_analyse(can_msg_t *msg, can_pro_way_e way){
                 +((unsigned int) msg->data[5] << 8));
 		break;
 	case CAN_LOST:
+		Bcan_timeout_cfg = 1;
 		Battery_number[2] = 0;
 		Battery_voltage[2] = 10000;
 		Battery_number[3] = 0;
@@ -717,6 +741,7 @@ static void can_id_180228F3_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Bcan_timeout_cfg= 0;
 		Battery_number[4] = msg->data[0];
         Battery_voltage[4] = ((unsigned char) msg->data[1]
                 +((unsigned int) msg->data[2] << 8));
@@ -725,6 +750,7 @@ static void can_id_180228F3_analyse(can_msg_t *msg, can_pro_way_e way){
                 +((unsigned int) msg->data[5] << 8));
 		break;
 	case CAN_LOST:
+		Bcan_timeout_cfg = 1;
 		Battery_number[4] = 0;
 		Battery_voltage[4] = 10000;
 		Battery_number[5] = 0;
@@ -738,6 +764,7 @@ static void can_id_180328F3_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Bcan_timeout_cfg = 0;
 		Battery_number[6] = msg->data[0];
         Battery_voltage[6] = ((unsigned char) msg->data[1]
                 +((unsigned int) msg->data[2] << 8));
@@ -746,6 +773,7 @@ static void can_id_180328F3_analyse(can_msg_t *msg, can_pro_way_e way){
                 +((unsigned int) msg->data[5] << 8));
 		break;
 	case CAN_LOST:
+		Bcan_timeout_cfg = 1;
 		Battery_number[6] = 0;
 		Battery_voltage[6] = 10000;
 		Battery_number[7] = 0;
@@ -759,6 +787,7 @@ static void can_id_180428F3_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Bcan_timeout_cfg = 0;
 		Battery_number[8] = msg->data[0];
         Battery_voltage[8] = ((unsigned char) msg->data[1]
                 +((unsigned int) msg->data[2] << 8));
@@ -767,6 +796,7 @@ static void can_id_180428F3_analyse(can_msg_t *msg, can_pro_way_e way){
                 +((unsigned int) msg->data[5] << 8));
 		break;
 	case CAN_LOST:
+		Bcan_timeout_cfg = 1;
 		Battery_number[8] = 0;
 		Battery_voltage[8] = 10000;
 		Battery_number[9] = 0;
@@ -780,6 +810,7 @@ static void can_id_180028F4_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Bcan_timeout_cfg = 0;
 		Battery_number_t[0] = msg->data[0];
         Battery_temp[0] = msg->data[1];
         Battery_number_t[1] = msg->data[2];
@@ -790,6 +821,7 @@ static void can_id_180028F4_analyse(can_msg_t *msg, can_pro_way_e way){
         Battery_temp[3] = msg->data[7];
 		break;
 	case CAN_LOST:
+		Bcan_timeout_cfg = 1;
 		Battery_number_t[0] = 0;
 		Battery_temp[0] = 40;
 		Battery_number_t[1] = 0;
@@ -807,6 +839,7 @@ static void can_id_180128F4_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Bcan_timeout_cfg = 0;
 		Battery_number_t[4] = msg->data[0];
         Battery_temp[4] = msg->data[1];
         Battery_number_t[5] = msg->data[2];
@@ -817,6 +850,7 @@ static void can_id_180128F4_analyse(can_msg_t *msg, can_pro_way_e way){
         Battery_temp[7] = msg->data[7];
 		break;
 	case CAN_LOST:
+		Bcan_timeout_cfg = 1;
 		Battery_number_t[4] = 0;
 		Battery_temp[4] = 40;
 		Battery_number_t[5] = 0;
@@ -834,12 +868,14 @@ static void can_id_180228F4_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Bcan_timeout_cfg = 0;
 		Battery_number_t[8] = msg->data[0];
         Battery_temp[8] = msg->data[1];
         Battery_number_t[9] = msg->data[2];
         Battery_temp[9] = msg->data[3];
 		break;
 	case CAN_LOST:
+		Bcan_timeout_cfg = 1;
 		Battery_number_t[8] = 0;
 		Battery_temp[8] = 40;
 		Battery_number_t[9] = 0;
@@ -853,6 +889,7 @@ static void can_id_0C09A79B_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Dcan_timeout_cfg = 0;
 		DCAC_W = ((unsigned char) msg->data[0]
                 +((unsigned int) msg->data[1] << 8));
         DCAC_V = ((unsigned char) msg->data[2]
@@ -863,6 +900,7 @@ static void can_id_0C09A79B_analyse(can_msg_t *msg, can_pro_way_e way){
         DCAC_Warn_code = msg->data[7];
 		break;
 	case CAN_LOST:
+		Dcan_timeout_cfg = 1;
 		DCAC_W = 10000;
 		DCAC_V = 10000;
 		DCAC_U = 10000;
@@ -877,6 +915,7 @@ static void can_id_18FFC09E_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Acan_timeout_cfg = 0;
 		AC_Warn_code = msg->data[0];
         AC_opean = (msg->data[1] >> 5)&0x01;
         AC_mind_speed = (msg->data[1] >> 6)&0x01;
@@ -896,6 +935,7 @@ static void can_id_18FFC09E_analyse(can_msg_t *msg, can_pro_way_e way){
 
 		break;
 	case CAN_LOST:
+		Acan_timeout_cfg = 1;
 		AC_Warn_code = 0;
 		AC_KEY[0].byte = 0;
 		AC_KEY[1].byte = 0;
@@ -1295,7 +1335,7 @@ void BCAN_SendCtl(void) {
     can1_tx_msg[0].data[4] = gCTL[4].byte;
     can1_tx_msg[0].data[5] = gCTL[5].byte;
     can1_tx_msg[0].data[6] = ((M_ON && wake_up3) || wake_up2) + (IN14 << 1)+(IN15 << 2)+(IN16 << 3)+(IN21 << 4);//模块雨刮控制
-    can1_tx_msg[0].data[7] = 2;
+    can1_tx_msg[0].data[7] = 0;
 	hal_can_sent(1, &can1_tx_msg[0]);
 }
 

@@ -140,6 +140,7 @@ void main_interface_get_data(void)
 		temp = Motor_Temperature;WORD_WRITE(main_interface_data.moter_temp,temp);
 	}
 
+
 	//开关采集
 	{
 		//!<需要查询硬件端口
@@ -185,6 +186,7 @@ void main_interface_get_data(void)
 		main_interface_data.control_IN35 = mid_get_io_filtered(pin_filter_in, PIN_IN_WAKEUP3);	/*获取滤波后IGN输入*/        //钥匙ON开	
 		
 	}
+	dbg_printf("PIN_IN_WAKEUP : %d;%d;%d\n",main_interface_data.control_IN33,main_interface_data.control_IN34,main_interface_data.control_IN35);
 	main_interface_data.diagnostic_mode = Diagnosis;
 	main_interface_data.climbing_mode = Mode_S;
 	main_interface_data.HV_overhaul = High_Voltage;

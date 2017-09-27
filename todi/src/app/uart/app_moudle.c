@@ -205,7 +205,6 @@ void SYSTME_Logic(void)
 	R_PO13 = (mKH1 && IN6); //中门踏步灯
 	//R_PO14 = (IN19 && M_ON);
 	//R_PO15 = (FLASH && IN1 && M_ON); 
-	dbg_printf("fKH1 = %x;\n",gCTL[0].byte);
 }
 
 
@@ -325,6 +324,12 @@ void BCAN_SendCtl_722(void)
 
 void BCAN_Lost_handle(void)   //100ms moudle task
 {
+	static unsigned int cnt0 = 0;
+	static unsigned int cnt1 = 3;
+	static unsigned int cnt2 = 7;
+	static unsigned int cnt3 = 9;
+	static unsigned int cnt4 = 0;
+	static unsigned int cnt5 = 0;
 
 	//CAN节点故障计时3s
     if (Fcan_count >= CAN_TIME)Fcan_count = CAN_TIME;
@@ -333,26 +338,28 @@ void BCAN_Lost_handle(void)   //100ms moudle task
     else Rcan_count++;
     if (Mcan_count >= CAN_TIME)Mcan_count = CAN_TIME;
     else Mcan_count++;
-	
+	if (IN10 && IN6 && (IN7 || IN8) && IN9) { //后雾灯开关是常开开关，消抖
+        if (cnt5 > 10) rLED_flag = 1;
+        else cnt5++;       
+    }else if((IN6 && (IN7 || IN8) && IN9)==0){
+        rLED_flag = 0;
+        cnt5=0;
+    }
 }
 
 
 void Moudle_Logic_handle(void)  //50ms Logic handle
 {
 	//BCAN_send_mile(); 
-	
 	if (M_ON&& (wake_up3 || wake_up2))
 	{ //若放在main函数里，会导致闪烁频率异常wake_up3置0时，M_ON不会立马置0，因为存在消抖延时
 	//	LED_Logic();
 //		LED_Out();  //这个只要打开就会导致频繁重启 因为这个是空函数
-		SYSTME_Logic();
+	//	SYSTME_Logic();
 	}
 	SYSTME_Logic();
-	dbg_printf("-->fKH1 = %x;\n",gCTL[0].byte);
 	BCAN_send_mile();
-	dbg_printf("-->fKH2 = %x;\n",gCTL[0].byte);
 	BCAN_SendCtl();
-	dbg_printf("-->fKH3 = %x;\n",gCTL[0].byte);
 
 	//F50ms= 1;
 }

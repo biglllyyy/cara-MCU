@@ -194,6 +194,10 @@ extern unsigned char AC_req;//制冷请求
 extern unsigned char AC_LIFE;//AC生命
 /*******************************************/
 extern unsigned int  PRESS[2]; //气压值
+extern U32 Vcan_timeout_cfg;
+extern U32 Bcan_timeout_cfg;
+extern U32 Dcan_timeout_cfg;
+extern U32 Acan_timeout_cfg;
 
 typedef void (*pCanAnalyse)(can_msg_t *msg, can_pro_way_e way);
 

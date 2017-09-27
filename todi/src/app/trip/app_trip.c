@@ -371,8 +371,11 @@ void check_ee_data(void)
 	if (0 == sData)
 	{
 	    //!<数据未初始化
+	    dbg_printf("clear data");
 	    memset(&info,0,sizeof(info));
 		write_total_trip(0);//!<调用函数对数据进行保存
+		write_sub_trip1(0);
+		write_sub_trip2(0);
 	}
 }
 

@@ -186,7 +186,6 @@ void main_interface_get_data(void)
 		main_interface_data.control_IN35 = mid_get_io_filtered(pin_filter_in, PIN_IN_WAKEUP3);	/*获取滤波后IGN输入*/        //钥匙ON开	
 		
 	}
-	dbg_printf("PIN_IN_WAKEUP : %d;%d;%d\n",main_interface_data.control_IN33,main_interface_data.control_IN34,main_interface_data.control_IN35);
 	main_interface_data.diagnostic_mode = Diagnosis;
 	main_interface_data.climbing_mode = Mode_S;
 	main_interface_data.HV_overhaul = High_Voltage;
@@ -213,9 +212,8 @@ void main_interface_get_data(void)
 	temp = g_u32_utcTime;
 	DWORD_WRITE(main_interface_data.dateTime,temp);
 	{
-		temp = ADR[MCU_VBAT];
+		temp = ADV[MCU_VBAT];
 		temp = temp * 169 /10000;
-		temp = temp + 4;
 		if (temp<16)
 		{
 			temp = 16;
@@ -224,6 +222,7 @@ void main_interface_get_data(void)
 		{
 			temp = 32;
 		}
+		dbg_printf("battery = %d,%d\n",temp,ADV[MCU_VBAT]);
 		DWORD_WRITE(main_interface_data.battery,temp);
 	}
 	

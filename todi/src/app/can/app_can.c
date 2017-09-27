@@ -1327,7 +1327,6 @@ static void can_id_45X_analyse(can_msg_t *msg, can_pro_way_e way){
 }
 
 void BCAN_SendCtl(void) {
-	dbg_printf("gCTL[0] = %x\n",gCTL[0].byte);
     can1_tx_msg[0].data[0] = gCTL[0].byte;
     can1_tx_msg[0].data[1] = gCTL[1].byte;
     can1_tx_msg[0].data[2] = gCTL[2].byte;

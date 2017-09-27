@@ -193,7 +193,7 @@ void main_interface_get_data(void)
 	main_interface_data.defroster = 0;         //!<Î´¶¨Òå
 	main_interface_data.back_door = rKL15;                                                                 
 	main_interface_data.park_brake=rKEY.BITS.kl8;		   //×¤³µÖÆ¶¯·ûºÅÆ¬                                                                   
-	main_interface_data.brake_light=rKEY.BITS.kl6;		   //É²³µµÆ·ûºÅÆ¬                                                                                                                                                                                                                                                         
+	main_interface_data.brake_light=!rKEY.BITS.kl6;		   //É²³µµÆ·ûºÅÆ¬                                                                                                                                                                                                                                                         
 	main_interface_data.ABS=0;				       //ABS·ûºÅÆ¬                                                                          
 	main_interface_data.dryer=0;			       //¸ÉÔïÆ÷·ûºÅÆ¬                                                                         
 	main_interface_data.Kt=Battery_Kt;				       //µç³ØÖ÷½Ó´¥Æ÷                                                                         

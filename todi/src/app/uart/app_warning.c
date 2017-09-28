@@ -17,7 +17,7 @@ void warning_get_data(void)
 	warning_data.low_water_level_warn     = rKL1;   //水位低报警                                                       
 	warning_data.low_ap1_warn             = rKL10;   //左气压低报警                                                     
 	warning_data.low_ap2_warn             = rKL12;   //右气压低报警                                                     
-	warning_data.water_temp_sensor_warn   = Vcan_timeout_cfg;   //水温传感器报警                                                   
+	warning_data.water_temp_sensor_warn   = 0;   //水温传感器报警                                                   
 	warning_data.oil_quantity_sensor_warn = 0;   //油量传感器报警                                                   
 	warning_data.oil_pressure_sensor_warn = 0;   //机油压力传感器报警                                               
 	warning_data.bat_voltage_sensor_warn  = 0;   //电池电压传感器报警                                               

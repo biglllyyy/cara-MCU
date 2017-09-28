@@ -125,6 +125,7 @@ void main_interface_get_data(void)
 	}
 	temp = (ADR[MCU_SER2] - 10)*1000 / 174;
 	PRESS[1] = temp;
+	dbg_printf("airPressure1 = %d\n",PRESS[0]);
 	WORD_WRITE(main_interface_data.airPressure1,PRESS[0]);
 	WORD_WRITE(main_interface_data.airPressure2,PRESS[1]);
 

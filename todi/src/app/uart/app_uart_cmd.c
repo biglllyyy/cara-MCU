@@ -264,8 +264,10 @@ void uart_data_parse(UartQueue *p)
 {
 
 	U16 data_len = 0;
+	U32 temp;
 	U8 i = 0, frametype = 0;
 	U8 data_point = 0;
+	time_t temp1;
 	static U8 dat[20] =
 	{ 0 };
 
@@ -284,15 +286,26 @@ void uart_data_parse(UartQueue *p)
 #endif
 	}
 	g_tUart1Rec.u8TripClear = dat[0] & 0x01;
-	g_tUart1Rec.time_set_enable = dat[0] & 0x02;
+	g_tUart1Rec.time_set_enable =(dat[0]>>1) & 0x01;
 	g_tUart1Rec.u8MenuNum = dat[1];
 	g_tUart1Rec.u8BattBoxNum = dat[2];
 	memcpy(&g_tUart1Rec.u32UTCTime,&dat[3],4);
 	//g_tUart1Rec.u32UTCTime = dat[3]|dat[4]<<8
-
+	
+	
 	if (g_tUart1Rec.u8TripClear)
 		app_sub_trip1_clear();
+
+	if(g_tUart1Rec.time_set_enable)
+	{
 		
+		temp = g_tUart1Rec.u32UTCTime;
+		byte_order_change((U8*)&temp,4);
+		//dbg_printf(" ======== set time = %d\n",temp);
+		temp1 = (time_t)temp;
+		setCurrentTime(*gmtime(&temp1));	
+
+	}
 	if (0 != g_tUart1Rec.u8MenuNum)
 	{
 		MidSchAddTask(app_frame_sent_sub, 1000);			//发送界面数据

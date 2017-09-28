@@ -345,6 +345,10 @@ void BCAN_Lost_handle(void)   //100ms moudle task
         rLED_flag = 0;
         cnt5=0;
     }
+	if (Fcan_count >= CAN_TIME)
+	{
+		rKEY.BITS.kl6 = 1;
+	}
 }
 
 

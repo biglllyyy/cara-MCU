@@ -29,6 +29,7 @@
 #include "app_info.h"
 #include "app_moudle.h"
 #include "Fw_version.h"
+#include "app_moudle.h"
 
 #define  PERIOD_MS(time)		(time)
 
@@ -61,14 +62,21 @@
 /* variable define */
 static U8 msg_buf_num = 0;	//record msg buf mum
 can_msg_t can_msg[ID_PROCESS_ALL] = { 0 };
-static can_msg_t can1_rx_msg[1]={{0}} ;
-static can_msg_t can1_tx_msg[2] = {
+static can_msg_t can1_rx_msg[20]={{0}} ;
+static can_msg_t can1_tx_msg[] = {
 	{0},
-	{0}
+	{0},
+	{0},
 };
 
 static pCanAnalyse can_rx_handle[ID_RECV_NUM_ALL] = { NULL };
+
+
 U32 can_rx_msg_id_ads[ID_RECV_NUM_ALL] = { 0 };
+unsigned int Fcan_count = 0; //前部模 
+unsigned int Rcan_count = 0; //顶部模 
+unsigned int Mcan_count = 0; //中部模 
+
 /*******************分包处理*****************/
 unsigned int moto_voltage; //电机电压 0.1v
 unsigned int moto_current=10000; //电机电流 0.1A
@@ -140,9 +148,9 @@ unsigned char DCAC_Warn_code; //故障代码
 
 unsigned char AC_Warn_code; //AC故障代码
 DATA_BIT AC_KEY[2];
-unsigned char Indoor_t=60; //室内温度
-unsigned char Outdoor_t=60; //室外温度
-unsigned char Set_t=60; //设定
+unsigned char Indoor_t=30; //室内温度
+unsigned char Outdoor_t=30; //室外温度
+unsigned char Set_t=30; //设定
 unsigned char AC_req; //制冷请求
 unsigned char AC_LIFE; //AC生命
 
@@ -202,8 +210,12 @@ unsigned char Engine_warn; //发动机故障
 
 U32 Vcan_timeout_cfg;
 U32 Bcan_timeout_cfg;
+U32 Dcan_timeout_cfg;
+U32 Acan_timeout_cfg;
 
 /******************************************/
+unsigned int PRESS[2]; //气压值 KPA/BIT
+unsigned char ccvs_eng_req; //启动请求
 
 
 //UDS_id_766  uds766;
@@ -237,6 +249,30 @@ static  void can_updata_analyse(can_msg_t *msg, can_pro_way_e way);
 
 
 static void app_can_process(can_msg_t *msg, can_pro_way_e way);
+static void app_can1_process(can_msg_t *msg, can_pro_way_e way);
+
+
+static void can_id_68X_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_67X_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_62X_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_63X_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_64X_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_65X_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_56X_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_45X_analyse(can_msg_t *msg, can_pro_way_e way);
+
+static pCanAnalyse can1_rx_handle[]=
+{
+	can_id_68X_analyse,
+	can_id_67X_analyse,
+	can_id_62X_analyse,
+	can_id_63X_analyse,
+	can_id_64X_analyse,
+	can_id_65X_analyse,
+	can_id_56X_analyse,
+	can_id_45X_analyse,
+	NULL,
+};
 
 static void app_bound_id(U32 id,U32 id_mask, U8 dlc, CAN_ID_FORMAT_e format, U8 msg_buf,
 		U16 period) {
@@ -260,17 +296,16 @@ static void app_configuration_can(can_msg_t *msg,U32 id,U32 id_mask, U8 dlc, CAN
 		U16 period)	
 {
 	
-	msg[msg_buf].id = id;
-	msg[msg_buf].id_mask= id_mask;
-	msg[msg_buf].dlc = dlc;
-	msg[msg_buf].format = format;
-	msg[msg_buf].buffer_num = msg_buf;
+	msg[0].id = id;
+	msg[0].id_mask= id_mask;
+	msg[0].dlc = dlc;
+	msg[0].format = format;
+	msg[0].buffer_num = msg_buf;
 	if (period >= PERIOD_MS(1000)) {
-		msg[msg_buf].period_ms = period >> 1;
+		msg[0].period_ms = period >> 1;
 	} else {
-		msg[msg_buf].period_ms = period;
+		msg[0].period_ms = period;
 	}
-	dbg_printf("msg_buf = %d,id = %d\n",msg_buf,msg[msg_buf].id );
 }
 
 void app_init_variable(void) {
@@ -356,8 +391,24 @@ void app_init_can(void) {
 	mid_can_init(CAN_CHN, CAN_CHIP);
 
 	mid_can1_prepare(can1_tx_msg,can1_rx_msg);
+	memset(can1_rx_msg,0,sizeof(can1_rx_msg));
+	memset(can1_tx_msg,0,sizeof(can1_tx_msg));
+	app_configuration_can(&can1_rx_msg[0],ID_REC_01_68X, 0x7F0, 8, STAND_ID, 3, (ID_0C03A1A7_period*50));  
+	app_configuration_can(&can1_rx_msg[1],ID_REC_02_67X, 0x7F0, 8, STAND_ID, 4, (ID_0C03A1A7_period*50));  
+	app_configuration_can(&can1_rx_msg[2],ID_REC_03_62X, 0x7F0, 8, STAND_ID, 5, (ID_0C03A1A7_period*50));  
+	app_configuration_can(&can1_rx_msg[3],ID_REC_04_63X, 0x7F0, 8, STAND_ID, 6, (ID_0C03A1A7_period*50));  
+	app_configuration_can(&can1_rx_msg[4],ID_REC_05_64X, 0x7F0, 8, STAND_ID, 7, (ID_0C03A1A7_period*50));  
+	app_configuration_can(&can1_rx_msg[5],ID_REC_06_65X, 0x7F0, 8, STAND_ID, 8, (ID_0C03A1A7_period*50));  
+	app_configuration_can(&can1_rx_msg[6],ID_REC_07_56X, 0x7F0, 8, STAND_ID, 9, (ID_0C03A1A7_period*50));  
+	app_configuration_can(&can1_rx_msg[7],ID_REC_08_45X, 0x7F0, 8, STAND_ID, 10, (ID_0C03A1A7_period*50)); 
+                                                                                                         
 
-	app_configuration_can(can1_tx_msg,ID_REC_01_0C03A1A7, 0x1FFFFFFF, 8, EXTERN_ID, 0 , (ID_0C03A1A7_period*50));
+
+
+	app_configuration_can(&can1_tx_msg[0],BCAN_ID_SEND_6A4, 0x7FF, 8, STAND_ID,  1 , (ID_0C03A1A7_period*50));
+	app_configuration_can(&can1_tx_msg[1],BCAN_ID_SEND_454, 0x7FF, 8, STAND_ID, 2 , (ID_0C03A1A7_period*50));
+	can1_rx_pro = app_can1_process;
+	
 	hal_can_init(1);
 	wdg_feed();
 
@@ -365,12 +416,20 @@ void app_init_can(void) {
 }
 
 static void app_can_process(can_msg_t *msg, can_pro_way_e way) {
-	if (msg->buffer_num <= ID_RECV_NUM_ALL) {
+	{
 		if (can_rx_handle[msg->buffer_num - 1] != NULL) {
 			can_rx_handle[msg->buffer_num - 1](msg, way);
 		}
 	}
 }
+static void app_can1_process(can_msg_t *msg, can_pro_way_e way) {
+	if (msg->buffer_num <= ID1_RECV_NUM_ALL) {
+		if (can1_rx_handle[msg->buffer_num - ID1_SENT_NUM_ALL -1] != NULL) {
+			can1_rx_handle[msg->buffer_num - ID1_SENT_NUM_ALL -1](msg, way);
+		}
+	}
+}
+
 static void can_id_7E7_analyse(can_msg_t *msg, can_pro_way_e way) {
 	switch (way) {
 	case CAN_PARSE:
@@ -386,7 +445,7 @@ static void can_id_7E7_analyse(can_msg_t *msg, can_pro_way_e way) {
 		//dbg_string("CAN CMD:%s\n", msg->data);
 		break;
 	case CAN_LOST:
-
+		
 		break;
 	default:
 		break;
@@ -398,6 +457,7 @@ static void can_id_0C03A1A7_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+			Vcan_timeout_cfg = 0;
 			moto_voltage = (unsigned char) msg->data[0]+((unsigned int) msg->data[1] << 8);
 			moto_current = (unsigned char) msg->data[2]+((unsigned int) msg->data[3] << 8);
             moto_speed = (unsigned char) msg->data[4]+((unsigned int) msg->data[5] << 8)/2;
@@ -405,6 +465,7 @@ static void can_id_0C03A1A7_analyse(can_msg_t *msg, can_pro_way_e way){
             Inverter_t = msg->data[7];
 		break;
 	case CAN_LOST:
+			Vcan_timeout_cfg = 1;
 			moto_voltage = 10000;
 			moto_current = 10000;
 			moto_speed = 0;
@@ -419,10 +480,12 @@ static void can_id_0C04A1A7_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Vcan_timeout_cfg = 0;
 		Accelerator = (unsigned char) msg->data[4];
         Engine_Speed = ((unsigned char) msg->data[5]+((unsigned int) msg->data[6] << 8))/8;
 		break;
 	case CAN_LOST:
+		Vcan_timeout_cfg = 1;
 		Accelerator = 0;
 		Engine_Speed = 0;
 		break;
@@ -434,6 +497,7 @@ static void can_id_0C05A1A7_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Vcan_timeout_cfg = 0;
 		Fule_rate = (unsigned char) msg->data[0]+((unsigned int) msg->data[1] << 8);
         water_temp = msg->data[2];
         Engine_Fuhe = msg->data[3];
@@ -443,6 +507,7 @@ static void can_id_0C05A1A7_analyse(can_msg_t *msg, can_pro_way_e way){
         ambient_air_temperature = msg->data[7]; //周围空气温度
 		break;
 	case CAN_LOST:
+		Vcan_timeout_cfg = 1;
 		Fule_rate = 0;
 		water_temp = 40;
 		Engine_Fuhe = 0;
@@ -459,6 +524,7 @@ static void can_id_0C06A1A7_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Vcan_timeout_cfg = 0;
 		Current_Gear = msg->data[1]&0x0f;
         TCU_Position = (msg->data[1] >> 4)&0x0f;
         TCU_warn = msg->data[2]&0x03;
@@ -469,6 +535,7 @@ static void can_id_0C06A1A7_analyse(can_msg_t *msg, can_pro_way_e way){
         TCU_level = msg->data[7];
 		break;
 	case CAN_LOST:
+		Vcan_timeout_cfg = 1;
 		Current_Gear = 0;
 		TCU_Position = 0;
 		TCU_warn =0 ;
@@ -486,6 +553,7 @@ static void can_id_0C07A1A7_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Vcan_timeout_cfg = 0;
 		CAN_ON = msg->data[0]&0x01;
         CAN_ACC = (msg->data[0] >> 1)&0x01;
         Diagnosis = (msg->data[0] >> 2)&0x01;
@@ -503,6 +571,7 @@ static void can_id_0C07A1A7_analyse(can_msg_t *msg, can_pro_way_e way){
         Brake_percent = msg->data[6];
 		break;
 	case CAN_LOST:
+		Vcan_timeout_cfg =1;
 		CAN_KEY[0].byte = 0;
 		CAN_KEY[1].byte = 0;
 		Digit_input3 = 0;
@@ -519,6 +588,7 @@ static void can_id_0C08A1A7_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Vcan_timeout_cfg = 0;
 		Program = ((unsigned char) msg->data[0]
                 +((unsigned int) msg->data[1] << 8)
                 +((unsigned long) msg->data[2] << 16));
@@ -531,6 +601,7 @@ static void can_id_0C08A1A7_analyse(can_msg_t *msg, can_pro_way_e way){
         Car_LIFE = msg->data[7];
 		break;
 	case CAN_LOST:
+		Vcan_timeout_cfg = 1;
 		Program = 0;
 		tcu_spn = 0;
 		tcu_fmi = 0;
@@ -546,6 +617,7 @@ static void can_id_1818D0F3_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Bcan_timeout_cfg = 0;
 		BMS_V = ((unsigned char) msg->data[0]
                 +((unsigned int) msg->data[1] << 8));
         BMS_A = ((unsigned char) msg->data[2]
@@ -556,6 +628,7 @@ static void can_id_1818D0F3_analyse(can_msg_t *msg, can_pro_way_e way){
         Status_Flag3 = msg->data[7]&0x0C;
 		break;
 	case CAN_LOST:
+		Bcan_timeout_cfg = 1;
 		BMS_V = 10000;
 		BMS_A = 10000;
 		BMS_SOC = 0;
@@ -571,6 +644,7 @@ static void can_id_1819D0F3_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Bcan_timeout_cfg = 0;
 		BMS_A_charge = ((unsigned char) msg->data[0]
                 +((unsigned int) msg->data[1] << 8));
         BMS_A_discharge = ((unsigned char) msg->data[2]
@@ -581,11 +655,12 @@ static void can_id_1819D0F3_analyse(can_msg_t *msg, can_pro_way_e way){
         BMS_T_H = msg->data[7];
 		break;
 	case CAN_LOST:
+		Bcan_timeout_cfg = 1;
 		BMS_A_charge = 10000;
 		BMS_A_discharge = 10000;
 		Warn_level = 0;
 		BMS_V_average = 10000;
-		BMS_T_H = 0;
+		BMS_T_H = 40;
 		break;
 	default:
 		break;
@@ -595,6 +670,7 @@ static void can_id_181AD0F3_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Bcan_timeout_cfg = 0;
 		Oum_zheng = ((unsigned char) msg->data[0]
                 +((unsigned int) msg->data[1] << 8));
         Oum_fu = ((unsigned char) msg->data[2]
@@ -605,6 +681,7 @@ static void can_id_181AD0F3_analyse(can_msg_t *msg, can_pro_way_e way){
                 +((unsigned int) msg->data[7] << 8));
 		break;
 	case CAN_LOST:
+		Bcan_timeout_cfg = 1;
 		Oum_zheng = 0;
 		Oum_fu = 0;
 		Battery_single_H = 10000;
@@ -618,6 +695,7 @@ static void can_id_180028F3_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Bcan_timeout_cfg = 0;
 		Battery_number[0] = msg->data[0];
         Battery_voltage[0] = ((unsigned char) msg->data[1]
                 +((unsigned int) msg->data[2] << 8));
@@ -626,10 +704,11 @@ static void can_id_180028F3_analyse(can_msg_t *msg, can_pro_way_e way){
                 +((unsigned int) msg->data[5] << 8));
 		break;
 	case CAN_LOST:
+		Bcan_timeout_cfg = 1;
 		Battery_number[0] = 0;
-		Battery_voltage[0] = 0;
+		Battery_voltage[0] = 10000;
 		Battery_number[1] = 0;
-		Battery_voltage[1] = 0;
+		Battery_voltage[1] = 10000;
 		break;
 	default:
 		break;
@@ -639,6 +718,7 @@ static void can_id_180128F3_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Bcan_timeout_cfg = 0;
 		Battery_number[2] = msg->data[0];
         Battery_voltage[2] = ((unsigned char) msg->data[1]
                 +((unsigned int) msg->data[2] << 8));
@@ -647,10 +727,11 @@ static void can_id_180128F3_analyse(can_msg_t *msg, can_pro_way_e way){
                 +((unsigned int) msg->data[5] << 8));
 		break;
 	case CAN_LOST:
+		Bcan_timeout_cfg = 1;
 		Battery_number[2] = 0;
-		Battery_voltage[2] = 0;
+		Battery_voltage[2] = 10000;
 		Battery_number[3] = 0;
-		Battery_voltage[3] = 0;
+		Battery_voltage[3] = 10000;
 		break;
 	default:
 		break;
@@ -660,6 +741,7 @@ static void can_id_180228F3_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Bcan_timeout_cfg= 0;
 		Battery_number[4] = msg->data[0];
         Battery_voltage[4] = ((unsigned char) msg->data[1]
                 +((unsigned int) msg->data[2] << 8));
@@ -668,10 +750,11 @@ static void can_id_180228F3_analyse(can_msg_t *msg, can_pro_way_e way){
                 +((unsigned int) msg->data[5] << 8));
 		break;
 	case CAN_LOST:
+		Bcan_timeout_cfg = 1;
 		Battery_number[4] = 0;
-		Battery_voltage[4] = 0;
+		Battery_voltage[4] = 10000;
 		Battery_number[5] = 0;
-		Battery_voltage[5] = 0;
+		Battery_voltage[5] = 10000;
 		break;
 	default:
 		break;
@@ -681,6 +764,7 @@ static void can_id_180328F3_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Bcan_timeout_cfg = 0;
 		Battery_number[6] = msg->data[0];
         Battery_voltage[6] = ((unsigned char) msg->data[1]
                 +((unsigned int) msg->data[2] << 8));
@@ -689,10 +773,11 @@ static void can_id_180328F3_analyse(can_msg_t *msg, can_pro_way_e way){
                 +((unsigned int) msg->data[5] << 8));
 		break;
 	case CAN_LOST:
+		Bcan_timeout_cfg = 1;
 		Battery_number[6] = 0;
-		Battery_voltage[6] = 0;
+		Battery_voltage[6] = 10000;
 		Battery_number[7] = 0;
-		Battery_voltage[7] = 0;
+		Battery_voltage[7] = 10000;
 		break;
 	default:
 		break;
@@ -702,6 +787,7 @@ static void can_id_180428F3_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Bcan_timeout_cfg = 0;
 		Battery_number[8] = msg->data[0];
         Battery_voltage[8] = ((unsigned char) msg->data[1]
                 +((unsigned int) msg->data[2] << 8));
@@ -710,10 +796,11 @@ static void can_id_180428F3_analyse(can_msg_t *msg, can_pro_way_e way){
                 +((unsigned int) msg->data[5] << 8));
 		break;
 	case CAN_LOST:
+		Bcan_timeout_cfg = 1;
 		Battery_number[8] = 0;
-		Battery_voltage[8] = 0;
+		Battery_voltage[8] = 10000;
 		Battery_number[9] = 0;
-		Battery_voltage[9] = 0;
+		Battery_voltage[9] = 10000;
 		break;
 	default:
 		break;
@@ -723,6 +810,7 @@ static void can_id_180028F4_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Bcan_timeout_cfg = 0;
 		Battery_number_t[0] = msg->data[0];
         Battery_temp[0] = msg->data[1];
         Battery_number_t[1] = msg->data[2];
@@ -733,14 +821,15 @@ static void can_id_180028F4_analyse(can_msg_t *msg, can_pro_way_e way){
         Battery_temp[3] = msg->data[7];
 		break;
 	case CAN_LOST:
+		Bcan_timeout_cfg = 1;
 		Battery_number_t[0] = 0;
-		Battery_temp[0] = 0;
+		Battery_temp[0] = 40;
 		Battery_number_t[1] = 0;
-		Battery_temp[1] = 0;
+		Battery_temp[1] = 40;
 		Battery_number_t[2] = 0;
-		Battery_temp[2] = 0;
+		Battery_temp[2] = 40;
 		Battery_number_t[3] = 0;
-		Battery_temp[3] = 0;
+		Battery_temp[3] = 40;
 		break;
 	default:
 		break;
@@ -750,6 +839,7 @@ static void can_id_180128F4_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Bcan_timeout_cfg = 0;
 		Battery_number_t[4] = msg->data[0];
         Battery_temp[4] = msg->data[1];
         Battery_number_t[5] = msg->data[2];
@@ -760,14 +850,15 @@ static void can_id_180128F4_analyse(can_msg_t *msg, can_pro_way_e way){
         Battery_temp[7] = msg->data[7];
 		break;
 	case CAN_LOST:
+		Bcan_timeout_cfg = 1;
 		Battery_number_t[4] = 0;
-		Battery_temp[4] = 0;
+		Battery_temp[4] = 40;
 		Battery_number_t[5] = 0;
-		Battery_temp[5] = 0;
+		Battery_temp[5] = 40;
 		Battery_number_t[6] = 0;
-		Battery_temp[6] = 0;
+		Battery_temp[6] = 40;
 		Battery_number_t[7] = 0;
-		Battery_temp[7] = 0;
+		Battery_temp[7] = 40;
 		break;
 	default:
 		break;
@@ -777,16 +868,18 @@ static void can_id_180228F4_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Bcan_timeout_cfg = 0;
 		Battery_number_t[8] = msg->data[0];
         Battery_temp[8] = msg->data[1];
         Battery_number_t[9] = msg->data[2];
         Battery_temp[9] = msg->data[3];
 		break;
 	case CAN_LOST:
+		Bcan_timeout_cfg = 1;
 		Battery_number_t[8] = 0;
-		Battery_temp[8] = 0;
+		Battery_temp[8] = 40;
 		Battery_number_t[9] = 0;
-		Battery_temp[9] = 0;
+		Battery_temp[9] = 40;
 		break;
 	default:
 		break;
@@ -796,6 +889,7 @@ static void can_id_0C09A79B_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Dcan_timeout_cfg = 0;
 		DCAC_W = ((unsigned char) msg->data[0]
                 +((unsigned int) msg->data[1] << 8));
         DCAC_V = ((unsigned char) msg->data[2]
@@ -806,6 +900,7 @@ static void can_id_0C09A79B_analyse(can_msg_t *msg, can_pro_way_e way){
         DCAC_Warn_code = msg->data[7];
 		break;
 	case CAN_LOST:
+		Dcan_timeout_cfg = 1;
 		DCAC_W = 10000;
 		DCAC_V = 10000;
 		DCAC_U = 10000;
@@ -820,6 +915,7 @@ static void can_id_18FFC09E_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
+		Acan_timeout_cfg = 0;
 		AC_Warn_code = msg->data[0];
         AC_opean = (msg->data[1] >> 5)&0x01;
         AC_mind_speed = (msg->data[1] >> 6)&0x01;
@@ -839,12 +935,13 @@ static void can_id_18FFC09E_analyse(can_msg_t *msg, can_pro_way_e way){
 
 		break;
 	case CAN_LOST:
+		Acan_timeout_cfg = 1;
 		AC_Warn_code = 0;
 		AC_KEY[0].byte = 0;
 		AC_KEY[1].byte = 0;
-		Indoor_t = 60;
-		Outdoor_t = 60;
-		Set_t = 60;
+		Indoor_t = 30;
+		Outdoor_t = 30;
+		Set_t = 30;
 		AC_req = 0;
 		AC_LIFE = 0;
 		break;
@@ -931,16 +1028,399 @@ void MCU_TO_PC_send(void) {  //对应报文0x7EF
 	hal_can_sent(CAN_CHN, &can_msg[msg_box - 1]);
 }
 
+/*********************************************************************/
 
+
+static void can_id_68X_analyse(can_msg_t *msg, can_pro_way_e way){
+	U8 i  = 0;
+	dbg_printf("68XID = %x\n",msg->id);
+	switch (way) {
+	case CAN_PARSE:
+			switch (msg->id) {
+	            case 0x681:
+					//dbg_printf("data =%2x,%2x,%2x,%2x,%2x,%2x,%2x,%2x",msg->data[0],msg->data[1],msg->data[2],msg->data[3],msg->data[4],msg->data[5],msg->data[6],msg->data[7]);
+	                Fcan_count = 0;
+	                fKEY.BYTES[0] = msg->data[0];
+	                fKEY.BYTES[1] = msg->data[1];
+	                fKEY.BYTES[2] = msg->data[2];
+	                fFreq = msg->data[3]+((unsigned int)msg->data[4] << 8);
+	                fSpeed = msg->data[5]+((unsigned int) msg->data[6] << 8);
+	                break;
+	            case 0x682:
+	                Mcan_count = 0;
+	                mKEY.BYTES[0] = msg->data[0];
+	                mKEY.BYTES[1] = msg->data[1];
+	                mKEY.BYTES[2] = msg->data[2];
+	                mFreq = msg->data[3]+((unsigned int) msg->data[4] << 8);
+	                mSpeed = msg->data[5]+((unsigned int) msg->data[6] << 8);
+	                break;
+	            case 0x683:
+	                Rcan_count = 0;
+	                rKEY.BYTES[0] = msg->data[0];
+	                rKEY.BYTES[1] = msg->data[1];
+	                rKEY.BYTES[2] = msg->data[2];
+	                rFreq = msg->data[3]+((unsigned int) msg->data[4] << 8);
+	                rSpeed = msg->data[5]+((unsigned int) msg->data[6] << 8);
+	                break;
+				default:
+				     break;
+		     }
+		break;
+	case CAN_LOST: 
+		break;
+	default:
+		break;
+	}
+}
+	
+static void can_id_67X_analyse(can_msg_t *msg, can_pro_way_e way){
+	U8 i  = 0;
+	dbg_printf("67XID = %x\n",msg->id);
+	switch (way) {
+	case CAN_PARSE:
+		switch (msg->id) {
+			case 0x671:
+				Fcan_count = 0;
+				fADR[0] =msg->data[0]+((unsigned int) msg->data[1] << 8);
+				fADR[1] = msg->data[2]+((unsigned int) msg->data[3] << 8);
+				break;
+			case 0x672:
+				Mcan_count = 0;
+				mADR[0] = msg->data[0]+((unsigned int) msg->data[1] << 8);
+				mADR[1] = msg->data[2]+((unsigned int) msg->data[3] << 8);
+				break;
+			case 0x673:
+				Rcan_count = 0;
+				rADR[0] = msg->data[0]+((unsigned int) msg->data[1] << 8);
+				rADR[1] = msg->data[2]+((unsigned int) msg->data[3] << 8);
+				break;
+			 default:
+				break;
+		}
+		break;
+	case CAN_LOST:
+		break;
+	default:
+		break;
+	}
+}
+static void can_id_62X_analyse(can_msg_t *msg, can_pro_way_e way){
+	U8 i  = 0;
+	dbg_printf("62XID = %x\n",msg->id);
+	switch (way) {
+	case CAN_PARSE:
+		switch (msg->id) {
+			case 0x621:
+                Fcan_count = 0;
+                fpcur[0] = msg->data[0]+((unsigned int) msg->data[1] << 8);
+                fpcur[1] = msg->data[2]+((unsigned int) msg->data[3] << 8);
+                fpcur[2] = msg->data[4]+((unsigned int) msg->data[5] << 8);
+                fpcur[3] = msg->data[6]+((unsigned int) msg->data[7] << 8);
+                break;
+			case 0x622:
+                Mcan_count = 0;
+                mpcur[0] = msg->data[0]+((unsigned int) msg->data[1] << 8);
+                mpcur[1] = msg->data[2]+((unsigned int) msg->data[3] << 8);
+                mpcur[2] = msg->data[4]+((unsigned int) msg->data[5] << 8);
+                mpcur[3] = msg->data[6]+((unsigned int) msg->data[7] << 8);
+                break;
+			case 0x623:
+                Rcan_count = 0;
+                rpcur[0] = msg->data[0]+((unsigned int) msg->data[1] << 8);
+                rpcur[1] = msg->data[2]+((unsigned int) msg->data[3] << 8);
+                rpcur[2] = msg->data[4]+((unsigned int) msg->data[5] << 8);
+                rpcur[3] = msg->data[6]+((unsigned int) msg->data[7] << 8);
+                break;
+			default:
+				break;
+		}
+		break;
+	case CAN_LOST:
+		break;
+	default:
+		break;
+	}
+}
+static void can_id_63X_analyse(can_msg_t *msg, can_pro_way_e way){
+	U8 i  = 0;
+	dbg_printf("63XID = %x\n",msg->id);
+	switch (way) {
+	case CAN_PARSE:
+		switch (msg->id) {
+			case 0x631:
+                Fcan_count = 0;
+                fpcur[4] = msg->data[0]+((unsigned int) msg->data[1] << 8);
+                fpcur[5] = msg->data[2]+((unsigned int) msg->data[3] << 8);
+                fpcur[6] = msg->data[4]+((unsigned int) msg->data[5] << 8);
+                fpcur[7] = msg->data[6]+((unsigned int) msg->data[7] << 8);
+                break;
+			case 0x632:
+                Mcan_count = 0;
+                mpcur[4] = msg->data[0]+((unsigned int) msg->data[1] << 8);
+                mpcur[5] = msg->data[2]+((unsigned int) msg->data[3] << 8);
+                mpcur[6] = msg->data[4]+((unsigned int) msg->data[5] << 8);
+                mpcur[7] = msg->data[6]+((unsigned int) msg->data[7] << 8);
+                break;
+			case 0x633:
+                Rcan_count = 0;
+                rpcur[4] = msg->data[0]+((unsigned int) msg->data[1] << 8);
+                rpcur[5] = msg->data[2]+((unsigned int) msg->data[3] << 8);
+                rpcur[6] = msg->data[4]+((unsigned int) msg->data[5] << 8);
+                rpcur[7] = msg->data[6]+((unsigned int) msg->data[7] << 8);
+                break;
+			default:
+				break;
+		}
+		break;
+	case CAN_LOST:
+		break;
+	default:
+		break;
+	}
+}
+static void can_id_64X_analyse(can_msg_t *msg, can_pro_way_e way){
+	U8 i  = 0;
+	dbg_printf("64XID = %x\n",msg->id);
+	switch (way) {
+	case CAN_PARSE:
+		switch (msg->id) {
+			case 0x641:
+                Fcan_count = 0;
+                fpcur[8] = msg->data[0]+((unsigned int) msg->data[1] << 8);
+                fpcur[9] = msg->data[2]+((unsigned int) msg->data[3] << 8);
+                fpcur[10] = msg->data[4]+((unsigned int) msg->data[5] << 8);
+                fpcur[11] = msg->data[6]+((unsigned int) msg->data[7] << 8);
+                break;
+			case 0x642:
+                Mcan_count = 0;
+                mpcur[8] = msg->data[0]+((unsigned int) msg->data[1] << 8);
+                mpcur[9] = msg->data[2]+((unsigned int) msg->data[3] << 8);
+                mpcur[10] = msg->data[4]+((unsigned int) msg->data[5] << 8);
+                mpcur[11] = msg->data[6]+((unsigned int) msg->data[7] << 8);
+                break;
+			case 0x643:
+                Rcan_count = 0;
+                rpcur[8] = msg->data[0]+((unsigned int) msg->data[1] << 8);
+                rpcur[9] = msg->data[2]+((unsigned int) msg->data[3] << 8);
+                rpcur[10] = msg->data[4]+((unsigned int) msg->data[5] << 8);
+                rpcur[11] = msg->data[6]+((unsigned int) msg->data[7] << 8);
+                break;
+			default:
+				break;
+		}
+
+		break;
+	case CAN_LOST:
+		break;
+	default:
+		break;
+	}
+}
+static void can_id_65X_analyse(can_msg_t *msg, can_pro_way_e way){
+	
+	U8 i  = 0;
+	dbg_printf("65XID = %x\n",msg->id);
+	switch (way) {
+	case CAN_PARSE:
+		switch (msg->id) {
+			case 0x651:
+                Fcan_count = 0;
+                fpcur[12] = msg->data[0]+((unsigned int) msg->data[1] << 8);
+                fpcur[13] = msg->data[2]+((unsigned int) msg->data[3] << 8);
+                fpcur[14] = msg->data[4]+((unsigned int) msg->data[5] << 8);
+                break;
+			case 0x652:
+                Mcan_count = 0;
+                mpcur[12] = msg->data[0]+((unsigned int) msg->data[1] << 8);
+                mpcur[13] = msg->data[2]+((unsigned int) msg->data[3] << 8);
+                mpcur[14] = msg->data[4]+((unsigned int) msg->data[5] << 8);
+                break;
+			case 0x653:
+                Rcan_count = 0;
+                rpcur[12] = msg->data[0]+((unsigned int) msg->data[1] << 8);
+                rpcur[13] = msg->data[2]+((unsigned int) msg->data[3] << 8);
+                rpcur[14] = msg->data[4]+((unsigned int) msg->data[5] << 8);
+                break;
+			default:
+				break;	
+		}
+		break;
+	case CAN_LOST:
+		break;
+	default:
+		break;
+	}
+}
+static void can_id_56X_analyse(can_msg_t *msg, can_pro_way_e way){
+	U8 i  = 0,j=0;
+	dbg_printf("56XID = %x\n",msg->id);
+	switch (way) {
+	case CAN_PARSE:
+		switch (msg->id) {
+			case 0x561:
+				Fcan_count = 0;
+                fPOUT.BYTES[0] = msg->data[0];
+                fPOUT.BYTES[1] = msg->data[1];
+                for (j = 0; j < 4; j++) {//输出状态采集
+                    for (i = 0; i < 4; i++) {
+                        fPF[i + 4 * j] = (msg->data[j + 2] >> (i * 2))&0x03;
+                    }
+                }
+                break;
+            case 0x562:
+                Mcan_count = 0;
+                mPOUT.BYTES[0] = msg->data[0];
+                mPOUT.BYTES[1] = msg->data[1];
+                for (j = 0; j < 4; j++) {
+                    for (i = 0; i < 4; i++) {
+                        mPF[i + 4 * j] = (msg->data[j + 2] >> (i * 2))&0x03;
+                    }
+                }
+                break;
+            case 0x563:
+                Rcan_count = 0;
+                rPOUT.BYTES[0] = msg->data[0];
+                rPOUT.BYTES[1] = msg->data[1];
+                for (j = 0; j < 4; j++) {
+                    for (i = 0; i < 4; i++) {
+                        rPF[i + 4 * j] = (msg->data[j + 2] >> (i * 2))&0x03;
+                    }
+                }
+                break;
+			default:
+				break;
+		}
+		break;
+	case CAN_LOST:
+		break;
+	default:
+		break;
+	}
+}
+static void can_id_45X_analyse(can_msg_t *msg, can_pro_way_e way){
+	U8 i  = 0;
+	dbg_printf("45XID = %x\n",msg->id);
+	switch (way) {
+	case CAN_PARSE:
+		switch (msg->id) {
+			 case 0x451:
+                Fcan_count = 0;
+                fSingle_miles = msg->data[4]+((unsigned int) msg->data[5] << 8);
+                break;
+            case 0x452:
+                Mcan_count = 0;
+                mSingle_miles = msg->data[4]+((unsigned int) msg->data[5] << 8);
+                break;
+            case 0x453:
+                Rcan_count = 0;
+                rSingle_miles = msg->data[4]+((unsigned int) msg->data[5] << 8);
+                break;
+			default:
+				break;
+		}
+		break;
+	case CAN_LOST:
+		break;
+	default:
+		break;
+	}
+}
+
+void BCAN_SendCtl(void) {
+    can1_tx_msg[0].data[0] = gCTL[0].byte;
+    can1_tx_msg[0].data[1] = gCTL[1].byte;
+    can1_tx_msg[0].data[2] = gCTL[2].byte;
+    can1_tx_msg[0].data[3] = gCTL[3].byte;
+    can1_tx_msg[0].data[4] = gCTL[4].byte;
+    can1_tx_msg[0].data[5] = gCTL[5].byte;
+    can1_tx_msg[0].data[6] = ((M_ON && wake_up3) || wake_up2) + (IN14 << 1)+(IN15 << 2)+(IN16 << 3)+(IN21 << 4);//模块雨刮控制
+    can1_tx_msg[0].data[7] = 0;
+	hal_can_sent(1, &can1_tx_msg[0]);
+}
+
+void BCAN_send_mile(void) {
+	 can1_tx_msg[1].data[0] = (unsigned char) (e_total_miles); //低八位
+	 can1_tx_msg[1].data[1] = (unsigned char) (e_total_miles >> 8); //二级八位
+	 can1_tx_msg[1].data[2] = (unsigned char) (e_total_miles >> 16); //三级八位
+	 can1_tx_msg[1].data[3] = (unsigned char) (e_total_miles >> 24); //高八位
+	 can1_tx_msg[1].data[4] = 0; 
+	 can1_tx_msg[1].data[5] = 0;
+	 can1_tx_msg[1].data[6] = 0;
+	 can1_tx_msg[1].data[7] = 0;
+	 hal_can_sent(1, &can1_tx_msg[1]);
+}
+
+void PCAN_CCVS(void) {
+	U8 msg_box;
+
+	msg_box = ID_RECV_NUM_ALL + 2;
+	can_msg[msg_box - 1].buffer_num = msg_box;
+    can_msg[msg_box - 1].data[0] = (unsigned char) (wake_up3 << 6)//ON档
+            + (unsigned char) (IN4 << 5)//ST档
+            + (unsigned char) (IN27 << 4)//后门开信号
+            + (unsigned char) (IN20 << 3)//前面开信号
+            + (unsigned char) (rKL15 << 2)//后舱门开信号
+            + (unsigned char) (rKL8 << 1)//驻车信号
+            + (unsigned char) (rKL10 || rKL12) ;//气压低报警信号
+   can_msg[msg_box - 1].data[1] = (unsigned char) (IN1 << 7)//左转向
+            + (unsigned char) (IN7 << 6)//远光灯
+            + (unsigned char) (IN9 << 5)//前雾灯
+            + (unsigned char) (IN5 << 4)//右转向
+            + (unsigned char) (IN3 << 3)//油量报警
+            + (unsigned char) (0 << 2)//发动机预热
+            + (unsigned char) (IN8 << 1)//近光灯
+            + (unsigned char) (IN10) ;//后雾灯
+    can_msg[msg_box - 1].data[2] = 0xff;
+    can_msg[msg_box - 1].data[3] = (unsigned char) (pSpeed * 2);
+    can_msg[msg_box - 1].data[4] = PRESS[0]*10;
+    can_msg[msg_box - 1].data[5] = (unsigned char) (PRESS[0]*100 >> 8);
+    can_msg[msg_box - 1].data[6] = PRESS[1]*10;
+    can_msg[msg_box - 1].data[7] = (unsigned char) (PRESS[1]*100 >> 8);
+    hal_can_sent(CAN_CHN, &can_msg[msg_box - 1]);
+}
+void PCAN_send_mile(void) {
+	U8 msg_box;
+    msg_box = ID_RECV_NUM_ALL + 3;
+	can_msg[msg_box - 1].buffer_num = msg_box;;
+    can_msg[msg_box - 1].data[0] = (unsigned char) (e_total_miles); //低八位
+    can_msg[msg_box - 1].data[1] = (unsigned char) (e_total_miles >> 8); //二级八位
+    can_msg[msg_box - 1].data[2] = (unsigned char) (e_total_miles >> 16); //三级八位
+    can_msg[msg_box - 1].data[3] = (unsigned char) (e_total_miles >> 24); //高八位
+    can_msg[msg_box - 1].data[4] = 0; 
+    can_msg[msg_box - 1].data[5] = 0;
+    can_msg[msg_box - 1].data[6] = 0;
+    can_msg[msg_box - 1].data[7] = 0;
+    hal_can_sent(CAN_CHN, &can_msg[msg_box - 1]);
+
+}
+void PCAN_send_req(void) {
+
+	U8 msg_box;
+    msg_box = ID_RECV_NUM_ALL + 4;
+    can_msg[msg_box - 1].data[0] = 0xff;
+    can_msg[msg_box - 1].data[1] = (unsigned char) 0x0f
+            + (unsigned char) ((ccvs_eng_req & 0x03) << 4)
+            +(unsigned char) (0x03 << 6);
+    can_msg[msg_box - 1].data[2] = 0xFF;
+    can_msg[msg_box - 1].data[3] = 0xFF;
+    can_msg[msg_box - 1].data[4] = 0xFF;
+    can_msg[msg_box - 1].data[5] = 0xFF;
+    can_msg[msg_box - 1].data[6] = 0xFF;
+    can_msg[msg_box - 1].data[7] = 0xFF;
+    hal_can_sent(CAN_CHN, &can_msg[msg_box - 1]);
+
+}
 
 
 
 void app_can_sent_task(void) {
-	dbg_printf("send can 1 data\n");
-	dbg_printf("can1 statr = %x\n",IO_CAN1.STATR);
-
-	hal_can_sent(1, &can1_tx_msg[0]);
-	hal_can_sent(0, &can1_tx_msg[0]);
+	static U32 cont1 = 0;
+ 	PCAN_CCVS();
+	if (cont1++>=10){
+		cont1 = 0;
+		PCAN_send_mile();
+	}
+	//PCAN_send_req();
 }
 
 void app_can_lost_time_cnt_100ms(void) 

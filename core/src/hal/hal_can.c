@@ -122,7 +122,6 @@ void hal_can_init(U8 chn)
 		}
 		for(i= 0; can1_tx_msg[i].id != 0;i++)
 		{
-			dbg_printf("init can buf = %d\n",can1_tx_msg[i].buffer_num);
 			can_sent_object_init(chn,can1_tx_msg[i].buffer_num,can1_tx_msg[i].format,can1_tx_msg[i].id,can1_tx_msg[i].dlc);		//·¢ËÍ
 		}
         /* CAN bus setting */
@@ -179,7 +178,7 @@ void can_receive_object_init(U8 chn,U8 num,CAN_ID_FORMAT_e format,U32 id,U8 dlc,
 	{
 		IO_CAN0.IF2MSK.word = id_mask;				/*MXtd=1 MDir=1 res=1 MID28-MID18 all=1
 														MID17-MID0 all=0*/
-		IO_CAN0.IF2MSK.bit.MXtd = 1;    /* extened frame */
+		IO_CAN0.IF2MSK.bit.MXtd = 0;    /* extened frame */
         IO_CAN0.IF2ARB.word = 0xC0000000|(id & 0x1FFFFFFF);	/*MsgVal=1 Xtd=1 Dir=0 ID(28-18)=1 TestMode Only*/
 	}
 
@@ -202,9 +201,9 @@ void can_receive_object_init(U8 chn,U8 num,CAN_ID_FORMAT_e format,U32 id,U8 dlc,
 		{
 			/*Arb Data*/
 			/*MSK Data*/
-			IO_CAN1.IF2MSK.word = 0xFFFC0000;				/*MXtd=1 MDir=1 res=1 MID28-MID18 all=1
+			IO_CAN1.IF2MSK.word = id_mask<< 18;				/*MXtd=1 MDir=1 res=1 MID28-MID18 all=1
 																MID17-MID0 all=0*/
-			IO_CAN1.IF2MSK.bit.MXtd = 0;    /* extened frame */
+			IO_CAN1.IF2MSK.bit.MXtd = 1;    /* extened frame */
 			IO_CAN1.IF2ARB.word = 0x80000000|(id << 18);	/*MsgVal=1 Xtd=0 Dir=0 ID(28-18)=2*/
 		}
 		else
@@ -294,7 +293,7 @@ void can_sent_object_init(U8 chn,U8 num,CAN_ID_FORMAT_e format,U32 id,U8 dlc)
         IO_CAN1.IF1DTB2.hword = 0x0000;
 
         /*CREQ*/
-        IO_CAN1.IF1CREQ.hword = (CAN1_MSGB_SIZE-1) - num;			/*transmit IFx to message RAM use buffer1*/		
+        IO_CAN1.IF1CREQ.hword = num;			/*transmit IFx to message RAM use buffer1*/		
 		break;
     default:
         break;
@@ -321,6 +320,17 @@ void State_judge_0(void)
     if(!((IO_CAN0.STATR.bit.BOff)|(IO_CAN0.STATR.bit.EWarn)|(IO_CAN0.STATR.bit.EPass))) //error active
     {
         Error_State_0 = 0x03;				//error active
+    }
+}
+void State_judge_1(void)
+{
+    U32 count = 0;
+
+    if(IO_CAN1.STATR.bit.BOff==0x01)		//bus off
+    {
+        /*Restart bus*/
+        IO_CAN1.CTRLR.bit.Init = 0;		/*enable CAN controller*/
+        while(((IO_CAN1.ERRCNT.bit.TEC!=0)||(IO_CAN1.ERRCNT.bit.REC!=0)) && (count++ <= 0xFFFFF));//see if recovered
     }
 }
 
@@ -470,6 +480,10 @@ void hal_can_sent(U8 chn,can_msg_t *can_msg)
 
             break;
         case 1:
+			if(IO_CAN1.INTR.hword == 0x8000)		/* status int */
+            {
+                State_judge_1();
+            }
             IO_CAN1.IF1CMSK.hword = 0x0087;	/* only updata DATA */
 			CAN1_IF1ARB_Dir = 1;
             CAN1_IF1ARB_MsgVal = 1;
@@ -477,13 +491,13 @@ void hal_can_sent(U8 chn,can_msg_t *can_msg)
             CAN1_IF1DTA1_IF1DTA1L = can_msg->data[1];
             CAN1_IF1DTA2_IF1DTA2H = can_msg->data[2];
             CAN1_IF1DTA2_IF1DTA2L = can_msg->data[3];
-            CAN1_IF1DTB1_IF1DTB1H = can_msg->data[0];
-            CAN1_IF1DTB1_IF1DTB1L = can_msg->data[1];
-            CAN1_IF1DTB2_IF1DTB2H = can_msg->data[2];
-            CAN1_IF1DTB2_IF1DTB2L = can_msg->data[3];
+            CAN1_IF1DTB1_IF1DTB1H = can_msg->data[4];
+            CAN1_IF1DTB1_IF1DTB1L = can_msg->data[5];
+            CAN1_IF1DTB2_IF1DTB2H = can_msg->data[6];
+            CAN1_IF1DTB2_IF1DTB2L = can_msg->data[7];
             IO_CAN1.IF1MCTR.hword = 0x2988;		//NEWDAT=0 MSGLST=0 INTPND=1 UMASK=0
             //TXIE=1 RXIE=0 RMTEN=0 TXRQST=1 EOB=1 DLC=8
-            IO_CAN1.IF1CREQ.bit.MN=CAN1_MSGB_SIZE -1 - can_msg->buffer_num;		//IF -> RAM
+            IO_CAN1.IF1CREQ.bit.MN = can_msg->buffer_num;		//IF -> RAM
             break;
         default:
             break;
@@ -560,7 +574,7 @@ U8 hal_can_n_get(U8 chn,can_msg_t *can_rx_ptr)
 	}
 	else
 	{
-		can_rx_ptr->id = MSG2STD(p_IO_CANn->IF2ARB.word);
+		can_rx_ptr->id = STD2MSG(p_IO_CANn->IF2ARB.word);
 	}
 	switch(can_rx_ptr->dlc)
 	{
@@ -615,6 +629,7 @@ U8 hal_canerror_statecheck(void)
 
 		/*Restart bus*/
 		IO_CAN0.CTRLR.bit.Init = 0;		/*enable CAN controller*/
+		dbg_string("-->see if recovered\n");
 		while((IO_CAN0.ERRCNT.bit.TEC!=0)||(IO_CAN0.ERRCNT.bit.REC!=0));
 											//see if recovered
 	}

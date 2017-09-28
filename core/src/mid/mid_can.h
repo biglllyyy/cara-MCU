@@ -27,6 +27,8 @@ extern void mid_can_init(U8 chn, U8 chip);
 extern  U8  mid_can_lost_sts_get(U8 id);
 extern  U32 mid_can_get(can_msg_t *msg,U8 start_bit,U8 lenth);
 extern void mid_can_get_task10(void);
+extern void mid_can1_get_task10(void);
+
 extern void mid_can_get_test(void);
 extern void can_chip_mode_switch(io_type_t *io, io_type_t *en, can_mode_t mode);
 

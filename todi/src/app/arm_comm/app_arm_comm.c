@@ -27,15 +27,14 @@ U32 app_uart_arm_send_parse(U8 *dest,const void *data,U8 cmd,U8 len)
 	assert_param(data == NULL);
 	assert_param(len >= 250);
 	dest[0] = FRAME_HEAD;
-	dest[1] = len + 6;
+	dest[1] = len + A20_MCU_DATA_LENTH;
 	dest[2] = cmd;
 	memcpy(&dest[3],data,len);
 	/*-------------------------CRC check------------------------*/
 	temp = api_cal_crc16((U8 *)data, len); /* crc check */
 	dest[len + 3] = temp & 0xFF;
 	dest[len + 4] = (temp>>8) & 0xFF;
-	dest[len + 5] = cmd;
-	dest[len + 6] = FRAME_REAR;
+	dest[len + 5] = FRAME_REAR;
 	return (U32)dest[1];
 }
 

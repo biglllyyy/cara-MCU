@@ -5,6 +5,7 @@
 #include "mb91520.h"
 
 //U8 pSpeed = 0; //外部CAN这算车速
+DATA_BIT gCTL[8];
 
 #if 1
 
@@ -13,11 +14,7 @@
 #define BMS_Status_Flag3  0
 #define BMS_Status_Flag5  0
 
-#define e_total_miles      0
-#define DMC_Gear           0
-#define	DMC_Status         0
-#define DMC_Level 		   0
-#define DMC_Rpm            0   //电机转速
+
 
 U8 Fversion;
 U8 Mversion;
@@ -159,87 +156,57 @@ void SW_Input_Init(void)
 
 void SYSTME_Logic(void)
 {
-	static U16  tempcount = 0; //recoard 5s
-	static U16  tempcount2 = 0; //recoard 10 min
-	//F_PO1= (IN9); //雨刮快档
-	//F_PO2 = (IN14 && M_ON);//雨刮慢档
-	//F_PO3 = (IN21 && M_ON);//喷水电机
-	F_PO2= (IN6 && IN9);//左前雾灯
-	F_PO5 = (IN28 && wake_up2);//电控排污阀
-	F_PO6 = (FLASH && (IN5 || wake_up1));//右转向灯 400ms闪一次
-	F_PO7 = (FLASH && (IN1 || wake_up1));//左转向灯 400ms闪一次
+	// F_PO1 = (IN16 && M_ON); //雨刮快档
+	// F_PO2 = (IN14 && M_ON); //雨刮慢档
+	// F_PO3 = (IN21 && M_ON); //喷水电机
+	
+	F_PO4 = (IN6 && IN9); //左前雾灯
+	F_PO5 = (fKH1); //倒车灯
+	
+	F_PO6 = (FLASH && (IN5 || wake_up1)); //右转向灯
+	F_PO7 = (FLASH && (IN1 || wake_up1)); //左转向灯
+	F_PO8 = M_ON; //液位显示电源
+	F_PO9 = (IN7); //左远关灯
+	F_PO10 = (IN6 && IN9); //右前雾灯
+	F_PO11 = (IN7); //右远光灯
+	F_PO12 = M_ON; //行车记录仪电源
+	F_PO13 = (IN8); //左近光
+	F_PO14 = (IN6); //位置灯
+	F_PO15 = (IN8); //右近光
 
-	//if(((TM_Feedback_RPM>=16300*2)||(TM_Feedback_RPM<=15700*2))&&((TM_Feedback_RPM!=0xffff)))
-	{
-		if((tempcount<=9)&&(tempcount2<=(12000-1)))
-		{
-			F_PO8 = 1;
-			tempcount++;
-			tempcount2 = 0;
-		}
-		if(tempcount==10)
-		{
-			F_PO8 = 0;
-			tempcount2++;
-		}
-		if(tempcount2==((12000-1)))
-		{
-			tempcount = 0;
-		}
-	}
-	//else
-	{
-		tempcount = 0;
-		tempcount2 = 0;
-	}
+	M_PO1 = (IN12); //广告灯
+	M_PO2 = (FLASH && (IN5 || wake_up1)); //右转向灯
+	M_PO3 = ((mKH1 || mKL15)); //车内指示灯电源
+	M_PO4 = ((fKL6 || rKL6)); //制动灯
+	M_PO5 = (IN20 && (moto_speed < 1000)); //前门开电磁阀
+	M_PO6 = (IN19); //前路牌
+	M_PO7 = (IN28); //前门关电磁阀
+	M_PO8 = (IN19); //侧路牌
+	M_PO9 = (IN27 && (moto_speed < 1000)); //中门开电磁阀
+	M_PO10 = (IN19); //后路牌
+	M_PO11 = (IN26); //中门关电磁阀
+	M_PO12 = (IN19); //滚动电子
+	M_PO13 = (IN6); //小灯
+	M_PO14 = (IN19); //后广告屏
+	M_PO15 = (FLASH && (IN1 || wake_up1)); //左转向灯
 
-	//F_PO8 = (((DMC_Rpm * 0.5) > 16000) && F5s);//冷凝器
-	F_PO9 = (IN7 && !IN8);//左远关灯
-	F_PO10 = (IN6 && IN9);//右前雾灯
-	F_PO11 = (IN7 && !IN8);//右远光灯
-	F_PO12 = (fKL8);//日行灯 //
-	F_PO13 = (IN8 && IN6 && IN7);//左近光
-	F_PO14 = (IN6);//位置灯
-	F_PO15 = (IN8 && IN6 && IN7);//右近光
-	F_PO16 = 0;//励磁电流
-
-	M_PO1 = (IN19);//前路牌电源
-	M_PO2 = (wake_up2 && IN24);//厢灯2
-	M_PO3 = (IN6 && IN4);//前门踏步灯
-	M_PO4 = (fKL6);//制动灯
-	M_PO5 = (IN6 && IN3);//中门踏步灯
-	M_PO6 = (IN19);//后路牌
-	M_PO7 = (wake_up2 && fKL10);//后视镜加热
-	M_PO8 = (IN9 && IN10 && IN6);//后雾灯
-	M_PO9 = (IN19);//侧路牌 //(wake_up2 && IN6 && fKL8); //日行灯
-	M_PO10 = (wake_up2 && IN18);//司机风扇
-	M_PO11 = (wake_up2);//滚动屏电源
-	M_PO12 = (wake_up2 && IN25);//司机灯
-	M_PO13 = (DMC_Gear == 2);//倒车灯电源
-	if(pSpeed<3)
-	{
-		M_PO14 = 1;//门泵电源
-	}
-	M_PO15 = (wake_up2 && IN23);//厢灯1
-	M_PO16 = 0;//励磁电流
-
-	R_PO1 = (rKL6);//制动灯
-	R_PO2 = (IN19);//侧路牌
-	R_PO3 = (rLED_flag);//后雾灯
-	R_PO4 = (M_ON);//整车控制器电源
-	R_PO5 = (FLASH && (IN1 || wake_up1));//左转向灯
-	R_PO6 = (M_ON);//气压传感器电源
-	R_PO7 = (FLASH && (IN5 || wake_up1));//右转向
-	R_PO8 = IN22;//电喇叭
-	R_PO9 = (DMC_Gear == 2);//倒车灯1
-	R_PO10 = IN22;//电喇叭
-	R_PO11 = (mKH1 && IN6);//前门踏步灯
-	R_PO12 = (IN6);//位置灯示高灯
-	R_PO13 = (mKL15 && IN6);//中门踏步灯
-	R_PO14 = (DMC_Gear == 2);//倒车蜂鸣器
-	R_PO15 = (DMC_Gear == 2);//倒车灯2
-	R_PO16 = 0;
+	R_PO1 = ((fKL6 || rKL6)); //制动灯
+	//R_PO2 = (FLASH && IN5 && M_ON); 
+	R_PO3 = (rLED_flag); //后雾灯		
+	//R_PO4 = (fKL6 && M_ON); 
+	R_PO5 = (FLASH && (IN1 || wake_up1)); //左转向灯
+	//R_PO6 = (IN19 && M_ON); 
+	R_PO7 = (FLASH && (IN5 || wake_up1)); //右转向
+	R_PO8 = M_ON; //干燥器电源
+	R_PO9 = (fKH1); //倒车灯
+	//R_PO10 = (IN19 && M_ON); 
+	R_PO11 = (mKL15 && IN6); //前门踏步灯
+	R_PO12 = (IN6); //位置灯示高灯
+	R_PO13 = (mKH1 && IN6); //中门踏步灯
+	//R_PO14 = (IN19 && M_ON);
+	//R_PO15 = (FLASH && IN1 && M_ON); 
 }
+
 
 void LED_Logic(void)
 {}
@@ -353,114 +320,48 @@ void BCAN_SendCtl_722(void)
 	#endif
 }
 
-void BCAN_send_mile(void)
-{
-	#if 0
-	CAN_MESSAGE msg;
-	stcCANId_t tSendID;
-	strCANData_t tSendData;
-	msg.data[0] = (U8) (e_total_miles); //低八位
-	msg.data[1] = (U8) (e_total_miles >> 8); //二级八位
-	msg.data[2] = (U8) (e_total_miles >> 16); //三级八位
-	msg.data[3] = (U8) (e_total_miles >> 24); //高八位
-	msg.data[4] = 0;
-	msg.data[5] = 0;
-	msg.data[6] = 0;
-	msg.data[7] = 0;
-	memcpy(&tSendData.ui8byte[0], &msg.data[0], 8);
-	tSendID.ui32Id = 0x454;
-	tSendID.ui8IdType = MSGTYPE_STD;
-	tSendData.ui8NumberOfBytes = 0x08;
-	//msg.type = 0x01;
 
-	CAN_UpdateAndSendMessage(CAN1, 3, tSendID, tSendData);
-	//CAN1_SendMessage(&msg);
-#endif
-}
 
 void BCAN_Lost_handle(void)   //100ms moudle task
 {
-	  //100ms
-	  /*
-	  U8 front_moudle_count = 0;
-	  U8 middle_moudle_count = 0;
-	  U8 back_moudle_count = 0;
+	static unsigned int cnt0 = 0;
+	static unsigned int cnt1 = 3;
+	static unsigned int cnt2 = 7;
+	static unsigned int cnt3 = 9;
+	static unsigned int cnt4 = 0;
+	static unsigned int cnt5 = 0;
 
-	  */
-		F100ms= 1;
-
-		//CAN节点故障计时3s
-		if (front_moudle_count >= CAN_TIME)
-		{
-			front_moudle_count = CAN_TIME;
-		}
-		else
-		{
-			front_moudle_count++;
-		}
-		if (middle_moudle_count >= CAN_TIME)
-		{
-			middle_moudle_count = CAN_TIME;
-		}
-		else 
-		{
-			middle_moudle_count++;
-		}
-		if (back_moudle_count >= CAN_TIME)
-		{
-			back_moudle_count = CAN_TIME;
-		}
-		else 
-		{
-			back_moudle_count++;
-		}
-
-		BAT24V_count = BAT24V_count >= BAT24_TIME ? BAT24_TIME : BAT24V_count + 1;
-
-		/*if (cnt4 >= 9) {//1s
-		 cnt4 = 0;
-		 F1000ms = 1;
-		 FLASH_1s = !FLASH_1s;
-		 //PCAN_send_mile();
-		 //输出5秒，10分钟循环
-		 if (DMC_Rpm * 0.5 < 16300) count7 = 0;
-		 else count7++;
-
-		 if ((count7 > 0) && (count7 < 6)) {
-		 F5s = 1;
-		 } else if (count7 < 605) {
-		 F5s = 0;
-		 } else count7 = 0;
-		 //蜂鸣6秒，10分钟循环报警
-		 if (1) count8 = 0;
-		 else count8++;
-
-		 if ((count8 > 0) && (count8 < 6)) {
-		 F_3 = 1;
-		 } else if (count8 < 605) {
-		 F_3 = 0;
-		 }else count8 = 0;
-
-		 } else cnt4++;*/
-	
-
+	//CAN节点故障计时3s
+    if (Fcan_count >= CAN_TIME)Fcan_count = CAN_TIME;
+    else Fcan_count++;
+    if (Rcan_count >= CAN_TIME)Rcan_count = CAN_TIME;
+    else Rcan_count++;
+    if (Mcan_count >= CAN_TIME)Mcan_count = CAN_TIME;
+    else Mcan_count++;
+	if (IN10 && IN6 && (IN7 || IN8) && IN9) { //后雾灯开关是常开开关，消抖
+        if (cnt5 > 10) rLED_flag = 1;
+        else cnt5++;       
+    }else if((IN6 && (IN7 || IN8) && IN9)==0){
+        rLED_flag = 0;
+        cnt5=0;
+    }
 }
+
 
 void Moudle_Logic_handle(void)  //50ms Logic handle
 {
 	//BCAN_send_mile(); 
-	
 	if (M_ON&& (wake_up3 || wake_up2))
 	{ //若放在main函数里，会导致闪烁频率异常wake_up3置0时，M_ON不会立马置0，因为存在消抖延时
 	//	LED_Logic();
 //		LED_Out();  //这个只要打开就会导致频繁重启 因为这个是空函数
-		SYSTME_Logic();
+	//	SYSTME_Logic();
 	}
+	SYSTME_Logic();
+	BCAN_send_mile();
+	BCAN_SendCtl();
 
-	BCAN_SendCtl_720();
-	BCAN_SendCtl_721();
-	BCAN_SendCtl_722();
-	F50ms= 1;
+	//F50ms= 1;
 }
 
 

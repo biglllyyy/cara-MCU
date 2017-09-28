@@ -51,6 +51,7 @@ extern  void door_config_io_input(void);
 void app_cfg_io_in(void);
 void app_cfg_io_out(void);
 
+
 #if (A20_UPDATE == CFG_ON)
 extern  io_type_t   IO_MCU_CTL_START_UP;
 extern  io_type_t	IO_MCU_CTL_STOP_UP;

@@ -39,7 +39,7 @@
 #define ID_REC_19_18FFC09E       0x18FFC09E
 #define ID_REC_20_18FECA00       0x18FECA00
 
-#define    UPDATA_ID			 0x120
+#define    UPDATA_ID			 0x140
 
 #define ID_REC_01_0C03A1A7       0x0C03A1A7
 

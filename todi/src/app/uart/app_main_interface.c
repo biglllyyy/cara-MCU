@@ -108,15 +108,23 @@ void main_interface_get_data(void)
 		ADR[MCU_SER1] = 10;
 	}
 	temp = (ADR[MCU_SER1] - 10)*1000 / 174;
+	if (temp>1000)
+	{
+		temp = 1000;
+	}
 	PRESS[0] = temp;
-	
+
+
+
+
+
 	if ( ADV[MCU_SER2] == 4096)
 	{
 		ADR[MCU_SER2] = 0XFFFF;
 	}
 	else
 	{
-		temp=ADV[MCU_SER2]*100/(4096-ADV[MCU_SER1]);
+		temp=ADV[MCU_SER2]*100/(4096-ADV[MCU_SER2]);
 		ADR[MCU_SER2] = temp;
 	}
 	if (ADR[MCU_SER2] < 10)
@@ -124,7 +132,13 @@ void main_interface_get_data(void)
 		ADR[MCU_SER2] = 10;
 	}
 	temp = (ADR[MCU_SER2] - 10)*1000 / 174;
+	if (temp>1000)
+	{
+		temp = 1000;
+	}
 	PRESS[1] = temp;
+	dbg_printf("airPressure1 = %d\n", PRESS[0]);
+	dbg_printf("airPressure1 = %d\n", PRESS[1]);
 	WORD_WRITE(main_interface_data.airPressure1,PRESS[0]);
 	WORD_WRITE(main_interface_data.airPressure2,PRESS[1]);
 

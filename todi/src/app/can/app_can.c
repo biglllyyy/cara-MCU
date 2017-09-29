@@ -962,8 +962,8 @@ static void can_id_18FECA00_analyse(can_msg_t *msg, can_pro_way_e way)
 		break;
 	}
 }
-#define OnlineCheckID	0x121
-#define ExcuteAppID     0x129
+#define OnlineCheckID	(UPDATA_ID | 1)
+#define ExcuteAppID     (UPDATA_ID | 9)
 static  void can_updata_analyse(can_msg_t *msg, can_pro_way_e way)
 {
 	U8 i  = 0;

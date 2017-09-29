@@ -19,14 +19,7 @@ void app_update_time_task()
 {
 	time_t temp=0;	
 	//sizeoftime = sizeof(time_t);
-	if(g_tUart1Rec.time_set_enable)
-	{
-		
-		temp = g_tUart1Rec.u32UTCTime;
-		byte_order_change((U8*)&temp,4);
-		setCurrentTime(*gmtime(&temp));	
 
-	}
 	utc_time = getCurrentTime();
 	g_u32_utcTime= mktime(&utc_time);
 }

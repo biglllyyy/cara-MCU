@@ -1,2 +1,3 @@
-	This is MCU project for ref ！
-    仅供参考。
+#### 说明
+
+这个是给通畅路试的mcu程序。

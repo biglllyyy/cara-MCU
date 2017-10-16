@@ -1,0 +1,267 @@
+$CPUSERIES-911
+$Prj-Debug
+$0
+-g
+-w 1
+-D __LONGLONG__
+-D ON=1
+-D OFF=0
+-D __DS1302__=ON
+-D __DEBUG__
+-I "..\core\src"
+-I "..\core\src\hal"
+-I "..\core\src\comm"
+-I "..\core\src\comm\crc"
+-I "..\core\src\comm\aes"
+-I "..\core\src\MB915xx"
+-I "..\core\src\mid"
+-I "..\core\src\mid"
+-I "..\core\src\hal"
+-I "..\core\src\comm"
+-I "src\app"
+-I "src"
+-I "src\app\spd"
+-I "src\app\rpm"
+-I "src\app\fuel"
+-I "src\app\io"
+-I "src\app\can"
+-I "src\app\buz"
+-I "src\app\backlight"
+-I "src\app\led"
+-I "src\app\trip"
+-I "src\app\temp"
+-I "src\app\key"
+-I "src\app\CarKey"
+-I "src\app\UserSetting"
+-I "src\app\lin"
+-I "src\app\door"
+-I "src\app\uart"
+-I "src\app\IPconfig"
+-I "src\app\tpms"
+-I "src\app\gear"
+-I "src\app\radr"
+-I "src\app\drivetime"
+-I "src\app\service"
+-I "src\app\DataStore"
+-I "src\app\CarType"
+-I "src\app\version"
+-I "src\app\wavdata"
+-I "src\app\CarTemp"
+-I "src\app\time"
+-I "src\app\display"
+-I "src\app\uds"
+-O 0
+-K LONGADDRESS
+-B
+-K NOSCHEDULE
+-K A1
+-K SARG
+-Xdof
+-INF STACK
+-K NOUNROLL
+$other
+-I "..\src\app\lin"
+-K LONGLONG
+$time
+1484203191
+$end
+$1
+-g
+-w 3
+-O 0
+-linf ON
+-lsrc ON
+-lsec ON
+-lcros OFF
+-linc ON
+-lexp OBJ
+-pl 60
+-pw 100
+-tab 8
+-Xdof
+$other
+$time
+1457493429
+$end
+$2
+-g
+-AL 2
+-ra _INRAM01=0x00010000/0x0001BFFF
+-ro _INROM01=0x00080000/0x000BFFFF
+-ro _INROM02=0x000FFC00/0x000FFFFF
+-ro _INROM03=0x00330000/0x0033FFFF
+-check_locate
+-m
+-mmi
+-pl 60
+-pw 132
+-Xals
+-Xalr
+-na
+-w 1
+-Xdof
+$other
+-l lib911if.lib
+-sc DATA/Data+INIT=_INRAM01
+-sc CODE+@INIT+CONST=_INROM01
+$time
+1505727985
+$end
+$3
+-dt s,d,r,a
+-pl 60
+-pw 132
+-g
+-Xdof
+$other
+$time
+1505727985
+$end
+$4
+-Xdof
+$other
+$time
+1457493429
+$end
+$5
+$other
+$time
+1457493429
+$end
+$Prjend
+$Prj-Release
+$0
+-g
+-w 1
+-D __LONGLONG__
+-D ON=1
+-D OFF=0
+-D __DS1302__=ON
+-I "..\core\src"
+-I "..\core\src\hal"
+-I "..\core\src\comm"
+-I "..\core\src\comm\crc"
+-I "..\core\src\comm\aes"
+-I "..\core\src\MB915xx"
+-I "..\core\src\mid"
+-I "..\core\src\mid"
+-I "..\core\src\hal"
+-I "..\core\src\comm"
+-I "src\app"
+-I "src"
+-I "src\app\spd"
+-I "src\app\rpm"
+-I "src\app\fuel"
+-I "src\app\io"
+-I "src\app\can"
+-I "src\app\buz"
+-I "src\app\backlight"
+-I "src\app\led"
+-I "src\app\trip"
+-I "src\app\temp"
+-I "src\app\key"
+-I "src\app\CarKey"
+-I "src\app\UserSetting"
+-I "src\app\lin"
+-I "src\app\door"
+-I "src\app\uart"
+-I "src\app\IPconfig"
+-I "src\app\tpms"
+-I "src\app\gear"
+-I "src\app\radr"
+-I "src\app\drivetime"
+-I "src\app\service"
+-I "src\app\DataStore"
+-I "src\app\CarType"
+-I "src\app\wavdata"
+-I "src\app\version"
+-I "src\app\CarTemp"
+-I "src\app\time"
+-I "src\app\display"
+-I "src\app\uds"
+-O 0
+-K LONGADDRESS
+-B
+-K NOSCHEDULE
+-K A1
+-K SARG
+-Xdof
+-INF STACK
+-K NOUNROLL
+$other
+-I "..\src\app\lin"
+-I "..\src\app\drivetime"
+-I "..\src\app\key"
+-I "..\src\app\Ipconfig"
+-I "..\src\app\door"
+-I "..\src\app\UserSetting"
+-I "..\src\app\gear"
+-I "..\src\app\CarKey"
+-K LONGLONG
+$time
+1485236383
+$end
+$1
+-g
+-w 3
+-O 0
+-linf ON
+-lsrc ON
+-lsec ON
+-lcros OFF
+-linc ON
+-lexp OBJ
+-pl 60
+-pw 100
+-tab 8
+-Xdof
+$other
+$time
+1458280593
+$end
+$2
+-AL 2
+-ra _INRAM01=0x00010000/0x0001BFFF
+-ro _INROM01=0x00080000/0x000BFFFF
+-ro _INROM02=0x000FFC00/0x000FFFFF
+-ro _INROM03=0x00330000/0x0033FFFF
+-check_locate
+-m
+-mmi
+-pl 60
+-pw 132
+-Xals
+-Xalr
+-na
+-w 1
+-Xdof
+$other
+-l lib911if.lib
+-sc DATA/Data+INIT=_INRAM01
+-sc CODE+@INIT+CONST=_INROM01
+$time
+1505727985
+$end
+$3
+-dt s,d,r,a
+-pl 60
+-pw 132
+-g
+-Xdof
+$other
+$time
+1505727985
+$end
+$4
+-Xdof
+$other
+$time
+1458280593
+$end
+$5
+$other
+$time
+1458280593
+$end
+$Prjend
+$CPUSERIESEND

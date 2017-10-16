@@ -1,0 +1,100 @@
+$CPUSERIES-911
+$Prj-Debug
+$0
+-g
+-w 1
+-D __LONGLONG__
+-D ON=1
+-D OFF=0
+-D __DS1302__=ON
+-I "..\src\app"
+-I "..\src\hal"
+-I "..\src\comm"
+-I "..\src\MB915xx"
+-I "..\src\mid"
+-I "..\src\app\io"
+-I "..\src\app\uart"
+-I "..\src\boot"
+-I "..\src\boot\open"
+-I "..\src\app\protocol"
+-I "..\src\app\can"
+-I "..\src\app\srec"
+-O 0
+-K LONGADDRESS
+-B
+-K NOSCHEDULE
+-K A1
+-K SARG
+-Xdof
+-INF STACK
+-K NOUNROLL
+$other
+$time
+1502351306
+$end
+$1
+-g
+-w 3
+-O 0
+-linf ON
+-lsrc ON
+-lsec ON
+-lcros OFF
+-linc ON
+-lexp OBJ
+-pl 60
+-pw 100
+-tab 8
+-Xdof
+$other
+$time
+1457493473
+$end
+$2
+-g
+-AL 2
+-ra _INRAM01=0x00010000/0x0001BFFF
+-ro _INROM01=0x00070000/0x0007FFFF
+-ro _INROM02=0x000FFC00/0x000FFFFF
+-ro _INROM03=0x00330000/0x0033FFFF
+-check_locate
+-m
+-pl 60
+-pw 132
+-Xals
+-Xalr
+-na
+-w 1
+-Xdof
+$other
+-l lib911if.lib
+-sc DATA/Data+INIT=_INRAM01
+-sc CODE+@INIT+CONST=_INROM01
+-sc CODE_START/code+CODE_CAN_Boot_Ready+@CODE_CAN_Boot =0x70024
+-sc CODE_CAN_Boot=_INRAM01
+$time
+1502351174
+$end
+$3
+-dt s,d,r,a
+-pl 60
+-pw 132
+-g
+-Xdof
+$other
+$time
+1502351174
+$end
+$4
+-Xdof
+$other
+$time
+1457493473
+$end
+$5
+$other
+$time
+1457493473
+$end
+$Prjend
+$CPUSERIESEND

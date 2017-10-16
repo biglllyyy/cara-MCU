@@ -1,0 +1,14 @@
+*.bak
+*.obj
+*.tmp
+temp_file
+Harval_H6.mhx
+OBJ
+OPT
+ABS
+LST
+SI
+.gitignore
+.project
+
+

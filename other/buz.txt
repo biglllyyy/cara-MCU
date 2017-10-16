@@ -1,0 +1,27 @@
+void app_buz_beep_gear_hot(S16 action)
+{
+	static U16 state = 0;
+	U16 new_state = 0;
+
+	switch(action)
+	{
+		case ACT_RESET:
+			state = 0;
+			break;
+		case ACT_TOUCH:
+			new_state = buz_sts[BEEP_GEAR_HOT];
+			touch_switch_trigger(app_buz_beep_gear_hot, &state, new_state);
+			break;
+		case ACT_TRUE:
+			start_buzzer(BEEP_GEAR_HOT);
+			break;
+		case ACT_FALSE:
+			stop_buzzer(BEEP_GEAR_HOT);
+			break;
+		case ACT_TIMER:
+			/* when you add_timer(sample_trigger, 1000) in ACT_TURE or ACT_FALSE,
+			 this will handle the MSG_TIMER every 1000ms interval */
+			 break;
+		default:break;
+	}
+}

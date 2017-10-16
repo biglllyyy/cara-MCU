@@ -1,0 +1,92 @@
+$CPUSERIES-911
+$Prj-Debug
+$0
+-g
+-w 1
+-D __DEBUG__
+-I "src\hal"
+-I "src\comm"
+-I "src"
+-I "src\MB915xx"
+-I "src\mid"
+-I "src\comm\crc"
+-I "src\comm\aes"
+-I "src\mid\ds1302"
+-I "src\mid\eeprom"
+-I "src"
+-O 0
+-K LONGADDRESS
+-B
+-K NOSCHEDULE
+-K A1
+-K SARG
+-Xdof
+-INF STACK
+-K NOUNROLL
+$other
+-K LONGLONG
+$time
+1482975881
+$end
+$1
+-O 0
+-linf ON
+-lsrc ON
+-lsec ON
+-lcros OFF
+-linc ON
+-lexp OBJ
+-pl 60
+-pw 100
+-tab 8
+-w 2
+-g
+-Xdof
+$other
+$time
+1449822560
+$end
+$2
+-g
+-AL 2
+-ra _INRAM01=0x00010000/0x0001BFFF
+-ro _INROM01=0x00070000/0x000BFFFF
+-ro _INROM02=0x000FFC00/0x000FFFFF
+-ro _INROM03=0x00330000/0x0033FFFF
+-check_locate
+-m
+-mmi
+-pl 60
+-pw 132
+-Xals
+-Xalr
+-na
+-w 1
+-Xdof
+$other
+$time
+1457056482
+$end
+$3
+-dt s,d,r,a
+-pl 60
+-pw 132
+-g
+-Xdof
+$other
+$time
+1457056482
+$end
+$4
+-Xdof
+$other
+$time
+1449822560
+$end
+$5
+$other
+$time
+1449822560
+$end
+$Prjend
+$CPUSERIESEND

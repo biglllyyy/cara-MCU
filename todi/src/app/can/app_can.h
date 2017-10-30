@@ -61,32 +61,233 @@ typedef enum
 
 typedef enum
 {
-	//received frame
-	ID_0C03A1A7_period = 100,
-	ID_0C04A1A7_period = 100,
-	ID_0C05A1A7_period = 100,
-	ID_0C06A1A7_period = 100,
-	ID_0C07A1A7_Period = 100,
-	ID_0C08A1A7_Period = 100,
-	ID_1818D0F3_Period = 100,
-	ID_1819D0F3_Period = 100,
-	ID_181AD0F3_Period = 100,
-	ID_180028F3_Period = 100,
-	ID_180128F3_Period = 100,
-	ID_180228F3_Period = 100,
-	ID_180328F3_Period = 100,
-	ID_180428F3_Period = 100,
-	ID_180028F4_Period = 100,
-	ID_180128F4_Period = 100,
-	ID_180228F4_Period = 100,
-	ID_0C09A79B_period = 100,
-	ID_18FFC09E_period = 100,
-	ID_18FECA00_period = 100,
+	//received frame		 
+	ID_180689F4_period = 100,
+	ID_180789F4_period = 100,
+	ID_181B80f4_period = 100,
+	ID_0C008980_period = 100,
+	ID_0C018980_Period = 100,
+	ID_0C028980_Period = 100,
+	ID_0C068980_Period = 100,
+	ID_0C058980_Period = 100,
+	ID_0C048980_Period = 100,
+	ID_18xx89F4_Period = 100,
 
 	//send frame
 	
 } CAN_ID_PERIOD;
 
+
+typedef struct
+{
+//0X180689F4
+	U8 ID_180689F4_byte12[2];		//总线电压 0.1V/bit	
+	U8 ID_180689F4_byte34[2];		//充放电电流 0.1A/bit， -32000
+	U8 ID_180689F4_byte5;		//SOC（电池模块 SOC） 0.4％/bit
+	U8 ID_180689F4_byte6;		//电池箱内环境最高温度 1℃/bit， -40
+	struct
+	{
+		U8 bit7 :1;         //温度过低
+		U8 bit6 :1;         //SOC太低停车
+		U8 bit5 :1;         //温度过高
+		U8 bit4 :1;         //过电流
+		U8 bit3 :1;         //SOC过低
+		U8 bit2 :1;         //SOC过高
+		U8 bit1 :1;         //模块电压过低
+		U8 bit0 :1;			//模块电压过高		
+	}ID_180689F4_byte7;			//电池 Status_Flag1
+	U8 ID_180689F4_byte8;		//预留
+	
+//ID_180789F4
+	U8 ID_180789F4_byte12[2];		//电池模块最低电压   高4位为电池箱号（0-15），低12位为电压：0.01V/bit
+	U8 ID_180789F4_byte34[2];	//电池模块最高电压   高4位为电池箱号（0-15），低12位为电压：0.01V/bit
+	U8 ID_180789F4_byte5;		//电池模块最高温度	 1℃/bit， -40
+	U8 ID_180789F4_byte6;		//电池模块最低温度	 1℃/bit， -40
+	struct {
+		U8 bit7 :1;         //充电指示
+		U8 bit6 :1;         //充电口连接器指示
+		U8 bit5 :1;         //充电接触器控制
+		U8 bit4 :1;         //充电完成
+		U8 bit3 :1;         //预留
+		U8 bit2 :1;         //预留
+		U8 bit1 :1;         //预留
+		U8 bit0 :1;			//预留
+	}ID_180789F4_byte7;		//电池 Status_Flag2
+	U8 ID_180789F4_byte8;		//预留
+
+//0X181B80F4
+	U8 ID_181B80F4_byte12[2];	//电池当前最大允许放电电流 0.1A/bit， -32000
+	U8 ID_181B80F4_byte34[2];	//电池当前最大允许充电电流 0.1A/bit， -32000
+	struct {
+		U8 bit67 :2;        //整组欠压报警 （总线电压欠压报警） 00：无报警； 01：一级报警； 10：二级报警
+		U8 bit45 :2;        //单体欠压报警  					00：无报警； 01：一级报警； 10：二级报警
+		U8 bit23 :2;        //整组过压报警 （总线电压过压报警） 00：无报警； 01：一级报警； 10：二级报警
+		U8 bit01 :2;		//单体过压报警 						00：无报警； 01：一级报警； 10：二级报警
+	}ID_181B80F4_byte5;		//Status_Flags3
+	struct {
+		U8 bit67 :2;        //模块温差报警                      00：无报警； 01：一级报警； 10：二级报警
+		U8 bit45 :2;        //单体压差报警  					00：无报警； 01：一级报警； 10：二级报警
+		U8 bit23 :2;        //电池高温报警                      00：无报警； 01：一级报警； 10：二级报警
+		U8 bit01 :2;		//电池低温报警 						00：无报警； 01：一级报警； 10：二级报警		
+	}ID_181B80F4_byte6;		//Status_Flags4
+	struct {
+		U8 bit67 :2;        //电池 SOC 低报警                   00：无报警； 01：一级报警； 10：二级报警
+		U8 bit45 :2;        //绝缘检测报警  					00：无报警； 01：一级报警； 10：二级报警
+		U8 bit23 :2;        //电池充电电流过大报警              00：无报警； 01：一级报警； 10：二级报警
+		U8 bit01 :2;		//电池放电电流过大报警      		00：无报警； 01：一级报警； 10：二级报警		
+	}ID_181B80F4_byte7;		//Status_Flags5
+	struct {
+		U8 bit67 :2;        //预留
+		U8 bit45 :2;        //预留
+		U8 bit23 :2;        //外网通讯故障 （总线电压过压报警） 00：无报警； 01：一级报警； 10：二级报警
+		U8 bit01 :2;		//内网通讯故障 						00：无报警； 01：一级报警； 10：二级报警
+	}ID_181B80F4_byte8;		//Status_Flags6
+}BatteryManagement;
+
+typedef struct {
+	U16 bit0 :4;			//电池箱号
+	U16 bit4 :12;			//电池电压	
+}Voltage;						//高 4 位为电池箱号（0-15），低 12 位为电压： 0.01V/ bit
+extern Voltage vol_temp_msg[4];
+
+extern U16 vol[112*4];				//高 4 位为电池箱号（0-15），低 12 位为电压： 0.01V/ bit	356个
+extern U8 temperater[26*8];			//温度点1-96		1℃/bit， -40							96个
+
+typedef struct{
+	U16 pager;       	//显示菜单页
+	U8 voltage[32][2];		//电压： 0.01V/位
+}BatteryVoltage;
+
+typedef struct{
+	U8 pager;        		//显示菜单页
+	U8 Temperater[32];		//分辨率 1℃/bit 偏移量-40℃
+}BatteryTemperater;
+
+typedef struct
+{
+//0X0C008980
+	U8 ID_0C008980_byte12[2];		//电机控制器前端电压 0.1V/bit, -10000
+	U8 ID_0C008980_byte3;		//电机温度 1℃/bit， -40
+	U8 ID_0C008980_byte4;		//电机控制器温度 1℃/bit， -40
+	U8 ID_0C008980_byte56[2]; 	//电机控制器电流 0.1A/bit， -10000
+	U8 ID_0C008980_byte78[2];		//电机转速 0.5rpm/bit
+	
+//0X0C018980
+	U8 ID_0C018980_byte1;		//司机加速踏板 0.4%/bit
+	U8 ID_0C018980_byte2;		//司机制动踏板 0.4%/bit
+	struct {
+		U8 bit7 :1;         //ready				电机控制器工作正常，可以发送转矩命令
+		U8 bit6 :1;         //故障				电机控制器当前处于故障状态，禁止对电机控制器发送工作命令。
+		U8 bit5 :1;         //翻转				电机控制器当前状态为倒车。
+		U8 bit4 :1;         //制动				1：仪表控制制动灯亮 0：仪表控制制动灯灭
+		U8 bit3 :1;         //驱动
+		U8 bit2 :1;         //预留
+		U8 bit1 :1;         //散热风扇开		1 为开启， 0 为关闭。
+		U8 bit0 :1;			//水泵开			1 为开启， 0 为关闭。
+	}ID_0C018980_byte3;		//驱动系统状态
+	struct {
+		U8 bit7 :1;         //预留
+		U8 bit6 :1;         //预留
+		U8 bit5 :1;         //预留
+		U8 bit4 :1;         //预留
+		U8 bit3 :1;         //预留
+		U8 bit02 :3;		//01前进 02空挡 （04倒车 1：仪表控制倒车灯亮 0：仪表控制倒车灯灭）		
+	}ID_0C018980_byte4;			//司机操作状态
+	U8 ID_0C018980_byte5;		//保留
+	U8 ID_0C018980_byte67[2];		//系统代码
+	U8 ID_0C018980_byte8;		//整车控制器LIFE
+
+//0X0C028980
+	U8 ID_0C028980_byte12[2];		//电机目标转矩 1NM/bit， -32000
+	struct {
+		U8 bit7 :1;         //预留
+		U8 bit6 :1;         //K1	电池主接触器
+		U8 bit5 :1;         //预留
+		U8 bit4 :1;         //K3	充电接触器
+		U8 bit3 :1;         //K4	电机控制器主接触器
+		U8 bit2 :1;         //K5	电机控制器预充接触器
+		U8 bit1 :1;         //预留
+		U8 bit0 :1;			//预留
+	}ID_0C028980_byte3;			//接触器开启 Status_Flag
+	U8 ID_0C028980_byte4;		//电机工作模式 显示十进制数字
+	U8 ID_0C028980_byte5;		//预留
+	struct {
+		U8 bit7 :1;         //预留
+		U8 bit6 :1;         //预留
+		U8 bit5 :1;         //预留
+		U8 bit4 :1;         //预留
+		U8 bit3 :1;         //预留
+		U8 bit2 :1;         //地面停车充电			1： 电池和充电接头间的线为实线  0： 电池和充电接头间的线为虚线
+		U8 bit1 :1;         //电池行车				1： 电池和电机间的线为实线 		0： 电池和电机间的线连接成虚线
+		U8 bit0 :1;			//预留
+		}ID_0C028980_byte6;			//能量条状态
+	U8 ID_0C028980_byte7;		//预留
+	U8 ID_0C028980_byte8;		//预留
+}MenuVcuControl;
+
+//0X0C058980
+typedef struct
+{
+	U8 ID_0C058980_byte12[2];		//油泵DC/DC 输出电压 0.1V/bit， -10000
+	U8 ID_0C058980_byte34[2];		//油泵DC/DC 输出电流 0.1V/bit， -10000
+	U8 ID_0C058980_byte56[2];		//油泵DC/DC 输入电流 0.1V/bit， -10000
+	U8  ID_0C058980_byte7;		//油泵DC/DC 温度     1℃/bit，  -40
+	struct {
+		U8 bit7 :1;         //1 运行 0 停机
+		U8 bit6 :1;         //预留		
+		U8 bit5 :1;         //缺相
+		U8 bit4 :1;         //短相
+		U8 bit3 :1;         //过压
+		U8 bit2 :1;         //欠压
+		U8 bit1 :1;         //过热
+		U8 bit0 :1; 		//过流
+	}ID_0C058980_byte8;			//油泵DC/DC 状态及故障
+}OilPump;
+
+//0X0C068980
+typedef struct{
+	U8 ID_0C068980_byte12[2];		//气泵DC/DC 输出电压 0.1V/bit， -10000
+	U8 ID_0C068980_byte34[2];		//气泵DC/DC 输出电流 0.1V/bit， -10000
+	U8 ID_0C068980_byte56[2];		//气泵DC/DC 输入电流 0.1V/bit， -10000
+	U8 ID_0C068980_byte7;		//气泵DC/DC 温度     1℃/bit，  -40
+	struct {
+		U8 bit7 :1;         //1 运行 0 停机
+		U8 bit6 :1;         //气压信号
+		U8 bit5 :1; 		//缺相
+		U8 bit4 :1;         //短相
+		U8 bit3 :1;         //过压		
+		U8 bit2 :1;         //欠压
+		U8 bit1 :1;         //过热
+		U8 bit0 :1;			//过流
+	}ID_0C068980_byte8;			//气泵DC/DC 状态及故障
+}AirPump;
+
+typedef struct
+{
+//0X0C048980
+	U8 ID_0C048980_byte12[2];		//DC/DC 输出电压 0.1V/bit， -10000
+	U8 ID_0C048980_byte34[2];		//DC/DC 输出电流 0.1V/bit， -10000
+	U8 ID_0C048980_byte56[2];		//DC/DC 输入电流 0.1V/bit， -10000
+	U8 ID_0C048980_byte7;		//DC/DC 温度     1℃/bit，  -40
+	struct {
+		U8 bit7 :1;         //1 运行 0 停机
+		U8 bit6 :1;         //预留
+		U8 bit5 :1;         //预留
+		U8 bit4 :1;         //预留		
+		U8 bit3 :1;         //过压
+		U8 bit2 :1; 		//欠压
+		U8 bit1 :1;         //过热
+		U8 bit0 :1;			//过流
+	}ID_0C048980_byte8;			//DC/DC 状态及故障
+}DcdcControl;
+
+extern BatteryManagement bms_msg;
+extern BatteryVoltage bat_vol_msg;
+extern BatteryTemperater bat_temp_msg;
+extern MenuVcuControl vcu_msg;
+extern AirPump air_pump_msg;
+extern OilPump oil_pump_msg;
+extern DcdcControl dcdc_msg;
 
 /**********随州协议变量************/
 
@@ -198,6 +399,14 @@ extern U32 Vcan_timeout_cfg;
 extern U32 Bcan_timeout_cfg;
 extern U32 Dcan_timeout_cfg;
 extern U32 Acan_timeout_cfg;
+
+extern BatteryManagement bms_msg;
+extern BatteryVoltage bat_vol_msg;
+extern BatteryTemperater bat_temp_msg;
+extern MenuVcuControl vcu_msg;
+extern AirPump air_pump_msg;
+extern OilPump oil_pump_msg;
+extern DcdcControl dcdc_msg;
 
 typedef void (*pCanAnalyse)(can_msg_t *msg, can_pro_way_e way);
 

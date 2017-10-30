@@ -328,9 +328,7 @@ void app_main_farme_sent_task(void)
 
 	if ((oushucisend % 2) == 0)
 	{
-		warning_get_data();
 		warning_send_data();
-
 	}
 
 	oushucisend++;
@@ -374,18 +372,21 @@ SEND_FRAME_TYPE;
 #include "Menu_Front_Module.h"
 #include "Menu_Middle_Module.h"
 #include "Menu_Back_Module.h"
-
-
+#include "Menu_Dcdc.h"
+#include "Menu_OilPumb.h"
+#include "Menu_AirPumb.h"
+#include "Menu_Vol.h"
+#include "Menu_Temp.h"
 
 SEND_FRAME_TYPE send_frame_table[] = 
 {
-	{MENU_CONTROLSYSTEM,menu_control_system_Task},
-	{MENU_MOTORSYSTEM,menu_engine_system_Task},
-	{MENU_AUXILIARYSYSTEM,menu_assist_system_Task},
-	{MENU_TCUSYSTEM,menu_TCU_system_Task},
-	{MENU_BATTERYMANAGESYSTEM,menu_bms_info_system_Task},
-	{MENU_BATTERYSTATE,menu_battery_info_system_Task},
-	{MENU_AIRCONTROLSYSTEM,menu_AC_system_Task},
+	{MENU_BMS,menu_bms_info_system_Task},
+	{MENU_VOL,menu_vol_system_Task},
+	{MENU_TEMP,menu_temp_system_Task},
+	{MENU_VCU,menu_vcu_system_Task},
+	{MENU_OIL_PUMB,menu_oilpumb_system_Task},
+	{MENU_AIR_PUMB,menu_airpumb_system_Task},
+	{MENU_DCDC,menu_dcdc_system_Task},	
 	{MENU_FRONT_MODULE,menu_front_module_system_Task},
 	{MENU_MIDDLE_MODULE,menu_middle_module_system_Task},
 	{MENU_BACK_MODULE,menu_back_module_system_Task},

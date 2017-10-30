@@ -4,62 +4,69 @@
 
 typedef struct
 {
-    uint8_t 
-			ap1_sensor_warn:1,				//气压一传感器报警
-			bat_voltage_sensor_warn:1,	   //电池电压传感器报警
-			oil_pressure_sensor_warn:1, 	//机油压力传感器报警
-			oil_quantity_sensor_warn:1, 	   //油量传感器报警
-			water_temp_sensor_warn:1,			//水温传感器报警
-			low_ap2_warn:1, 				  //右气压低报警
-			low_ap1_warn:1, 				  //左气压低报警
-			low_water_level_warn:1;			//水位低报警
-                
-    uint8_t 
-			water_temp_miss:1,			   //水温信息丢失
-		    after_treat_warn:1, 			//后处理故障
-			air_filter_warn:1,				//空滤报警
-			right_brake_shoe_warn:1,			//右刹车蹄片报警
-			left_brake_shoe_warn:1, 		//左刹车蹄片报警
-			low_oil_pressure_warn:1,			//机油压力低
-												  //油量低报警（油量传感器电阻值低于15±3Ω时, 红色报警灯常亮）
-												  //水温高报警（水温来自总线。总线故障时闪烁报警,水温高于98度时常亮）
-		    j1939_comm_fault_warn:1,			//J1939通信故障
-			ap2_sensor_warn:1;			    //气压二传感器报警
-            
-    uint8_t  N :6,
-			 bus_comm_fault:1,                //总线通信故障
-			 oil_pressure_data_miss:1;       //机油压力数据丢失
-             
-
-
+    uint8_t  ID_180689f4_byte7_bit0:1;   //模块电压过高
+    uint8_t  ID_180689f4_byte7_bit1:1;   //模块电压过低
+    uint8_t  ID_180689f4_byte7_bit2:1;   //SOC过高
+    uint8_t  ID_180689f4_byte7_bit3:1;   //SOC过低
+    uint8_t  ID_180689f4_byte7_bit4:1;   //过电流
+    uint8_t  ID_180689f4_byte7_bit5:1;   //温度过高
+    uint8_t  ID_180689f4_byte7_bit6:1;   //SOC太低停车
+    uint8_t  ID_180689f4_byte7_bit7:1;   //温度过低
+    uint8_t  ID_180689f4_byte7;
 	
-	U8 bat_status1;				//电池状态1, 00000000（2进制显示）
-								//-8	 电池不均衡故障
-								//-7	 总电压过压
-								//-6	 总电压欠压
-								//-5	 内部通讯失败
-								//-4	 SOC过低
-								//-3	 SOC过高
-								//-2	 单体模块电压过低
-								//-1	 单体模块电压过高
-    U8 bat_status2;				//电池状态2, 00000000（2进制显示）
-							     //-8	温度差过大
-								 //-7	温度报警
-								 //-6	温度过高
-								 //-5	充电电流过大
-								 //-4	放电电流过大
-								 //-3	绝缘报警
-								 //-2	DCDC故障报警（1故障，0正常）
-								 //-1	电池热失控
-    U8 bat_status3;				//电池状态3, 00000000（2进制显示）
-							    //-8	保留
-								//-7	
-								//-6	
-								//-5	
-								//-4	有容量偏小电池
-								//-3	有内阻偏大电池
-								//-2	内部接触器信号
-								//-1	 
+    uint8_t  ID_181B80f4_byte5_bit01:2;  //单体过压报警 				    00：无报警. 01：一级报警. 10：二级报警
+    uint8_t  ID_181B80f4_byte5_bit23:2;  //整组过压报警 （总线电压过压报警） 00：无报警. 01：一级报警. 10：二级报警
+    uint8_t  ID_181B80f4_byte5_bit45:2;  //单体欠压报警  				    00：无报警. 01：一级报警. 10：二级报警
+    uint8_t  ID_181B80f4_byte5_bit67:2;  //整组欠压报警 （总线电压欠压报警） 00：无报警. 01：一级报警. 10：二级报警
+    uint8_t  ID_181B80f4_byte5;
+
+	uint8_t  ID_181B80f4_byte6_bit01:2;  //电池低温报警 				    00：无报警. 01：一级报警. 10：二级报警
+    uint8_t  ID_181B80f4_byte6_bit23:2;  //电池高温报警                   00：无报警. 01：一级报警. 10：二级报警
+    uint8_t  ID_181B80f4_byte6_bit45:2;  //单体压差报警  				    00：无报警. 01：一级报警. 10：二级报警
+    uint8_t  ID_181B80f4_byte6_bit67:2;  //模块温差报警                   00：无报警. 01：一级报警. 10：二级报警
+    uint8_t  ID_181B80f4_byte6;
+
+	uint8_t  ID_181B80f4_byte7_bit01:2;  //电池放电电流过大报警      	    00：无报警. 01：一级报警. 10：二级报警
+    uint8_t  ID_181B80f4_byte7_bit23:2;  //电池充电电流过大报警            00：无报警. 01：一级报警. 10：二级报警
+    uint8_t  ID_181B80f4_byte7_bit45:2;  //绝缘检测报警  				    00：无报警. 01：一级报警. 10：二级报警
+    uint8_t  ID_181B80f4_byte7_bit67:2;  //电池 SOC 低报警                00：无报警. 01：一级报警. 10：二级报警
+    uint8_t  ID_181B80f4_byte7;
+
+	uint8_t  ID_181B80f4_byte8_bit01:2;  //内网通讯故障 				    00：无报警. 01：一级报警. 10：二级报警
+    uint8_t  ID_181B80f4_byte8_bit23:2;  //外网通讯故障 （总线电压过压报警）  00：无报警. 01：一级报警. 10：二级报警
+    uint8_t  ID_181B80f4_byte8_bit45:2;  //预留
+    uint8_t  ID_181B80f4_byte8_bit67:2;  //预留
+    uint8_t  ID_181B80f4_byte8;
+
+	uint8_t  ID_0C068980_byte8_bit0:1;  //气泵DC/DC 状态及故障.过流
+    uint8_t  ID_0C068980_byte8_bit1:1;  //气泵DC/DC 状态及故障.过热
+    uint8_t  ID_0C068980_byte8_bit2:1;  //气泵DC/DC 状态及故障.欠压
+    uint8_t  ID_0C068980_byte8_bit3:1;  //气泵DC/DC 状态及故障.过压
+    uint8_t  ID_0C068980_byte8_bit4:1;  //气泵DC/DC 状态及故障.短相
+    uint8_t  ID_0C068980_byte8_bit5:1;  //气泵DC/DC 状态及故障.缺相
+    uint8_t  ID_0C068980_byte8_bit6:1;  //气泵DC/DC 状态及故障.气压信号
+    uint8_t  ID_0C068980_byte8_bit7:1;  //气泵DC/DC 状态及故障.1 运行 0 停机
+    uint8_t  ID_0C068980_byte8;         //气泵DC/DC 状态及故障
+
+	uint8_t  ID_0C058980_byte8_bit0:1;  //油泵DC/DC 状态及故障.过流
+    uint8_t  ID_0C058980_byte8_bit1:1;  //油泵DC/DC 状态及故障.过热
+    uint8_t  ID_0C058980_byte8_bit2:1;  //油泵DC/DC 状态及故障.欠压
+    uint8_t  ID_0C058980_byte8_bit3:1;  //油泵DC/DC 状态及故障.过压
+    uint8_t  ID_0C058980_byte8_bit4:1;  //油泵DC/DC 状态及故障.短相
+    uint8_t  ID_0C058980_byte8_bit5:1;  //油泵DC/DC 状态及故障.缺相
+    uint8_t  ID_0C058980_byte8_bit6:1;  //油泵DC/DC 状态及故障.预留
+    uint8_t  ID_0C058980_byte8_bit7:1;  //油泵DC/DC 状态及故障.1 运行 0 停机
+    uint8_t  ID_0C058980_byte8;         //油泵DC/DC 状态及故障
+
+	uint8_t  ID_0C048980_byte8_bit0:1;  //DC/DC 状态及故障.过流
+    uint8_t  ID_0C048980_byte8_bit1:1;  //DC/DC 状态及故障.过热
+    uint8_t  ID_0C048980_byte8_bit2:1;  //DC/DC 状态及故障.欠压
+    uint8_t  ID_0C048980_byte8_bit3:1;  //DC/DC 状态及故障.过压
+    uint8_t  ID_0C048980_byte8_bit4:1;  //DC/DC 状态及故障.预留
+    uint8_t  ID_0C048980_byte8_bit5:1;  //DC/DC 状态及故障.预留
+    uint8_t  ID_0C048980_byte8_bit6:1;  //DC/DC 状态及故障.预留
+    uint8_t  ID_0C048980_byte8_bit7:1;  //DC/DC 状态及故障.1 运行 0 停机
+    uint8_t  ID_0C048980_byte8;         //DC/DC 状态及故障
 } WarningDataStruct;
 
 

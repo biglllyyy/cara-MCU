@@ -244,37 +244,37 @@ void SW_Input(void);
 
 
 #define IN1   (!MCU_IN1)     //左转向开关
-#define IN2   (!MCU_IN2)     //保留开关
-#define IN3   (!MCU_IN3)     //中门开状态 控火有效 不用取反
-#define IN4   (MCU_IN4)     //前门开状态 控火有效 不用取反
+#define IN2   (!MCU_IN2)     //
+#define IN3   (!MCU_IN3)     //
+#define IN4   (MCU_IN4)      //前门开状态 控火有效 不用取反
 #define IN5   (!MCU_IN5)     //右转向开关
 #define IN6   (!MCU_IN6)     //小灯开关
 #define IN7   (!MCU_IN7)     //远光灯开关
 #define IN8   (!MCU_IN8)     //近光灯开关
 #define IN9   (!MCU_IN9)     //前雾灯开关
-#define IN10  (!MCU_IN10)     //后雾灯开关
-#define IN11  (!MCU_IN11)     //前气压报警开关（仪表蜂鸣提醒并图标显示）
-#define IN12  (!MCU_IN12)     //后气压报警开关（仪表蜂鸣提醒并图标显示）
-#define IN13  (!MCU_IN13)    //保留
-#define IN14  (!MCU_IN14)     //雨刮低档开关
-#define IN15  (!MCU_IN15)     //雨刮间歇档开关
-#define IN16  (!MCU_IN16)     //雨刮高档开关
-#define IN17  (!MCU_IN17)    //雨刮喷水档开关
-#define IN18  (!MCU_IN18)     //
-#define IN19  (!MCU_IN19)     //厢灯1开关
-#define IN20  (!MCU_IN20)     //厢灯2开关
-#define IN21  (!MCU_IN21)     //
-#define IN22  (!MCU_IN22)     //司机风扇开关
-#define IN23  (!MCU_IN23)    //路牌开关
-#define IN24  (!MCU_IN24)     //
-#define IN25  (!MCU_IN25)     //电控排污阀开关
-#define IN26  (!MCU_IN26)     //强制行车开关
-#define IN27  (!MCU_IN27)     //手制动信号
-#define IN28  (!MCU_IN28)    //司机灯开关
+#define IN10  (!MCU_IN10)    //后雾灯开关
+#define IN11  (!MCU_IN11)    //
+#define IN12  (!MCU_IN12)    //
+#define IN13  (!MCU_IN13)    //
+#define IN14  (!MCU_IN14)    //雨刮低档开关
+#define IN15  (!MCU_IN15)    //雨刮间歇档开关
+#define IN16  (!MCU_IN16)    //雨刮高档开关
+#define IN17  (!MCU_IN17)    //
+#define IN18  (!MCU_IN18)    //
+#define IN19  (!MCU_IN19)    //
+#define IN20  (!MCU_IN20)    //前门开开关
+#define IN21  (!MCU_IN21)    //雨刮喷水档开关
+#define IN22  (!MCU_IN22)    //
+#define IN23  (!MCU_IN23)    //
+#define IN24  (!MCU_IN24)    //
+#define IN25  (!MCU_IN25)    //
+#define IN26  (!MCU_IN26)    //中门关开关
+#define IN27  (!MCU_IN27)    //中门开开关
+#define IN28  (!MCU_IN28)    //前门关开关
 #define IN29  (!MCU_IN29)    //
-#define IN30  (!MCU_IN30)     //
-#define IN31  (!MCU_IN31)     //安全带开关
-#define IN32  (!MCU_IN32)     //
+#define IN30  (!MCU_IN30)    //
+#define IN31  (!MCU_IN31)    //
+
 
 #define IN33  0      //
 #define IN34  0      //

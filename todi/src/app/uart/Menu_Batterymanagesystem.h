@@ -1,6 +1,5 @@
-#define MENU_BMS_INFO_DATA_LENGTH (sizeof(BmsInfoFrame))
+#define MENU_BMS_INFO_DATA_LENGTH (sizeof(BatteryManagement))
 #define MENU_BMS_INFO_FRAME_TYPE  BMS_INFO_TYPE
-
 
 /* 电池管理系统信息,对应BMS_INFO_TYPE */
 typedef struct {
@@ -18,8 +17,6 @@ typedef struct {
     U8 batteryTH[4];					//单体最高温度, 0.0 ℃
     //int16_t totalCurrent;				//充放电电流, 0 A,通用帧已存在该变量
 } BmsInfoFrame;
-
-
 
 static BmsInfoFrame s_bms_info_para;
 void get_bms_info_system(void)
@@ -55,14 +52,12 @@ void send_bms_info_system(void)
 {
 	U8 data[MENU_BMS_INFO_DATA_LENGTH + A20_MCU_DATA_LENTH];
 	U32 parse_len;
-	
-    parse_len = app_uart_arm_send_parse(data,(void*)&s_bms_info_para,MENU_BMS_INFO_FRAME_TYPE,MENU_BMS_INFO_DATA_LENGTH);
+	parse_len = app_uart_arm_send_parse(data,(void*)&bms_msg,MENU_BMS_INFO_FRAME_TYPE,MENU_BMS_INFO_DATA_LENGTH);
 	sent_data(UART_A20_CHN, data, parse_len); /* data sent */
 }
 
 void menu_bms_info_system_Task(void)
 {
-	get_bms_info_system();
 	send_bms_info_system();
 }
 

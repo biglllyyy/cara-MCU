@@ -547,13 +547,13 @@ typedef enum
 	FRAME_NULL_TYPE,                //最小无效
 	CAR_INFO_TYPE,                  //通用信息帧
 	WARNING_TYPE,                   //报警信息帧
-	CONTROL_SYSTEM_INFO_TYPE,       //控制系统信息帧
-	ENGINE_SYSTEM_INFO_TYPE,        //发动机系统信息帧
-	ASSIST_SYSTEM_INFO_TYPE,        //辅助系统信息帧
-	TCU_SYSTEM_INFO_TYPE,           //TCU系统信息帧
-	BMS_INFO_TYPE,                  //电池管理系统信息帧
-	BATTERY_INFO_TYPE,              //电池信息帧
-	AC_SYSTEM_INFO_TYPE,            //空调系统信息帧
+	BMS_INFO_TYPE,					//电池管理系统信息帧
+	VOL_INFO_TYPE,					//单体电压
+	TEMP_INFO_TYPE,					//单体温度
+	VCU_INFO_TYPE,					//整车控制器信息帧
+	OIL_PUMB_INFO_TYPE,				//油泵
+	AIR_PUMB_INFO_TYPE, 			//气泵
+	DCDC_INFO_TYPE, 				//DCDC
 	FRONT_MODULE_TYPE,              //前模块帧
 	MIDDLE_MODULE_TYPE,             //中模块帧
 	BACK_MODULE_TYPE,               //后模块帧

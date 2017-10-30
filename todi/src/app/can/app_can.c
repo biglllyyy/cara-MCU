@@ -30,7 +30,9 @@
 #include "app_moudle.h"
 #include "Fw_version.h"
 #include "app_moudle.h"
-
+#include "app_printf.h"
+#include "app_main_interface.h"
+#include "app_warning.h"
 #define  PERIOD_MS(time)		(time)
 
 /******************************************************************************/
@@ -154,8 +156,6 @@ unsigned char Set_t=30; //Éè¶¨
 unsigned char AC_req; //ÖÆÀäÇëÇó
 unsigned char AC_LIFE; //ACÉúÃü
 
-
-
 /**************************************************/
 unsigned char battle_t; //µç³Ø¾ùÎÂ
 unsigned char battle_t_warn; //µç³Ø¹ıÎÂ±¨¾¯
@@ -217,36 +217,34 @@ U32 Acan_timeout_cfg;
 unsigned int PRESS[2]; //ÆøÑ¹Öµ KPA/BIT
 unsigned char ccvs_eng_req; //Æô¶¯ÇëÇó
 
+BatteryManagement bms_msg;
+BatteryVoltage bat_vol_msg;
+BatteryTemperater bat_temp_msg;
+MenuVcuControl vcu_msg;
+AirPump air_pump_msg;
+OilPump oil_pump_msg;
+DcdcControl dcdc_msg;
+U16 vol[112*4];			//¸ß 4 Î»Îªµç³ØÏäºÅ£¨0-15£©£¬µÍ 12 Î»ÎªµçÑ¹£º 0.01V/ bit	448¸ö
+U8 temperater[26*8];			//ÎÂ¶Èµã1-96		1¡æ/bit£¬ -40    96¸ö
+Voltage vol_temp_msg[4];
 
 //UDS_id_766  uds766;
 
 extern led_check_t led_check;
 /* function declare */
 static void can_id_7E7_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_0C03A1A7_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_0C04A1A7_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_0C05A1A7_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_0C06A1A7_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_0C07A1A7_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_0C08A1A7_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_1818D0F3_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_1819D0F3_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_181AD0F3_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_180028F3_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_180128F3_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_180228F3_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_180328F3_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_180428F3_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_180028F4_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_180128F4_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_180228F4_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_0C09A79B_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_18FFC09E_analyse(can_msg_t *msg, can_pro_way_e way);
-static void can_id_18FECA00_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_180689F4_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_180789F4_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_181B80F4_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_0C008980_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_0C018980_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_0C028980_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_0C068980_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_0C058980_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_0C048980_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_18XX89F4_analyse(can_msg_t *msg, can_pro_way_e way);
 
 static  void can_updata_analyse(can_msg_t *msg, can_pro_way_e way);
-
-
 
 static void app_can_process(can_msg_t *msg, can_pro_way_e way);
 static void app_can1_process(can_msg_t *msg, can_pro_way_e way);
@@ -295,7 +293,6 @@ static void app_bound_id(U32 id,U32 id_mask, U8 dlc, CAN_ID_FORMAT_e format, U8 
 static void app_configuration_can(can_msg_t *msg,U32 id,U32 id_mask, U8 dlc, CAN_ID_FORMAT_e format, U8 msg_buf,
 		U16 period)	
 {
-	
 	msg[0].id = id;
 	msg[0].id_mask= id_mask;
 	msg[0].dlc = dlc;
@@ -324,31 +321,17 @@ void app_init_can(void) {
 	can_chip_mode_switch(&io_can_stb, &io_can_en, NORMAL_MODE);
 	/* receive id bound,add your code here,the id need to be received */
 	app_bound_id(PC_T0_MCU_ID, 0xfff, 8, STAND_ID, 1, PERIOD_MS(100));
-	
-	app_bound_id(ID_REC_01_0C03A1A7, 0x1FFFFFFF, 8, EXTERN_ID, 2 , (ID_0C03A1A7_period*50)); 
-	app_bound_id(ID_REC_02_0C04A1A7, 0x1FFFFFFF, 8, EXTERN_ID, 3 , (ID_0C04A1A7_period*50)); 
-	app_bound_id(ID_REC_03_0C05A1A7, 0x1FFFFFFF, 8, EXTERN_ID, 4 , (ID_0C05A1A7_period*50)); 
-	app_bound_id(ID_REC_04_0C06A1A7, 0x1FFFFFFF, 8, EXTERN_ID, 5 , (ID_0C06A1A7_period*50)); 
-	app_bound_id(ID_REC_05_0C07A1A7, 0x1FFFFFFF, 8, EXTERN_ID, 6 , (ID_0C07A1A7_Period*50)); 
-	app_bound_id(ID_REC_06_0C08A1A7, 0x1FFFFFFF, 8, EXTERN_ID, 7 , (ID_0C08A1A7_Period*50)); 
-	app_bound_id(ID_REC_07_1818D0F3, 0x1FFFFFFF, 8, EXTERN_ID, 8 , (ID_1818D0F3_Period*50)); 
-	app_bound_id(ID_REC_08_1819D0F3, 0x1FFFFFFF, 8, EXTERN_ID, 9 , (ID_1819D0F3_Period*50)); 
-	app_bound_id(ID_REC_09_181AD0F3, 0x1FFFFFFF, 8, EXTERN_ID, 10, (ID_181AD0F3_Period*50)); 
-	app_bound_id(ID_REC_10_180028F3, 0x1FFFFFFF, 8, EXTERN_ID, 11, (ID_180028F3_Period*50)); 
-	app_bound_id(ID_REC_11_180128F3, 0x1FFFFFFF, 8, EXTERN_ID, 12, (ID_180128F3_Period*50)); 
-	app_bound_id(ID_REC_12_180228F3, 0x1FFFFFFF, 8, EXTERN_ID, 13, (ID_180228F3_Period*50)); 
-	app_bound_id(ID_REC_13_180328F3, 0x1FFFFFFF, 8, EXTERN_ID, 14, (ID_180328F3_Period*50)); 
-	app_bound_id(ID_REC_14_180428F3, 0x1FFFFFFF, 8, EXTERN_ID, 15, (ID_180428F3_Period*50)); 
-	app_bound_id(ID_REC_15_180028F4, 0x1FFFFFFF, 8, EXTERN_ID, 16, (ID_180028F4_Period*50)); 
-	app_bound_id(ID_REC_16_180128F4, 0x1FFFFFFF, 8, EXTERN_ID, 17, (ID_180128F4_Period*50)); 
-	app_bound_id(ID_REC_17_180228F4, 0x1FFFFFFF, 8, EXTERN_ID, 18, (ID_180228F4_Period*50)); 
-	app_bound_id(ID_REC_18_0C09A79B, 0x1FFFFFFF, 8, EXTERN_ID, 19, (ID_0C09A79B_period*50)); 
-	app_bound_id(ID_REC_19_18FFC09E, 0x1FFFFFFF, 8, EXTERN_ID, 20, (ID_18FFC09E_period*50)); 
-	app_bound_id(ID_REC_20_18FECA00, 0x1FFFFFFF, 8, EXTERN_ID, 21, (ID_18FECA00_period*50)); 
-
-
-	app_bound_id(UPDATA_ID         , 0x1FFFFFF0, 8, EXTERN_ID, 22, (PERIOD_MS(1000)));
-	
+	app_bound_id(ID_REC_01_180689F4, 0x1FFFFFFF, 8, EXTERN_ID, 2, (ID_180689F4_period*50));
+	app_bound_id(ID_REC_02_180789F4, 0x1FFFFFFF, 8, EXTERN_ID, 3, (ID_180789F4_period*50));
+	app_bound_id(ID_REC_03_181B80f4, 0x1FFFFFFF, 8, EXTERN_ID, 4, (ID_181B80f4_period*50));
+	app_bound_id(ID_REC_04_0C008980, 0x1FFFFFFF, 8, EXTERN_ID, 5, (ID_0C008980_period*50));
+	app_bound_id(ID_REC_05_0C018980, 0x1FFFFFFF, 8, EXTERN_ID, 6, (ID_0C018980_Period*50));
+	app_bound_id(ID_REC_06_0C028980, 0x1FFFFFFF, 8, EXTERN_ID, 7, (ID_0C028980_Period*50));
+	app_bound_id(ID_REC_07_0C068980, 0x1FFFFFFF, 8, EXTERN_ID, 8, (ID_0C068980_Period*50));
+	app_bound_id(ID_REC_08_0C058980, 0x1FFFFFFF, 8, EXTERN_ID, 9, (ID_0C058980_Period*50));
+	app_bound_id(ID_REC_09_0C048980, 0x1FFFFFFF, 8, EXTERN_ID, 10, (ID_0C048980_Period*50));
+	app_bound_id(ID_REC_10_18XX89F4, 0x1F00FFFF, 8, EXTERN_ID, 11, (ID_18xx89F4_Period*50));
+	app_bound_id(UPDATA_ID         , 0x1FFFFFF0, 8, EXTERN_ID, 12, (PERIOD_MS(1000)));
 
 	/* sent id bound,add your code here */
 	app_bound_id(MCU_TO_PC_ID, 0xfff, 8, STAND_ID, (ID_RECV_NUM_ALL + 1),PERIOD_MS(100));
@@ -364,51 +347,41 @@ void app_init_can(void) {
 	/*register the can id process */
 	
 	
-	can_rx_handle[0]  = can_id_7E7_analyse; 	
-	can_rx_handle[1]  = can_id_0C03A1A7_analyse;
-	can_rx_handle[2]  = can_id_0C04A1A7_analyse;
-	can_rx_handle[3]  = can_id_0C05A1A7_analyse;
-	can_rx_handle[4]  = can_id_0C06A1A7_analyse;
-	can_rx_handle[5]  = can_id_0C07A1A7_analyse;
-	can_rx_handle[6]  = can_id_0C08A1A7_analyse;
-	can_rx_handle[7]  = can_id_1818D0F3_analyse;
-	can_rx_handle[8]  = can_id_1819D0F3_analyse;
-	can_rx_handle[9]  = can_id_181AD0F3_analyse;
-	can_rx_handle[10] = can_id_180028F3_analyse;
-	can_rx_handle[11] = can_id_180128F3_analyse;
-	can_rx_handle[12] = can_id_180228F3_analyse;
-	can_rx_handle[13] = can_id_180328F3_analyse;
-	can_rx_handle[14] = can_id_180428F3_analyse;
-	can_rx_handle[15] = can_id_180028F4_analyse;
-	can_rx_handle[16] = can_id_180128F4_analyse;
-	can_rx_handle[17] = can_id_180228F4_analyse;
-	can_rx_handle[18] = can_id_0C09A79B_analyse;
-	can_rx_handle[19] = can_id_18FFC09E_analyse;
-	can_rx_handle[20] = can_id_18FECA00_analyse;
-	can_rx_handle[21] = can_updata_analyse; 	
-	
+	can_rx_handle[0] = can_id_7E7_analyse;
+	can_rx_handle[1] = can_id_180689F4_analyse;
+	can_rx_handle[2] = can_id_180789F4_analyse;
+	can_rx_handle[3] = can_id_181B80F4_analyse;
+	can_rx_handle[4] = can_id_0C008980_analyse;
+	can_rx_handle[5] = can_id_0C018980_analyse;
+	can_rx_handle[6] = can_id_0C028980_analyse;
+	can_rx_handle[7] = can_id_0C068980_analyse;
+	can_rx_handle[8] = can_id_0C058980_analyse;
+	can_rx_handle[9] = can_id_0C048980_analyse;
+	can_rx_handle[10] = can_id_18XX89F4_analyse;
+	can_rx_handle[11] = can_updata_analyse;
+
 
 	mid_can_init(CAN_CHN, CAN_CHIP);
 
 	mid_can1_prepare(can1_tx_msg,can1_rx_msg);
 	memset(can1_rx_msg,0,sizeof(can1_rx_msg));
 	memset(can1_tx_msg,0,sizeof(can1_tx_msg));
-	app_configuration_can(&can1_rx_msg[0],ID_REC_01_68X, 0x7F0, 8, STAND_ID, 3, (ID_0C03A1A7_period*50));  
-	app_configuration_can(&can1_rx_msg[1],ID_REC_02_67X, 0x7F0, 8, STAND_ID, 4, (ID_0C03A1A7_period*50));  
-	app_configuration_can(&can1_rx_msg[2],ID_REC_03_62X, 0x7F0, 8, STAND_ID, 5, (ID_0C03A1A7_period*50));  
-	app_configuration_can(&can1_rx_msg[3],ID_REC_04_63X, 0x7F0, 8, STAND_ID, 6, (ID_0C03A1A7_period*50));  
-	app_configuration_can(&can1_rx_msg[4],ID_REC_05_64X, 0x7F0, 8, STAND_ID, 7, (ID_0C03A1A7_period*50));  
-	app_configuration_can(&can1_rx_msg[5],ID_REC_06_65X, 0x7F0, 8, STAND_ID, 8, (ID_0C03A1A7_period*50));  
-	app_configuration_can(&can1_rx_msg[6],ID_REC_07_56X, 0x7F0, 8, STAND_ID, 9, (ID_0C03A1A7_period*50));  
-	app_configuration_can(&can1_rx_msg[7],ID_REC_08_45X, 0x7F0, 8, STAND_ID, 10, (ID_0C03A1A7_period*50)); 
-                                                                                                         
+	app_configuration_can(&can1_rx_msg[0],ID_REC_01_68X, 0x7F0, 8, STAND_ID, 3, (ID_180689F4_period*50));
+	app_configuration_can(&can1_rx_msg[1],ID_REC_02_67X, 0x7F0, 8, STAND_ID, 4, (ID_180689F4_period*50));
+	app_configuration_can(&can1_rx_msg[2],ID_REC_03_62X, 0x7F0, 8, STAND_ID, 5, (ID_180689F4_period*50));
+	app_configuration_can(&can1_rx_msg[3],ID_REC_04_63X, 0x7F0, 8, STAND_ID, 6, (ID_180689F4_period*50));
+	app_configuration_can(&can1_rx_msg[4],ID_REC_05_64X, 0x7F0, 8, STAND_ID, 7, (ID_180689F4_period*50));
+	app_configuration_can(&can1_rx_msg[5],ID_REC_06_65X, 0x7F0, 8, STAND_ID, 8, (ID_180689F4_period*50));
+	app_configuration_can(&can1_rx_msg[6],ID_REC_07_56X, 0x7F0, 8, STAND_ID, 9, (ID_180689F4_period*50));
+	app_configuration_can(&can1_rx_msg[7],ID_REC_08_45X, 0x7F0, 8, STAND_ID, 10, (ID_180689F4_period*50));
 
 
 
-	app_configuration_can(&can1_tx_msg[0],BCAN_ID_SEND_6A4, 0x7FF, 8, STAND_ID,  1 , (ID_0C03A1A7_period*50));
-	app_configuration_can(&can1_tx_msg[1],BCAN_ID_SEND_454, 0x7FF, 8, STAND_ID, 2 , (ID_0C03A1A7_period*50));
+
+	app_configuration_can(&can1_tx_msg[0],BCAN_ID_SEND_6A4, 0x7FF, 8, STAND_ID, 1 , (ID_180689F4_period*50));
+	app_configuration_can(&can1_tx_msg[1],BCAN_ID_SEND_454, 0x7FF, 8, STAND_ID, 2 , (ID_180689F4_period*50));
 	can1_rx_pro = app_can1_process;
-	
+
 	hal_can_init(1);
 	wdg_feed();
 
@@ -423,8 +396,8 @@ static void app_can_process(can_msg_t *msg, can_pro_way_e way) {
 	}
 }
 static void app_can1_process(can_msg_t *msg, can_pro_way_e way) {
-	if (msg->buffer_num <= ID1_RECV_NUM_ALL) {
-		if (can1_rx_handle[msg->buffer_num - ID1_SENT_NUM_ALL -1] != NULL) {
+	if (msg->buffer_num <= ID1_PROCESS_ALL) {
+		if (can1_rx_handle[msg->buffer_num -ID1_SENT_NUM_ALL -1] != NULL) {
 			can1_rx_handle[msg->buffer_num - ID1_SENT_NUM_ALL -1](msg, way);
 		}
 	}
@@ -452,519 +425,238 @@ static void can_id_7E7_analyse(can_msg_t *msg, can_pro_way_e way) {
 	}
 }
 
-
-static void can_id_0C03A1A7_analyse(can_msg_t *msg, can_pro_way_e way){
+static void can_id_180689F4_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
-	switch (way) {
-	case CAN_PARSE:
-			Vcan_timeout_cfg = 0;
-			moto_voltage = (unsigned char) msg->data[0]+((unsigned int) msg->data[1] << 8);
-			moto_current = (unsigned char) msg->data[2]+((unsigned int) msg->data[3] << 8);
-            moto_speed = (unsigned char) msg->data[4]+((unsigned int) msg->data[5] << 8)/2;
-            Motor_Temperature = msg->data[6];
-            Inverter_t = msg->data[7];
-		break;
-	case CAN_LOST:
-			Vcan_timeout_cfg = 1;
-			moto_voltage = 10000;
-			moto_current = 10000;
-			moto_speed = 0;
-            Motor_Temperature = 40;
-            Inverter_t = 40;
-		break;
-	default:
-		break;
-	}
-}
-static void can_id_0C04A1A7_analyse(can_msg_t *msg, can_pro_way_e way){
-	U8 i  = 0;
+	dbg_printf("aaaa\n");
 	switch (way) {
 	case CAN_PARSE:
 		Vcan_timeout_cfg = 0;
-		Accelerator = (unsigned char) msg->data[4];
-        Engine_Speed = ((unsigned char) msg->data[5]+((unsigned int) msg->data[6] << 8))/8;
+		memcpy(&bms_msg.ID_180689F4_byte12,msg->data,8);
+		memcpy(&warning_data.ID_180689f4_byte7-1,&bms_msg.ID_180689F4_byte7,1);
+		memcpy(&warning_data.ID_180689f4_byte7,&bms_msg.ID_180689F4_byte7,1);
 		break;
 	case CAN_LOST:
 		Vcan_timeout_cfg = 1;
-		Accelerator = 0;
-		Engine_Speed = 0;
+		memset(&bms_msg.ID_180689F4_byte12,0,8);
+		memset(&warning_data.ID_180689f4_byte7,0,1);
+		memset(&warning_data.ID_180689f4_byte7-1,0,1);			
+		WORD_WRITE(bms_msg.ID_180689F4_byte34,32000);//32000Æ«ÒÆ
+		bms_msg.ID_180689F4_byte6 = 40;
 		break;
 	default:
 		break;
 	}
 }
-static void can_id_0C05A1A7_analyse(can_msg_t *msg, can_pro_way_e way){
+static void can_id_180789F4_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
 		Vcan_timeout_cfg = 0;
-		Fule_rate = (unsigned char) msg->data[0]+((unsigned int) msg->data[1] << 8);
-        water_temp = msg->data[2];
-        Engine_Fuhe = msg->data[3];
-        Niaosu = msg->data[4];
-        Accelerator_Shiji = msg->data[5]; //ÓÍÃÅÌ¤°åÊµ¼Ê
-        Engine_oil_press = msg->data[6]; //»úÓÍÑ¹Á¦
-        ambient_air_temperature = msg->data[7]; //ÖÜÎ§¿ÕÆøÎÂ¶È
+		memcpy(&bms_msg.ID_180789F4_byte12,msg->data,8);
 		break;
 	case CAN_LOST:
 		Vcan_timeout_cfg = 1;
-		Fule_rate = 0;
-		water_temp = 40;
-		Engine_Fuhe = 0;
-		Niaosu = 0;
-		Accelerator_Shiji = 0;
-		Engine_oil_press = 0;
-		ambient_air_temperature = 40;
+		memset(bms_msg.ID_180789F4_byte12,0,8);
+		bms_msg.ID_180789F4_byte5 = 40;
+		bms_msg.ID_180789F4_byte6 = 40;
 		break;
 	default:
 		break;
 	}
 }
-static void can_id_0C06A1A7_analyse(can_msg_t *msg, can_pro_way_e way){
+static void can_id_181B80F4_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
 		Vcan_timeout_cfg = 0;
-		Current_Gear = msg->data[1]&0x0f;
-        TCU_Position = (msg->data[1] >> 4)&0x0f;
-        TCU_warn = msg->data[2]&0x03;
-        STOP = (msg->data[2] >> 2)&0x03;
-        Speed_rmp = ((unsigned char) msg->data[3]+((unsigned int) msg->data[4] << 8))/8;
-        Car_mode = msg->data[5];
-        TCU_code = msg->data[6];
-        TCU_level = msg->data[7];
+		memcpy(&bms_msg.ID_181B80F4_byte12,msg->data,8);
+		memcpy(&warning_data.ID_181B80f4_byte5-1,&bms_msg.ID_181B80F4_byte5,1);
+		memcpy(&warning_data.ID_181B80f4_byte5,&bms_msg.ID_181B80F4_byte5,1);
+		memcpy(&warning_data.ID_181B80f4_byte6-1,&bms_msg.ID_181B80F4_byte6,1);
+		memcpy(&warning_data.ID_181B80f4_byte6,&bms_msg.ID_181B80F4_byte6,1);
+		memcpy(&warning_data.ID_181B80f4_byte7-1,&bms_msg.ID_181B80F4_byte7,1);
+		memcpy(&warning_data.ID_181B80f4_byte7,&bms_msg.ID_181B80F4_byte7,1);
+		memcpy(&warning_data.ID_181B80f4_byte8-1,&bms_msg.ID_181B80F4_byte8,1);
+		memcpy(&warning_data.ID_181B80f4_byte8,&bms_msg.ID_181B80F4_byte8,1);
 		break;
 	case CAN_LOST:
 		Vcan_timeout_cfg = 1;
-		Current_Gear = 0;
-		TCU_Position = 0;
-		TCU_warn =0 ;
-		STOP = 0;
-		Speed_rmp = 0;
-		Car_mode = 0;
-		TCU_code = 0;
-		TCU_level = 0;
+		memset(&bms_msg.ID_181B80F4_byte12,0,8);
+		memset(&warning_data.ID_181B80f4_byte5-1,0,1);
+		memset(&warning_data.ID_181B80f4_byte5,0,1);
+		memset(&warning_data.ID_181B80f4_byte6-1,0,1);
+		memset(&warning_data.ID_181B80f4_byte6,0,1);
+		memset(&warning_data.ID_181B80f4_byte7-1,0,1);
+		memset(&warning_data.ID_181B80f4_byte7,0,1);
+		memset(&warning_data.ID_181B80f4_byte8-1,0,1);
+		memset(&warning_data.ID_181B80f4_byte8,0,1);
+		WORD_WRITE(bms_msg.ID_181B80F4_byte12,32000);//32000Æ«ÒÆ
+		WORD_WRITE(bms_msg.ID_181B80F4_byte34,32000);//32000Æ«ÒÆ
 		break;
 	default:
 		break;
 	}
 }
-static void can_id_0C07A1A7_analyse(can_msg_t *msg, can_pro_way_e way){
+static void can_id_0C008980_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
 		Vcan_timeout_cfg = 0;
-		CAN_ON = msg->data[0]&0x01;
-        CAN_ACC = (msg->data[0] >> 1)&0x01;
-        Diagnosis = (msg->data[0] >> 2)&0x01;
-        Mode_S = (msg->data[0] >> 3)&0x01;
-        AC_SWITCH = (msg->data[0] >> 4)&0x01;
-        Hybrid = (msg->data[0] >> 5)&0x01;
-        Electric = (msg->data[0] >> 6)&0x01;
-        Tradition = (msg->data[0] >> 7)&0x01;
-        High_Voltage = (msg->data[1] >> 4)&0x01;
-        Charge_Check = (msg->data[1] >> 5)&0x01;
-        Digit_input3 = msg->data[2];
-        Battery_Kt = (msg->data[3] >> 1)&0x01;
-        Brake_Pedal = msg->data[4]&0x01;
-        Speed_percent = msg->data[5];
-        Brake_percent = msg->data[6];
+		memcpy(&vcu_msg.ID_0C008980_byte12,msg->data,8);
+		break;
+	case CAN_LOST:
+		Vcan_timeout_cfg = 1;
+		WORD_WRITE(vcu_msg.ID_0C008980_byte12,10000);//10000Æ«ÒÆ
+		vcu_msg.ID_0C008980_byte3  = 40;
+		vcu_msg.ID_0C008980_byte4  = 40;
+		WORD_WRITE(vcu_msg.ID_0C008980_byte56,10000);//10000Æ«ÒÆ
+		memset(&vcu_msg.ID_0C008980_byte78,0,2);
+		break;
+	default:
+		break;
+	}
+}
+static void can_id_0C018980_analyse(can_msg_t *msg, can_pro_way_e way){
+	U8 i  = 0;
+	switch (way) {
+	case CAN_PARSE:
+		Vcan_timeout_cfg =1;
+		memcpy(&vcu_msg.ID_0C018980_byte1,msg->data,8);
 		break;
 	case CAN_LOST:
 		Vcan_timeout_cfg =1;
-		CAN_KEY[0].byte = 0;
-		CAN_KEY[1].byte = 0;
-		Digit_input3 = 0;
-		CAN_KEY[2].byte = 0;
-		CAN_KEY[3].byte = 0;
-		Speed_percent = 0;
-		Brake_percent = 0;
+		memset(&vcu_msg.ID_0C018980_byte1,0,8);
 		break;
 	default:
 		break;
 	}
 }
-static void can_id_0C08A1A7_analyse(can_msg_t *msg, can_pro_way_e way){
+static void can_id_0C028980_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
 		Vcan_timeout_cfg = 0;
-		Program = ((unsigned char) msg->data[0]
-                +((unsigned int) msg->data[1] << 8)
-                +((unsigned long) msg->data[2] << 16));
-        tcu_spn = ((unsigned char) msg->data[3]
-                +((unsigned int) msg->data[4] << 8)
-                +((unsigned long) (msg->data[5]&0xE0) << 11));
-        tcu_fmi = msg->data[5]&0x1F;
-        tcu_cm = msg->data[6] >> 7;
-        tcu_oc = msg->data[6]&0x7F;
-        Car_LIFE = msg->data[7];
+		memcpy(&vcu_msg.ID_0C028980_byte12,msg->data,8);
 		break;
 	case CAN_LOST:
 		Vcan_timeout_cfg = 1;
-		Program = 0;
-		tcu_spn = 0;
-		tcu_fmi = 0;
-		tcu_cm = 0;
-		tcu_oc = 0;
-		Car_LIFE = 0;
+		memset(vcu_msg.ID_0C028980_byte12,0,8);
+		WORD_WRITE(vcu_msg.ID_0C028980_byte12,32000);//32000Æ«ÒÆ
 		break;
 	default:
 		break;
 	}
 }
-static void can_id_1818D0F3_analyse(can_msg_t *msg, can_pro_way_e way){
+static void can_id_0C068980_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
 		Bcan_timeout_cfg = 0;
-		BMS_V = ((unsigned char) msg->data[0]
-                +((unsigned int) msg->data[1] << 8));
-        BMS_A = ((unsigned char) msg->data[2]
-                +((unsigned int) msg->data[3] << 8));
-        BMS_SOC = msg->data[4];
-        Status_Flag1 = msg->data[5];
-        Status_Flag2 = msg->data[6];
-        Status_Flag3 = msg->data[7]&0x0C;
+		memcpy(&air_pump_msg.ID_0C068980_byte12,msg->data,8);
+		memcpy(&warning_data.ID_0C068980_byte8-1,&air_pump_msg.ID_0C068980_byte8,1);
+		memcpy(&warning_data.ID_0C068980_byte8,&air_pump_msg.ID_0C068980_byte8,1);
 		break;
 	case CAN_LOST:
 		Bcan_timeout_cfg = 1;
-		BMS_V = 10000;
-		BMS_A = 10000;
-		BMS_SOC = 0;
-		Status_Flag1 = 0;
-		Status_Flag2 = 0;
-		Status_Flag3 = 0;
+		memset(air_pump_msg.ID_0C068980_byte12,0,8);
+		memset(&warning_data.ID_0C068980_byte8-1,0,1);
+		memset(&warning_data.ID_0C068980_byte8,0,1);
+		WORD_WRITE(air_pump_msg.ID_0C068980_byte12,10000);//10000Æ«ÒÆ
+		WORD_WRITE(air_pump_msg.ID_0C068980_byte34,10000);//10000Æ«ÒÆ
+		WORD_WRITE(air_pump_msg.ID_0C068980_byte56,10000);//10000Æ«ÒÆ
+		air_pump_msg.ID_0C068980_byte7  = 40;
 		break;
 	default:
 		break;
 	}
 }
-static void can_id_1819D0F3_analyse(can_msg_t *msg, can_pro_way_e way){
+static void can_id_0C058980_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
 		Bcan_timeout_cfg = 0;
-		BMS_A_charge = ((unsigned char) msg->data[0]
-                +((unsigned int) msg->data[1] << 8));
-        BMS_A_discharge = ((unsigned char) msg->data[2]
-                +((unsigned int) msg->data[3] << 8));
-        Warn_level = msg->data[4];
-        BMS_V_average = ((unsigned char) msg->data[5]
-                +((unsigned int) msg->data[6] << 8));
-        BMS_T_H = msg->data[7];
+		memcpy(&oil_pump_msg.ID_0C058980_byte12,msg->data,8);
+		memcpy(&warning_data.ID_0C058980_byte8-1,&oil_pump_msg.ID_0C058980_byte8,1);
+		memcpy(&warning_data.ID_0C058980_byte8,&oil_pump_msg.ID_0C058980_byte8,1);	
 		break;
 	case CAN_LOST:
 		Bcan_timeout_cfg = 1;
-		BMS_A_charge = 10000;
-		BMS_A_discharge = 10000;
-		Warn_level = 0;
-		BMS_V_average = 10000;
-		BMS_T_H = 40;
+		memset(&oil_pump_msg.ID_0C058980_byte12,0,8);
+		memset(&warning_data.ID_0C058980_byte8-1,0,1);
+		memset(&warning_data.ID_0C058980_byte8,0,1);	
+		WORD_WRITE(oil_pump_msg.ID_0C058980_byte12,10000);//10000Æ«ÒÆ
+		WORD_WRITE(oil_pump_msg.ID_0C058980_byte34,10000);//10000Æ«ÒÆ
+		WORD_WRITE(oil_pump_msg.ID_0C058980_byte56,10000);//10000Æ«ÒÆ
+		oil_pump_msg.ID_0C058980_byte7  = 40;
 		break;
 	default:
 		break;
 	}
 }
-static void can_id_181AD0F3_analyse(can_msg_t *msg, can_pro_way_e way){
+static void can_id_0C048980_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
 	switch (way) {
 	case CAN_PARSE:
 		Bcan_timeout_cfg = 0;
-		Oum_zheng = ((unsigned char) msg->data[0]
-                +((unsigned int) msg->data[1] << 8));
-        Oum_fu = ((unsigned char) msg->data[2]
-                +((unsigned int) msg->data[3] << 8));
-        Battery_single_H = ((unsigned char) msg->data[4]
-                +((unsigned int) msg->data[5] << 8));
-        Battery_single_L = ((unsigned char) msg->data[6]
-                +((unsigned int) msg->data[7] << 8));
+		memcpy(&dcdc_msg.ID_0C048980_byte12,msg->data,8);
+		memcpy(&warning_data.ID_0C048980_byte8-1,&dcdc_msg.ID_0C048980_byte8,1);
+		memcpy(&warning_data.ID_0C048980_byte8,&dcdc_msg.ID_0C048980_byte8,1);	
 		break;
 	case CAN_LOST:
+		memset(&dcdc_msg.ID_0C048980_byte12,0,8);
+		memset(&warning_data.ID_0C048980_byte8-1,0,1);
+		memset(&warning_data.ID_0C048980_byte8,0,1);		
+		WORD_WRITE(dcdc_msg.ID_0C048980_byte12,10000);//10000Æ«ÒÆ
+		WORD_WRITE(dcdc_msg.ID_0C048980_byte34,10000);//10000Æ«ÒÆ
+		WORD_WRITE(dcdc_msg.ID_0C048980_byte56,10000);//10000Æ«ÒÆ
+		dcdc_msg.ID_0C048980_byte7  = 40;
 		Bcan_timeout_cfg = 1;
-		Oum_zheng = 0;
-		Oum_fu = 0;
-		Battery_single_H = 10000;
-		Battery_single_L = 10000;
 		break;
 	default:
 		break;
 	}
 }
-static void can_id_180028F3_analyse(can_msg_t *msg, can_pro_way_e way){
-	U8 i  = 0;
-	switch (way) {
-	case CAN_PARSE:
-		Bcan_timeout_cfg = 0;
-		Battery_number[0] = msg->data[0];
-        Battery_voltage[0] = ((unsigned char) msg->data[1]
-                +((unsigned int) msg->data[2] << 8));
-        Battery_number[1] = msg->data[3];
-        Battery_voltage[1] = ((unsigned char) msg->data[4]
-                +((unsigned int) msg->data[5] << 8));
-		break;
-	case CAN_LOST:
-		Bcan_timeout_cfg = 1;
-		Battery_number[0] = 0;
-		Battery_voltage[0] = 10000;
-		Battery_number[1] = 0;
-		Battery_voltage[1] = 10000;
-		break;
-	default:
-		break;
-	}
-}
-static void can_id_180128F3_analyse(can_msg_t *msg, can_pro_way_e way){
-	U8 i  = 0;
-	switch (way) {
-	case CAN_PARSE:
-		Bcan_timeout_cfg = 0;
-		Battery_number[2] = msg->data[0];
-        Battery_voltage[2] = ((unsigned char) msg->data[1]
-                +((unsigned int) msg->data[2] << 8));
-        Battery_number[3] = msg->data[3];
-        Battery_voltage[3] = ((unsigned char) msg->data[4]
-                +((unsigned int) msg->data[5] << 8));
-		break;
-	case CAN_LOST:
-		Bcan_timeout_cfg = 1;
-		Battery_number[2] = 0;
-		Battery_voltage[2] = 10000;
-		Battery_number[3] = 0;
-		Battery_voltage[3] = 10000;
-		break;
-	default:
-		break;
-	}
-}
-static void can_id_180228F3_analyse(can_msg_t *msg, can_pro_way_e way){
-	U8 i  = 0;
-	switch (way) {
-	case CAN_PARSE:
-		Bcan_timeout_cfg= 0;
-		Battery_number[4] = msg->data[0];
-        Battery_voltage[4] = ((unsigned char) msg->data[1]
-                +((unsigned int) msg->data[2] << 8));
-        Battery_number[5] = msg->data[3];
-        Battery_voltage[5] = ((unsigned char) msg->data[4]
-                +((unsigned int) msg->data[5] << 8));
-		break;
-	case CAN_LOST:
-		Bcan_timeout_cfg = 1;
-		Battery_number[4] = 0;
-		Battery_voltage[4] = 10000;
-		Battery_number[5] = 0;
-		Battery_voltage[5] = 10000;
-		break;
-	default:
-		break;
-	}
-}
-static void can_id_180328F3_analyse(can_msg_t *msg, can_pro_way_e way){
-	U8 i  = 0;
-	switch (way) {
-	case CAN_PARSE:
-		Bcan_timeout_cfg = 0;
-		Battery_number[6] = msg->data[0];
-        Battery_voltage[6] = ((unsigned char) msg->data[1]
-                +((unsigned int) msg->data[2] << 8));
-        Battery_number[7] = msg->data[3];
-        Battery_voltage[7] = ((unsigned char) msg->data[4]
-                +((unsigned int) msg->data[5] << 8));
-		break;
-	case CAN_LOST:
-		Bcan_timeout_cfg = 1;
-		Battery_number[6] = 0;
-		Battery_voltage[6] = 10000;
-		Battery_number[7] = 0;
-		Battery_voltage[7] = 10000;
-		break;
-	default:
-		break;
-	}
-}
-static void can_id_180428F3_analyse(can_msg_t *msg, can_pro_way_e way){
-	U8 i  = 0;
-	switch (way) {
-	case CAN_PARSE:
-		Bcan_timeout_cfg = 0;
-		Battery_number[8] = msg->data[0];
-        Battery_voltage[8] = ((unsigned char) msg->data[1]
-                +((unsigned int) msg->data[2] << 8));
-        Battery_number[9] = msg->data[3];
-        Battery_voltage[9] = ((unsigned char) msg->data[4]
-                +((unsigned int) msg->data[5] << 8));
-		break;
-	case CAN_LOST:
-		Bcan_timeout_cfg = 1;
-		Battery_number[8] = 0;
-		Battery_voltage[8] = 10000;
-		Battery_number[9] = 0;
-		Battery_voltage[9] = 10000;
-		break;
-	default:
-		break;
-	}
-}
-static void can_id_180028F4_analyse(can_msg_t *msg, can_pro_way_e way){
-	U8 i  = 0;
-	switch (way) {
-	case CAN_PARSE:
-		Bcan_timeout_cfg = 0;
-		Battery_number_t[0] = msg->data[0];
-        Battery_temp[0] = msg->data[1];
-        Battery_number_t[1] = msg->data[2];
-        Battery_temp[1] = msg->data[3];
-        Battery_number_t[2] = msg->data[4];
-        Battery_temp[2] = msg->data[5];
-        Battery_number_t[3] = msg->data[6];
-        Battery_temp[3] = msg->data[7];
-		break;
-	case CAN_LOST:
-		Bcan_timeout_cfg = 1;
-		Battery_number_t[0] = 0;
-		Battery_temp[0] = 40;
-		Battery_number_t[1] = 0;
-		Battery_temp[1] = 40;
-		Battery_number_t[2] = 0;
-		Battery_temp[2] = 40;
-		Battery_number_t[3] = 0;
-		Battery_temp[3] = 40;
-		break;
-	default:
-		break;
-	}
-}
-static void can_id_180128F4_analyse(can_msg_t *msg, can_pro_way_e way){
-	U8 i  = 0;
-	switch (way) {
-	case CAN_PARSE:
-		Bcan_timeout_cfg = 0;
-		Battery_number_t[4] = msg->data[0];
-        Battery_temp[4] = msg->data[1];
-        Battery_number_t[5] = msg->data[2];
-        Battery_temp[5] = msg->data[3];
-        Battery_number_t[6] = msg->data[4];
-        Battery_temp[6] = msg->data[5];
-        Battery_number_t[7] = msg->data[6];
-        Battery_temp[7] = msg->data[7];
-		break;
-	case CAN_LOST:
-		Bcan_timeout_cfg = 1;
-		Battery_number_t[4] = 0;
-		Battery_temp[4] = 40;
-		Battery_number_t[5] = 0;
-		Battery_temp[5] = 40;
-		Battery_number_t[6] = 0;
-		Battery_temp[6] = 40;
-		Battery_number_t[7] = 0;
-		Battery_temp[7] = 40;
-		break;
-	default:
-		break;
-	}
-}
-static void can_id_180228F4_analyse(can_msg_t *msg, can_pro_way_e way){
-	U8 i  = 0;
-	switch (way) {
-	case CAN_PARSE:
-		Bcan_timeout_cfg = 0;
-		Battery_number_t[8] = msg->data[0];
-        Battery_temp[8] = msg->data[1];
-        Battery_number_t[9] = msg->data[2];
-        Battery_temp[9] = msg->data[3];
-		break;
-	case CAN_LOST:
-		Bcan_timeout_cfg = 1;
-		Battery_number_t[8] = 0;
-		Battery_temp[8] = 40;
-		Battery_number_t[9] = 0;
-		Battery_temp[9] = 40;
-		break;
-	default:
-		break;
-	}
-}
-static void can_id_0C09A79B_analyse(can_msg_t *msg, can_pro_way_e way){
-	U8 i  = 0;
-	switch (way) {
-	case CAN_PARSE:
-		Dcan_timeout_cfg = 0;
-		DCAC_W = ((unsigned char) msg->data[0]
-                +((unsigned int) msg->data[1] << 8));
-        DCAC_V = ((unsigned char) msg->data[2]
-                +((unsigned int) msg->data[3] << 8));
-        DCAC_U = ((unsigned char) msg->data[4]
-                +((unsigned int) msg->data[5] << 8));
-        Sanreqi_t = msg->data[6];
-        DCAC_Warn_code = msg->data[7];
-		break;
-	case CAN_LOST:
-		Dcan_timeout_cfg = 1;
-		DCAC_W = 10000;
-		DCAC_V = 10000;
-		DCAC_U = 10000;
-		Sanreqi_t = 40;
-		DCAC_Warn_code = 0;
-		break;
-	default:
-		break;
-	}
-}
-static void can_id_18FFC09E_analyse(can_msg_t *msg, can_pro_way_e way){
-	U8 i  = 0;
-	switch (way) {
-	case CAN_PARSE:
-		Acan_timeout_cfg = 0;
-		AC_Warn_code = msg->data[0];
-        AC_opean = (msg->data[1] >> 5)&0x01;
-        AC_mind_speed = (msg->data[1] >> 6)&0x01;
-        AC_High_speed = (msg->data[1] >> 7)&0x01;
-        AC_warn1 = msg->data[2]&0x01;
-        AC_cold1_shuang = (msg->data[2] >> 1)&0x01;
-        AC_wind = (msg->data[2] >> 2)&0x01;
-        AC_save = (msg->data[2] >> 3)&0x01;
-        AC_cold2_shuang = (msg->data[2] >> 4)&0x01;
-        AC_cold2 = (msg->data[2] >> 5)&0x01;
-        AC_cold1 = (msg->data[2] >> 7)&0x01;
-        Indoor_t = msg->data[3];
-        Outdoor_t = msg->data[4];
-        Set_t = msg->data[5];
-        AC_req = msg->data[6]&0x01;
-        AC_LIFE = msg->data[7];
-
-		break;
-	case CAN_LOST:
-		Acan_timeout_cfg = 1;
-		AC_Warn_code = 0;
-		AC_KEY[0].byte = 0;
-		AC_KEY[1].byte = 0;
-		Indoor_t = 30;
-		Outdoor_t = 30;
-		Set_t = 30;
-		AC_req = 0;
-		AC_LIFE = 0;
-		break;
-	default:
-		break;
-	}
-}
-static void can_id_18FECA00_analyse(can_msg_t *msg, can_pro_way_e way)
+static void single_battery_init(void)
 {
-	U8 i  = 0;
+	memset(vol,0xFF,sizeof(vol));
+	wdg_feed();
+	memset(temperater,0XFF,sizeof(temperater));
+	wdg_feed();
+}
+static void can_id_18XX89F4_analyse(can_msg_t *msg, can_pro_way_e way){
+	U8 pf;
+	U8 idx;
+	int i;
 	switch (way) {
-	case CAN_PARSE:
-
-		break;
-	case CAN_LOST:
-		break;
-	default:
-		break;
+		case CAN_PARSE:
+			pf = (msg->id>>16)&0xFF;
+			if (pf <0x10)
+			{
+				break;
+			}
+			if (pf<=0x7F)
+			{
+				idx = pf - 0x10;
+				memcpy(&vol_temp_msg[0],msg->data,8);
+				for (i = 0; i < 4; ++i)vol[4*idx+i]=vol_temp_msg[i].bit4;
+			}
+			else if (pf<=0x99)
+			{
+				idx = pf - 0x80;
+				memcpy(&temperater[idx*8],msg->data,8);
+			}
+			break;
+		case CAN_LOST:
+			single_battery_init();
+			break;
+		default:
+			break;
 	}
+
 }
 #define OnlineCheckID	(UPDATA_ID | 1)
 #define ExcuteAppID     (UPDATA_ID | 9)
-static  void can_updata_analyse(can_msg_t *msg, can_pro_way_e way)
+static void can_updata_analyse(can_msg_t *msg, can_pro_way_e way)
 {
 	U8 i  = 0;
 	switch (way) {
@@ -1208,7 +900,6 @@ static void can_id_64X_analyse(can_msg_t *msg, can_pro_way_e way){
 			default:
 				break;
 		}
-
 		break;
 	case CAN_LOST:
 		break;
@@ -1217,7 +908,6 @@ static void can_id_64X_analyse(can_msg_t *msg, can_pro_way_e way){
 	}
 }
 static void can_id_65X_analyse(can_msg_t *msg, can_pro_way_e way){
-	
 	U8 i  = 0;
 	dbg_printf("65XID = %x\n",msg->id);
 	switch (way) {
@@ -1242,7 +932,7 @@ static void can_id_65X_analyse(can_msg_t *msg, can_pro_way_e way){
                 rpcur[14] = msg->data[4]+((unsigned int) msg->data[5] << 8);
                 break;
 			default:
-				break;	
+				break;
 		}
 		break;
 	case CAN_LOST:
@@ -1266,6 +956,7 @@ static void can_id_56X_analyse(can_msg_t *msg, can_pro_way_e way){
                         fPF[i + 4 * j] = (msg->data[j + 2] >> (i * 2))&0x03;
                     }
                 }
+				Fversion = msg->data[6];
                 break;
             case 0x562:
                 Mcan_count = 0;
@@ -1276,6 +967,7 @@ static void can_id_56X_analyse(can_msg_t *msg, can_pro_way_e way){
                         mPF[i + 4 * j] = (msg->data[j + 2] >> (i * 2))&0x03;
                     }
                 }
+				Mversion = msg->data[6];
                 break;
             case 0x563:
                 Rcan_count = 0;
@@ -1286,6 +978,7 @@ static void can_id_56X_analyse(can_msg_t *msg, can_pro_way_e way){
                         rPF[i + 4 * j] = (msg->data[j + 2] >> (i * 2))&0x03;
                     }
                 }
+				Rversion = msg->data[6];
                 break;
 			default:
 				break;

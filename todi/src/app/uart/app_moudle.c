@@ -158,53 +158,51 @@ void SYSTME_Logic(void)
 {
 	// F_PO1 = (IN16 && M_ON); //雨刮快档
 	// F_PO2 = (IN14 && M_ON); //雨刮慢档
-	// F_PO3 = (IN21 && M_ON); //喷水电机
-	
+	// F_PO3 = (IN21 && M_ON); //喷水电机	
 	F_PO4 = (IN6 && IN9); //左前雾灯
-	F_PO5 = (fKH1); //倒车灯
-	
-	F_PO6 = (FLASH && (IN5 || wake_up1)); //右转向灯
-	F_PO7 = (FLASH && (IN1 || wake_up1)); //左转向灯
-	F_PO8 = M_ON; //液位显示电源
-	F_PO9 = (IN7); //左远关灯
-	F_PO10 = (IN6 && IN9); //右前雾灯
-	F_PO11 = (IN7); //右远光灯
-	F_PO12 = M_ON; //行车记录仪电源
-	F_PO13 = (IN8); //左近光
-	F_PO14 = (IN6); //位置灯
-	F_PO15 = (IN8); //右近光
+	F_PO5 = (IN6); //小灯（开关照明，开关小灯)
+	F_PO6 = (FLASH && (IN5 || wake_up1)); //右前转向灯
+	F_PO7 = (FLASH && (IN1 || wake_up1)); //左前转向灯
+	F_PO8 = fKL3; //电喇叭
+	F_PO9 = (IN7); //远关灯
+	F_PO10 = (IN6 && mKL15); //前门踏步灯
+	F_PO11 = (IN7); //远光灯
+	F_PO12 = rKL3; //刹车灯
+	F_PO13 = (IN6 && IN8); //近光灯
+	F_PO14 = (IN6); //小灯(前位置灯，广告灯箱)
+	F_PO15 = !(IN6 || IN7 || IN8);//日间行车灯
 
-	M_PO1 = (IN12); //广告灯
-	M_PO2 = (FLASH && (IN5 || wake_up1)); //右转向灯
-	M_PO3 = ((mKH1 || mKL15)); //车内指示灯电源
-	M_PO4 = ((fKL6 || rKL6)); //制动灯
-	M_PO5 = (IN20 && (moto_speed < 1000)); //前门开电磁阀
-	M_PO6 = (IN19); //前路牌
-	M_PO7 = (IN28); //前门关电磁阀
-	M_PO8 = (IN19); //侧路牌
-	M_PO9 = (IN27 && (moto_speed < 1000)); //中门开电磁阀
-	M_PO10 = (IN19); //后路牌
-	M_PO11 = (IN26); //中门关电磁阀
-	M_PO12 = (IN19); //滚动电子
-	M_PO13 = (IN6); //小灯
-	M_PO14 = (IN19); //后广告屏
-	M_PO15 = (FLASH && (IN1 || wake_up1)); //左转向灯
+	M_PO1 = (IN20 && (pSpeed < 5)); //前门开门电磁阀
+	M_PO2 = (IN28); //前门关电磁阀
+	M_PO3 = (IN27 && (pSpeed < 5)); //前门开电磁阀
+	M_PO4 = (IN26); //中门关电磁阀
+	M_PO5 = (mKL5); //车速灯3（左厢灯2档）
+	M_PO6 = (mKL7); //车速灯2（右厢灯2档）
+	M_PO7 = (mKL4); //左日光灯（左厢灯1档）
+	M_PO8 = (mKL6); //右日光灯（右厢灯1档）
+	M_PO9 = (M_ON);	//钥匙2档（空调电源）
+	M_PO10 = (M_ON); //钥匙2档（车载电视）
+	M_PO11 = (M_ON); //钥匙2档（换气扇电源）
+	M_PO12 = (mKL1 && mKL3); //司机灯12
+	M_PO13 = (mKL8); //路牌灯
+	M_PO14 = (mKL9); //车内显示屏
+	M_PO15 = (IN6); //小灯（顶位置灯）
 
-	R_PO1 = ((fKL6 || rKL6)); //制动灯
-	//R_PO2 = (FLASH && IN5 && M_ON); 
-	R_PO3 = (rLED_flag); //后雾灯		
-	//R_PO4 = (fKL6 && M_ON); 
-	R_PO5 = (FLASH && (IN1 || wake_up1)); //左转向灯
-	//R_PO6 = (IN19 && M_ON); 
-	R_PO7 = (FLASH && (IN5 || wake_up1)); //右转向
+	R_PO1 = (mKH1 && IN6); //中门踏步灯
+	R_PO2 = (IN6);//小灯(后位置灯)
+	R_PO3 = (rKL3); //刹车灯
+	R_PO4 = (mKL8);//侧路牌
+	R_PO5 = (IN6 && IN9 && IN10); //后雾灯
+	R_PO6 = (M_ON); //总电源继电器(延时3s断电)
+	R_PO7 = (M_ON && (vcu_msg.ID_0C018980_byte4.bit02 ==0x04)); //倒车灯
 	R_PO8 = M_ON; //干燥器电源
-	R_PO9 = (fKH1); //倒车灯
-	//R_PO10 = (IN19 && M_ON); 
-	R_PO11 = (mKL15 && IN6); //前门踏步灯
-	R_PO12 = (IN6); //位置灯示高灯
-	R_PO13 = (mKH1 && IN6); //中门踏步灯
-	//R_PO14 = (IN19 && M_ON);
-	//R_PO15 = (FLASH && IN1 && M_ON); 
+	R_PO9 = (rKL3); //冷凝器电源
+	R_PO10 = 0; //排气电磁阀输出
+	R_PO11 = (rKL1); //后仓灯
+	R_PO12 = (IN6); //左转向灯（侧）
+	R_PO13 = (mKH1 && IN6); //左转向灯（LED）
+	R_PO14 = (IN19 && M_ON);//右转向灯（侧）
+	R_PO15 = (FLASH && IN1 && M_ON); //右转向灯（LED）
 }
 
 
@@ -340,14 +338,14 @@ void BCAN_Lost_handle(void)   //100ms moudle task
     else Mcan_count++;
 	if (IN10 && IN6 && (IN7 || IN8) && IN9) { //后雾灯开关是常开开关，消抖
         if (cnt5 > 10) rLED_flag = 1;
-        else cnt5++;       
+        else cnt5++;
     }else if((IN6 && (IN7 || IN8) && IN9)==0){
         rLED_flag = 0;
         cnt5=0;
     }
 	if (Fcan_count >= CAN_TIME)
 	{
-		rKEY.BITS.kl6 = 1;
+//		rKEY.BITS.kl6 = 1;
 	}
 }
 

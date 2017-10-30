@@ -23,21 +23,16 @@ Exec=0
 AutoLoad=1
 
 [DirInfo]
-WSP=E:\WorkSpace\Virtual Instrument\test\mcu-tongchang\
+WSP=D:\yangzijiang\mcu-yangzijiang\
 
 [EditState]
-STATE-1=todi\src\app\uart\app_moudle.h:73
-STATE-2=todi\src\app\can\app_can.c:1295
-STATE-3=todi\src\app\uart\app_main_interface.c:140
-STATE-4=todi\src\app\uart\Menu_Controlsystem.h:42
-STATE-5=todi\src\app\uart\Menu_Motorsystem.h:27
-STATE-6=todi\src\app\uart\Menu_Aircontrolsystem.h:11
-STATE-7=core\src\mid\mid_can.c:322
-STATE-8=todi\src\app\uart\Menu_Front_Module.h:39
-STATE-9=todi\src\app\uart\Menu_Back_Module.h:4
-STATE-10=todi\src\app\uart\app_moudle.c:329
-STATE-11=todi\src\app\app_system.c:194
-STATE-12=core\src\hal\hal_can.c:195
-STATE-13=todi\src\app\app_power.c:115
-Count=13
+STATE-1=todi\src\app\uart\Menu_Front_Module.h:17
+STATE-2=todi\src\app\uart\Menu_Tcusystem.h:2
+STATE-3=todi\src\app\uart\Menu_AirPumb.h:14
+STATE-4=todi\src\app\uart\app_uart_cmd.c:382
+STATE-5=todi\src\app\uart\Menu_Temp.h:16
+STATE-6=todi\src\app\uart\Menu_Middle_Module.h:18
+STATE-7=todi\src\app\uart\app_main_interface.c:180
+STATE-8=todi\src\app\uart\app_moudle.c:166
+Count=8
 

@@ -14,14 +14,14 @@
 #define MCU_IN9      PDDR03_P1	// 前雾灯开关    
 #define MCU_IN10     PDDR03_P2	// 后雾灯开关    
 #define MCU_IN11     PDDR03_P3	//               
-#define MCU_IN12     PDDR03_P4	// 广告灯箱开关  
+#define MCU_IN12     PDDR03_P4	//   
 #define MCU_IN13     PDDR03_P5	//               
 #define MCU_IN14     PDDR03_P6	// 雨刮低档开关  
 #define MCU_IN15     PDDR03_P7	// 雨刮间歇档开关
 #define MCU_IN16     PDDR15_P0	// 雨刮高档开关  
 #define MCU_IN17     PDDR15_P1	//               
 #define MCU_IN18     PDDR04_P0	//               
-#define MCU_IN19     PDDR04_P1	// 路牌开关      
+#define MCU_IN19     PDDR04_P1	//      
 #define MCU_IN20     PDDR04_P3	// 前门开开关    
 #define MCU_IN21     PDDR04_P4	// 雨刮喷水档开关
 #define MCU_IN22     PDDR04_P5	//               
@@ -56,17 +56,16 @@ typedef struct
 	U32 u32UTCTime;        /* UTC时间设置 */
 }FRAMEA20TOMCU_t;
 
-
 typedef enum
 {
 	//MENU_L2_NULL = 1,   /* NULL */
-	MENU_CONTROLSYSTEM = 1,   /* 控制系统信息 */
-	MENU_MOTORSYSTEM,   /* 发动机系统信息界面 */
-	MENU_AUXILIARYSYSTEM, /* 辅助系统信息界面 */
-	MENU_TCUSYSTEM,   /* tcu系统信息界面 */
-	MENU_BATTERYMANAGESYSTEM,   /* 电池管理系统信息界面 */
-	MENU_BATTERYSTATE,   /* 电池状态信息 */
-	MENU_AIRCONTROLSYSTEM,   /* 空调系统信息界面 */
+	MENU_BMS = 1,   /* 控制系统信息 */
+	MENU_VOL,   /* 发动机系统信息界面 */
+	MENU_TEMP, /* 辅助系统信息界面 */
+	MENU_VCU,   /* tcu系统信息界面 */
+	MENU_OIL_PUMB,   /* 电池管理系统信息界面 */
+	MENU_AIR_PUMB,   /* 电池状态信息 */
+	MENU_DCDC,   /* 空调系统信息界面 */
 	MENU_FRONT_MODULE,		/* 前模块 */
 	MENU_MIDDLE_MODULE,/* 中模块 */
 	MENU_BACK_MODULE,/* 后模块 */

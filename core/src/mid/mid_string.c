@@ -34,9 +34,11 @@ S16  sent_data(U8 chn, U8 *string, U8 len)
 		{
 			uart_de_queue(&uart_sent_queue);
 		}
+//		dbg_printf("%x ",*string);
         string++;
         len--;
     }
+//	dbg_printf("\n");
     hal_enable_uart_tx_interrupt(TRUE); 
     return ret;
 }

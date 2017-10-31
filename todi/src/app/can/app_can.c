@@ -1055,7 +1055,7 @@ void PCAN_CCVS(void) {
             + (unsigned char) (rKL15 << 2)//后舱门开信号
             + (unsigned char) (rKL8 << 1)//驻车信号
             + (unsigned char) (rKL10 || rKL12) ;//气压低报警信号
-   can_msg[msg_box - 1].data[1] = (unsigned char) (IN1 << 7)//左转向
+    can_msg[msg_box - 1].data[1] = (unsigned char) (IN1 << 7)//左转向
             + (unsigned char) (IN7 << 6)//远光灯
             + (unsigned char) (IN9 << 5)//前雾灯
             + (unsigned char) (IN5 << 4)//右转向
@@ -1074,7 +1074,7 @@ void PCAN_CCVS(void) {
 void PCAN_send_mile(void) {
 	U8 msg_box;
     msg_box = ID_RECV_NUM_ALL + 3;
-	can_msg[msg_box - 1].buffer_num = msg_box;;
+	can_msg[msg_box - 1].buffer_num = msg_box;
     can_msg[msg_box - 1].data[0] = (unsigned char) (e_total_miles); //低八位
     can_msg[msg_box - 1].data[1] = (unsigned char) (e_total_miles >> 8); //二级八位
     can_msg[msg_box - 1].data[2] = (unsigned char) (e_total_miles >> 16); //三级八位

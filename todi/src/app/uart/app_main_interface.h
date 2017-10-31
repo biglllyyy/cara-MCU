@@ -7,11 +7,12 @@ typedef union
 	U8 u8KeyState;
 	struct
 	{
-		U8 ok_key :1,						//key1
-		   left_key :1,						//key2
-           right_key :1,					//key3
-           cancel_key :1,					//key4
-           keyRemain :4;					//key0
+		U8 	keyRemain :3,					//key0
+			clear_trip_flag :1, 			//clear_trip_flag
+			right_key :1,					//key3
+			cancel_key :1,					//key4
+			left_key :1,					//key2
+			ok_key :1;						//key1
 	} bits;
 } Key_Status;
 //!<小端数据
@@ -152,13 +153,14 @@ typedef struct
     U8 dateTime[4];		//时间
     U8 battery[4];      //蓄电池电压
 	U8 version;			//版本号
-
+	
 	moudle_struct front_moudle;
 	moudle_struct middle_moudle;
 	moudle_struct back_moudle;
 } Main_Interface_Data_Struct;
 
 extern Main_Interface_Data_Struct main_interface_data;
+extern U8 clear_trip_flag;
 
 void main_interface_get_data(void);
 void main_interface_send_data(void);

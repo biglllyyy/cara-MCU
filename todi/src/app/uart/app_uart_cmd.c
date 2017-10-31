@@ -54,7 +54,7 @@
 #include "app_warning.h"
 #include "app_trip.h"
 #include <time.h>
-
+#include "app_main_interface.h"
 
 
 
@@ -291,7 +291,6 @@ void uart_data_parse(UartQueue *p)
 	g_tUart1Rec.u8BattBoxNum = dat[2];
 	memcpy(&g_tUart1Rec.u32UTCTime,&dat[3],4);
 	//g_tUart1Rec.u32UTCTime = dat[3]|dat[4]<<8
-	
 	
 	if (g_tUart1Rec.u8TripClear)
 		app_sub_trip1_clear();

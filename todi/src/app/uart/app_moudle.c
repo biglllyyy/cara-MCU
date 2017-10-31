@@ -153,12 +153,11 @@ void SW_Input_Init(void)
 	set_single_io_dir(5, 7, IO_INPUT);
 }
 
-
 void SYSTME_Logic(void)
 {
-	// F_PO1 = (IN16 && M_ON); //雨刮快档
-	// F_PO2 = (IN14 && M_ON); //雨刮慢档
-	// F_PO3 = (IN21 && M_ON); //喷水电机	
+//	F_PO1 = (IN16 && M_ON); //雨刮快档
+//	F_PO2 = ((IN14 || IN15 || IN21)&& M_ON); //雨刮慢档
+//	F_PO3 = (IN21 && M_ON); //喷水电机
 	F_PO4 = (IN6 && IN9); //左前雾灯
 	F_PO5 = (IN6); //小灯（开关照明，开关小灯)
 	F_PO6 = (FLASH && (IN5 || wake_up1)); //右前转向灯

@@ -74,7 +74,6 @@ typedef enum
 	ID_18xx89F4_Period = 100,
 
 	//send frame
-	
 } CAN_ID_PERIOD;
 
 
@@ -99,7 +98,7 @@ typedef struct
 	U8 ID_180689F4_byte8;		//预留
 	
 //ID_180789F4
-	U8 ID_180789F4_byte12[2];		//电池模块最低电压   高4位为电池箱号（0-15），低12位为电压：0.01V/bit
+	U8 ID_180789F4_byte12[2];	//电池模块最低电压   高4位为电池箱号（0-15），低12位为电压：0.01V/bit
 	U8 ID_180789F4_byte34[2];	//电池模块最高电压   高4位为电池箱号（0-15），低12位为电压：0.01V/bit
 	U8 ID_180789F4_byte5;		//电池模块最高温度	 1℃/bit， -40
 	U8 ID_180789F4_byte6;		//电池模块最低温度	 1℃/bit， -40
@@ -146,8 +145,9 @@ typedef struct
 
 typedef struct {
 	U16 bit0 :4;			//电池箱号
-	U16 bit4 :12;			//电池电压	
+	U16 bit4 :12;			//电池电压
 }Voltage;						//高 4 位为电池箱号（0-15），低 12 位为电压： 0.01V/ bit
+
 extern Voltage vol_temp_msg[4];
 
 extern U16 vol[112*4];				//高 4 位为电池箱号（0-15），低 12 位为电压： 0.01V/ bit	356个

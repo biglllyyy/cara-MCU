@@ -72,6 +72,7 @@ typedef enum
 	ID_0C058980_Period = 100,
 	ID_0C048980_Period = 100,
 	ID_18xx89F4_Period = 100,
+	ID_610_Period = 100,
 
 	//send frame
 } CAN_ID_PERIOD;

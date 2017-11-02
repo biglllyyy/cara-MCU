@@ -50,12 +50,12 @@ void main_interface_get_data(void)
 		Speed_rmp = 16000;
 	}
 	temp1 = (unsigned int) (Speed_rmp * 0.446 * 2 * 60 * 3.14159 / 1000 / 22.66 * 1.05); //半径*2*π*60/1000/减速比
-	if (temp1 > 140)
+	if (temp1 > 127)
 	{
-		temp1 = 140;
+		temp1 = 127;
 	}
 	pSpeed = temp1;
-	main_interface_data.speed = pSpeed; /* 车速0-140km/h */
+	main_interface_data.speed = pSpeed*2; /* 车速0-140km/h */
 
 	//电机转速
 	WORD_WRITE(main_interface_data.rpm,Speed_rmp);
@@ -146,6 +146,47 @@ void main_interface_get_data(void)
 		main_interface_data.control_IN34 = 0; 		 //保留
 		main_interface_data.control_IN35 = wake_up2; //保留
 
+#if 0
+		dbg_printf("%d ", main_interface_data.control_IN01);
+		dbg_printf("%d ", main_interface_data.control_IN02);
+		dbg_printf("%d ", main_interface_data.control_IN03);
+		dbg_printf("%d ", main_interface_data.control_IN04);
+		dbg_printf("%d ", main_interface_data.control_IN05);
+		dbg_printf("%d ", main_interface_data.control_IN06);
+		dbg_printf("%d ", main_interface_data.control_IN07);
+		dbg_printf("%d \n", main_interface_data.control_IN08);
+
+		dbg_printf("%d ", main_interface_data.control_IN09);
+		dbg_printf("%d ", main_interface_data.control_IN10);
+		dbg_printf("%d ", main_interface_data.control_IN11);
+		dbg_printf("%d ", main_interface_data.control_IN12);
+		dbg_printf("%d ", main_interface_data.control_IN13);
+		dbg_printf("%d ", main_interface_data.control_IN14);
+		dbg_printf("%d ", main_interface_data.control_IN15);
+		dbg_printf("%d\n", main_interface_data.control_IN16);
+
+		dbg_printf("%d ", main_interface_data.control_IN17);
+		dbg_printf("%d ", main_interface_data.control_IN18);
+		dbg_printf("%d ", main_interface_data.control_IN19);
+		dbg_printf("%d ", main_interface_data.control_IN20);
+		dbg_printf("%d ", main_interface_data.control_IN21);
+		dbg_printf("%d ", main_interface_data.control_IN22);
+		dbg_printf("%d ", main_interface_data.control_IN23);
+		dbg_printf("%d\n", main_interface_data.control_IN24);
+
+		dbg_printf("%d ", main_interface_data.control_IN25);
+		dbg_printf("%d ", main_interface_data.control_IN26);
+		dbg_printf("%d ", main_interface_data.control_IN27);
+		dbg_printf("%d ", main_interface_data.control_IN28);
+		dbg_printf("%d ", main_interface_data.control_IN29);
+		dbg_printf("%d ", main_interface_data.control_IN30);
+		dbg_printf("%d ", main_interface_data.control_IN31);
+		dbg_printf("%d\n", main_interface_data.control_IN32);
+
+		dbg_printf("%d ", main_interface_data.control_IN33);
+		dbg_printf("%d ", main_interface_data.control_IN34);
+		dbg_printf("%d\n", main_interface_data.control_IN35);	
+#endif
 	}
 	temp1 = vcu_msg.ID_0C018980_byte67[0]+vcu_msg.ID_0C018980_byte67[1]*256;
 	WORD_WRITE(main_interface_data.systemCode,temp1);

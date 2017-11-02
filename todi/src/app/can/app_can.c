@@ -243,6 +243,7 @@ static void can_id_0C068980_analyse(can_msg_t *msg, can_pro_way_e way);
 static void can_id_0C058980_analyse(can_msg_t *msg, can_pro_way_e way);
 static void can_id_0C048980_analyse(can_msg_t *msg, can_pro_way_e way);
 static void can_id_18XX89F4_analyse(can_msg_t *msg, can_pro_way_e way);
+static void can_id_610_analyse(can_msg_t *msg, can_pro_way_e way);
 
 static  void can_updata_analyse(can_msg_t *msg, can_pro_way_e way);
 
@@ -331,7 +332,8 @@ void app_init_can(void) {
 	app_bound_id(ID_REC_08_0C058980, 0x1FFFFFFF, 8, EXTERN_ID, 9, (ID_0C058980_Period*50));
 	app_bound_id(ID_REC_09_0C048980, 0x1FFFFFFF, 8, EXTERN_ID, 10, (ID_0C048980_Period*50));
 	app_bound_id(ID_REC_10_18XX89F4, 0x1F00FFFF, 8, EXTERN_ID, 11, (ID_18xx89F4_Period*50));
-	app_bound_id(UPDATA_ID         , 0x1FFFFFF0, 8, EXTERN_ID, 12, (PERIOD_MS(1000)));
+	app_bound_id(ID_REC_11_610, 0XFFFFFFFF, 8, EXTERN_ID, 12, (ID_610_Period*50));
+	app_bound_id(UPDATA_ID         , 0x1FFFFFF0, 8, EXTERN_ID, 13, (PERIOD_MS(1000)));
 
 	/* sent id bound,add your code here */
 	app_bound_id(MCU_TO_PC_ID, 0xfff, 8, STAND_ID, (ID_RECV_NUM_ALL + 1),PERIOD_MS(100));
@@ -358,7 +360,8 @@ void app_init_can(void) {
 	can_rx_handle[8] = can_id_0C058980_analyse;
 	can_rx_handle[9] = can_id_0C048980_analyse;
 	can_rx_handle[10] = can_id_18XX89F4_analyse;
-	can_rx_handle[11] = can_updata_analyse;
+	can_rx_handle[11] = can_id_610_analyse;
+	can_rx_handle[12] = can_updata_analyse;
 
 
 	mid_can_init(CAN_CHN, CAN_CHIP);
@@ -374,9 +377,7 @@ void app_init_can(void) {
 	app_configuration_can(&can1_rx_msg[5],ID_REC_06_65X, 0x7F0, 8, STAND_ID, 8, (ID_180689F4_period*50));
 	app_configuration_can(&can1_rx_msg[6],ID_REC_07_56X, 0x7F0, 8, STAND_ID, 9, (ID_180689F4_period*50));
 	app_configuration_can(&can1_rx_msg[7],ID_REC_08_45X, 0x7F0, 8, STAND_ID, 10, (ID_180689F4_period*50));
-
-
-
+	
 
 	app_configuration_can(&can1_tx_msg[0],BCAN_ID_SEND_6A4, 0x7FF, 8, STAND_ID, 1 , (ID_180689F4_period*50));
 	app_configuration_can(&can1_tx_msg[1],BCAN_ID_SEND_454, 0x7FF, 8, STAND_ID, 2 , (ID_180689F4_period*50));
@@ -427,7 +428,6 @@ static void can_id_7E7_analyse(can_msg_t *msg, can_pro_way_e way) {
 
 static void can_id_180689F4_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
-	dbg_printf("aaaa\n");
 	switch (way) {
 	case CAN_PARSE:
 		Vcan_timeout_cfg = 0;
@@ -654,6 +654,16 @@ static void can_id_18XX89F4_analyse(can_msg_t *msg, can_pro_way_e way){
 	}
 
 }
+
+static void can_id_610_analyse(can_msg_t *msg, can_pro_way_e way){
+	switch (way) {
+		case CAN_PARSE:
+		dbg_printf("%d %d %d %d\n",msg->data[0],msg->data[1],msg->data[2],msg->data[3]);
+		info.Odo = (U32)msg->data[1]+(U32)msg->data[2]*256+(U32)msg->data[3]*256*256+(U32)msg->data[4]*256*256*256;
+		write_total_trip(info.Odo);
+	}
+}
+
 #define OnlineCheckID	(UPDATA_ID | 1)
 #define ExcuteAppID     (UPDATA_ID | 9)
 static void can_updata_analyse(can_msg_t *msg, can_pro_way_e way)
@@ -725,7 +735,7 @@ void MCU_TO_PC_send(void) {  //对应报文0x7EF
 
 static void can_id_68X_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
-	dbg_printf("68XID = %x\n",msg->id);
+//	dbg_printf("68XID = %x\n",msg->id);
 	switch (way) {
 	case CAN_PARSE:
 			switch (msg->id) {
@@ -767,7 +777,7 @@ static void can_id_68X_analyse(can_msg_t *msg, can_pro_way_e way){
 	
 static void can_id_67X_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
-	dbg_printf("67XID = %x\n",msg->id);
+//	dbg_printf("67XID = %x\n",msg->id);
 	switch (way) {
 	case CAN_PARSE:
 		switch (msg->id) {
@@ -798,7 +808,7 @@ static void can_id_67X_analyse(can_msg_t *msg, can_pro_way_e way){
 }
 static void can_id_62X_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
-	dbg_printf("62XID = %x\n",msg->id);
+//	dbg_printf("62XID = %x\n",msg->id);
 	switch (way) {
 	case CAN_PARSE:
 		switch (msg->id) {
@@ -835,7 +845,7 @@ static void can_id_62X_analyse(can_msg_t *msg, can_pro_way_e way){
 }
 static void can_id_63X_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
-	dbg_printf("63XID = %x\n",msg->id);
+//	dbg_printf("63XID = %x\n",msg->id);
 	switch (way) {
 	case CAN_PARSE:
 		switch (msg->id) {
@@ -872,7 +882,7 @@ static void can_id_63X_analyse(can_msg_t *msg, can_pro_way_e way){
 }
 static void can_id_64X_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
-	dbg_printf("64XID = %x\n",msg->id);
+//	dbg_printf("64XID = %x\n",msg->id);
 	switch (way) {
 	case CAN_PARSE:
 		switch (msg->id) {
@@ -909,7 +919,7 @@ static void can_id_64X_analyse(can_msg_t *msg, can_pro_way_e way){
 }
 static void can_id_65X_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
-	dbg_printf("65XID = %x\n",msg->id);
+//	dbg_printf("65XID = %x\n",msg->id);
 	switch (way) {
 	case CAN_PARSE:
 		switch (msg->id) {
@@ -943,7 +953,7 @@ static void can_id_65X_analyse(can_msg_t *msg, can_pro_way_e way){
 }
 static void can_id_56X_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0,j=0;
-	dbg_printf("56XID = %x\n",msg->id);
+//	dbg_printf("56XID = %x\n",msg->id);
 	switch (way) {
 	case CAN_PARSE:
 		switch (msg->id) {
@@ -992,7 +1002,7 @@ static void can_id_56X_analyse(can_msg_t *msg, can_pro_way_e way){
 }
 static void can_id_45X_analyse(can_msg_t *msg, can_pro_way_e way){
 	U8 i  = 0;
-	dbg_printf("45XID = %x\n",msg->id);
+//	dbg_printf("45XID = %x\n",msg->id);
 	switch (way) {
 	case CAN_PARSE:
 		switch (msg->id) {

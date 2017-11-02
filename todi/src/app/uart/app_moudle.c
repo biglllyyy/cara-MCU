@@ -158,16 +158,18 @@ void SYSTME_Logic(void)
 //	F_PO1 = (IN16 && M_ON); //雨刮快档
 //	F_PO2 = ((IN14 || IN15 || IN21)&& M_ON); //雨刮慢档
 //	F_PO3 = (IN21 && M_ON); //喷水电机
+	static U32 time1, time2;
+	static char lock;
 	F_PO4 = (IN6 && IN9); //左前雾灯
 	F_PO5 = (IN6); //小灯（开关照明，开关小灯)
 	F_PO6 = (FLASH && (IN5 || wake_up1)); //右前转向灯
 	F_PO7 = (FLASH && (IN1 || wake_up1)); //左前转向灯
-	F_PO8 = fKL3; //电喇叭
+	F_PO8 = wake_up3 && fKL3; //电喇叭
 	F_PO9 = (IN7); //远关灯
 	F_PO10 = (IN6 && mKL15); //前门踏步灯
 	F_PO11 = (IN7); //远光灯
 	F_PO12 = rKL3; //刹车灯
-	F_PO13 = (IN6 && IN8); //近光灯
+	F_PO13 = (wake_up3 && IN6 && IN8); //近光灯
 	F_PO14 = (IN6); //小灯(前位置灯，广告灯箱)
 	F_PO15 = !(IN6 || IN7 || IN8);//日间行车灯
 
@@ -179,9 +181,9 @@ void SYSTME_Logic(void)
 	M_PO6 = (mKL7); //车速灯2（右厢灯2档）
 	M_PO7 = (mKL4); //左日光灯（左厢灯1档）
 	M_PO8 = (mKL6); //右日光灯（右厢灯1档）
-	M_PO9 = (M_ON);	//钥匙2档（空调电源）
-	M_PO10 = (M_ON); //钥匙2档（车载电视）
-	M_PO11 = (M_ON); //钥匙2档（换气扇电源）
+	M_PO9 = (IN4);	//钥匙2档（空调电源）
+	M_PO10 = (IN4); //钥匙2档（车载电视）
+	M_PO11 = (IN4); //钥匙2档（换气扇电源）
 	M_PO12 = (mKL1 && mKL3); //司机灯12
 	M_PO13 = (mKL8); //路牌灯
 	M_PO14 = (mKL9); //车内显示屏
@@ -189,19 +191,30 @@ void SYSTME_Logic(void)
 
 	R_PO1 = (mKH1 && IN6); //中门踏步灯
 	R_PO2 = (IN6);//小灯(后位置灯)
-	R_PO3 = (rKL3); //刹车灯
+	R_PO3 = wake_up3 || (rKL3); //刹车灯
 	R_PO4 = (mKL8);//侧路牌
 	R_PO5 = (IN6 && IN9 && IN10); //后雾灯
-	R_PO6 = (M_ON); //总电源继电器(延时3s断电)
-	R_PO7 = (M_ON && (vcu_msg.ID_0C018980_byte4.bit02 ==0x04)); //倒车灯
-	R_PO8 = M_ON; //干燥器电源
+	R_PO6 = (IN4); //总电源继电器(延时3s断电)
+	R_PO7 = (IN4 && (vcu_msg.ID_0C018980_byte4.bit02 ==0x04)); //倒车灯
+	R_PO8 = IN4; //干燥器电源
 	R_PO9 = (rKL3); //冷凝器电源
-	R_PO10 = 0; //排气电磁阀输出
+	if((rKL2 == 1) && (lock == 0)){
+		lock = 1;
+		time1 = hal_timer_get_tick();
+	} 
+	if(rKL2 == 0){
+		lock = 0;
+	}
+	time2 = hal_timer_get_tick();
+	R_PO10 = rKL2; //排气电磁阀输出
+	if(time2 - time1 > 300){
+		R_PO10 = 0; //排气电磁阀输出
+	}
 	R_PO11 = (rKL1); //后仓灯
-	R_PO12 = (IN6); //左转向灯（侧）
-	R_PO13 = (mKH1 && IN6); //左转向灯（LED）
-	R_PO14 = (IN19 && M_ON);//右转向灯（侧）
-	R_PO15 = (FLASH && IN1 && M_ON); //右转向灯（LED）
+	R_PO12 = (FLASH && (IN1 || wake_up1)); //左转向灯（侧）
+	R_PO13 = (FLASH && wake_up3 && (IN1 || wake_up1)); //左转向灯（LED）
+	R_PO14 = (FLASH && (IN5 || wake_up1));//右转向灯（侧）
+	R_PO15 = (FLASH && wake_up3 && (IN5 || wake_up1)); //右转向灯（LED）
 }
 
 

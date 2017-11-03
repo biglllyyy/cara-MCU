@@ -18,7 +18,6 @@
 #include "io_cfg.h"
 #include "mid_switch.h"
 
-
 Main_Interface_Data_Struct main_interface_data =
 { 0 };
 
@@ -27,6 +26,8 @@ Main_Interface_Data_Struct main_interface_data =
 
 extern U16 ad_data;
 U32 ad_data_group[4];
+U8 clear_trip_flag;
+
 
 extern pin_filter_t    pin_filter_in[];
 
@@ -40,27 +41,24 @@ void main_interface_get_data(void)
 
 	//按键
 	main_interface_data.key.u8KeyState = key_info_value; /* 按键状态 */
-
+	main_interface_data.key.bits.clear_trip_flag = clear_trip_flag;
+	dbg_printf("trip %d\n", main_interface_data.key.bits.clear_trip_flag);
 	//车速
 	Speed_rmp = vcu_msg.ID_0C008980_byte78[0] + vcu_msg.ID_0C008980_byte78[1]*256;
-
-	temp1 = (unsigned int) (Speed_rmp * 0.446 * 2 * 60 * 3.14159 / 1000 / 22.66 * 1.05); //半径*2*π*60/1000/减速比
-
-//	tempSpeed = pSpeed;  //车速单位1KM/H
-	if (temp1 > 140)
+	if (Speed_rmp > 16000)
 	{
-		temp1 = 140;
+		Speed_rmp = 16000;
+	}
+	temp1 = (unsigned int) (Speed_rmp * 0.446 * 2 * 60 * 3.14159 / 1000 / 22.66 * 1.05); //半径*2*π*60/1000/减速比
+	if (temp1 > 127)
+	{
+		temp1 = 127;
 	}
 	pSpeed = temp1;
-	main_interface_data.speed = temp1; /* 车速0-140km/h */
+	main_interface_data.speed = pSpeed*2; /* 车速0-140km/h */
 
 	//电机转速
-	temp1 = vcu_msg.ID_0C008980_byte78[0] + vcu_msg.ID_0C008980_byte78[1]*256;
-	if (temp1 > 4000)
-	{
-		temp1 = 4000;
-	}
-	WORD_WRITE(main_interface_data.rpm,temp1);
+	WORD_WRITE(main_interface_data.rpm,Speed_rmp);
 	
 	//总电压
 	buf1 = bms_msg.ID_180689F4_byte12[0]+bms_msg.ID_180689F4_byte12[1]*256;  //总电压
@@ -108,49 +106,6 @@ void main_interface_get_data(void)
 	//开关采集
 	{
 		//!<需要查询硬件端口
-#if 0
-		main_interface_data.control_IN01 = MCU_IN1;  //左转向开关
-		main_interface_data.control_IN02 = 0;        //保留
-		main_interface_data.control_IN03 = 0;        //保留
-		main_interface_data.control_IN04 = MCU_IN4 ; //钥匙ON开关
-		main_interface_data.control_IN05 = MCU_IN5 ; //右转向开关
-		main_interface_data.control_IN06 = MCU_IN6 ; //小灯开关
-		main_interface_data.control_IN07 = MCU_IN7 ; //远光灯开
-		main_interface_data.control_IN08 = MCU_IN8 ; //近光灯开
-		
-		main_interface_data.control_IN09 = MCU_IN9 ; //前雾灯开关
-		main_interface_data.control_IN10 = MCU_IN10; //后雾灯开关
-		main_interface_data.control_IN11 = 0;        //保留
-		main_interface_data.control_IN12 = 0;		 //保留
-		main_interface_data.control_IN13 = 0;        //保留
-		main_interface_data.control_IN14 = MCU_IN14; //雨刮低档开关
-		main_interface_data.control_IN15 = MCU_IN15; //雨刮间歇档开关
-		main_interface_data.control_IN16 = MCU_IN16; //雨刮高档开关
-		                                                                                                                               
-		main_interface_data.control_IN17 = 0;		 //保留
-		main_interface_data.control_IN18 = 0;        //保留
-		main_interface_data.control_IN19 = 0; 		 //保留
-		main_interface_data.control_IN20 = MCU_IN20; //前门开开关
-		main_interface_data.control_IN21 = MCU_IN21; //雨刮喷水开关
-		main_interface_data.control_IN22 = 0;        //保留
-		main_interface_data.control_IN23 = 0;        //保留
-		main_interface_data.control_IN24 = 0;		 //保留
-
-		main_interface_data.control_IN25 = 0; 		 //保留
-		main_interface_data.control_IN26 = MCU_IN26; //中门关开关
-		main_interface_data.control_IN27 = MCU_IN27; //中门开开关
-		main_interface_data.control_IN28 = MCU_IN28; //前门关开关
-		main_interface_data.control_IN29 = 0;		 //保留
-		main_interface_data.control_IN30 = 0;        //保留
-		main_interface_data.control_IN31 = 0;        //保留
-		main_interface_data.control_IN32 = 0;        //保留
-		
-		main_interface_data.control_IN33 = 0;        //保留
-		main_interface_data.control_IN34 = 0;        //保留
-		main_interface_data.control_IN35 = 0;	     //保留
-
-
-#endif
  		main_interface_data.control_IN01 = MCU_IN1;  //左转向开关
 		main_interface_data.control_IN02 = 0;        //保留
 		main_interface_data.control_IN03 = 0;        //保留
@@ -187,10 +142,51 @@ void main_interface_get_data(void)
 		main_interface_data.control_IN31 = 1;        //保留
 		main_interface_data.control_IN32 = 1;        //保留
 		
-		main_interface_data.control_IN33 = 1;        //保留
-		main_interface_data.control_IN34 = 1;        //保留
-		main_interface_data.control_IN35 = 1;	     //保留
+		main_interface_data.control_IN33 = wake_up1; //保留
+		main_interface_data.control_IN34 = 0; 		 //保留
+		main_interface_data.control_IN35 = wake_up2; //保留
 
+#if 0
+		dbg_printf("%d ", main_interface_data.control_IN01);
+		dbg_printf("%d ", main_interface_data.control_IN02);
+		dbg_printf("%d ", main_interface_data.control_IN03);
+		dbg_printf("%d ", main_interface_data.control_IN04);
+		dbg_printf("%d ", main_interface_data.control_IN05);
+		dbg_printf("%d ", main_interface_data.control_IN06);
+		dbg_printf("%d ", main_interface_data.control_IN07);
+		dbg_printf("%d \n", main_interface_data.control_IN08);
+
+		dbg_printf("%d ", main_interface_data.control_IN09);
+		dbg_printf("%d ", main_interface_data.control_IN10);
+		dbg_printf("%d ", main_interface_data.control_IN11);
+		dbg_printf("%d ", main_interface_data.control_IN12);
+		dbg_printf("%d ", main_interface_data.control_IN13);
+		dbg_printf("%d ", main_interface_data.control_IN14);
+		dbg_printf("%d ", main_interface_data.control_IN15);
+		dbg_printf("%d\n", main_interface_data.control_IN16);
+
+		dbg_printf("%d ", main_interface_data.control_IN17);
+		dbg_printf("%d ", main_interface_data.control_IN18);
+		dbg_printf("%d ", main_interface_data.control_IN19);
+		dbg_printf("%d ", main_interface_data.control_IN20);
+		dbg_printf("%d ", main_interface_data.control_IN21);
+		dbg_printf("%d ", main_interface_data.control_IN22);
+		dbg_printf("%d ", main_interface_data.control_IN23);
+		dbg_printf("%d\n", main_interface_data.control_IN24);
+
+		dbg_printf("%d ", main_interface_data.control_IN25);
+		dbg_printf("%d ", main_interface_data.control_IN26);
+		dbg_printf("%d ", main_interface_data.control_IN27);
+		dbg_printf("%d ", main_interface_data.control_IN28);
+		dbg_printf("%d ", main_interface_data.control_IN29);
+		dbg_printf("%d ", main_interface_data.control_IN30);
+		dbg_printf("%d ", main_interface_data.control_IN31);
+		dbg_printf("%d\n", main_interface_data.control_IN32);
+
+		dbg_printf("%d ", main_interface_data.control_IN33);
+		dbg_printf("%d ", main_interface_data.control_IN34);
+		dbg_printf("%d\n", main_interface_data.control_IN35);	
+#endif
 	}
 	temp1 = vcu_msg.ID_0C018980_byte67[0]+vcu_msg.ID_0C018980_byte67[1]*256;
 	WORD_WRITE(main_interface_data.systemCode,temp1);

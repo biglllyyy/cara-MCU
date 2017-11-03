@@ -5,7 +5,7 @@
 #include "hal_can.h"
 
 #define    CAN_CHN			0
-#define    ID_RECV_NUM_ALL	(10+2)
+#define    ID_RECV_NUM_ALL	(11+2)
 #define    ID_SENT_NUM_ALL  5
 #define    ID_PROCESS_ALL	(ID_RECV_NUM_ALL + ID_SENT_NUM_ALL)
 
@@ -30,6 +30,7 @@
 #define ID_REC_08_0C058980		 0X0C058980
 #define ID_REC_09_0C048980		 0X0C048980
 #define ID_REC_10_18XX89F4		 0X180089F4
+#define ID_REC_11_610			 0X610
 
 
 

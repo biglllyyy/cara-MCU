@@ -13,6 +13,8 @@
 #include "app_data_store.h"
 #include "mid_filter.h"
 #include "app_fuel_method2.h"
+#include "app_main_interface.h"
+
 #define LARGEST(a,b,c)  (a>b?(a>c?a:c):(b>c?b:c))
 
 /**********************************************************************************/
@@ -42,31 +44,32 @@ static void app_info_trip_cal(U16 spd)
 	
 	time_passed = hal_timer_passed(info.old_time);		//the time between last time 
 	info.old_time = hal_timer_get_tick();
-	
+
 	if(ON == g_u8IgnSts)
 	{
 		if(spd > 0)/*有车速*/
-		{	
+		{
 			current_mile = ((U32)spd << MAX_SHIFT_ENLARGE)*time_passed/ 360;//结果单位是m*2^16
  	
 			info.sub_trip_temp += current_mile;
 			
 			info.total_trip_temp +=  current_mile + ((info.trip_last_bit*100) << MAX_SHIFT_ENLARGE);
 			info.trip_last_bit = 0;
- 	
+
 			current_mile = info.sub_trip_temp >> MAX_SHIFT_ENLARGE;
-			
+
 			if(current_mile  >= ONE_HUNDRED)
 			{
 				info.Trip1++; /*小计1 */	
-				info.Trip2++;	/* 小计2 */
+				info.Trip2++; /* 小计2 */
 				AFE_distance++;	/* 平均油耗 */
 				set_this_trip_distance(get_this_trip_distance()+1);//本次路程的里程
-				
+
 				info.sub_trip_temp  -= (U32)ONE_HUNDRED << MAX_SHIFT_ENLARGE;
-				
+				clear_trip_flag = 0;
 				if(info.Trip1 >= MAX_SUB_TRIP)
 				{
+					dbg_printf("test\n");
 					app_sub_trip1_clear();
 				}
 				
@@ -152,16 +155,17 @@ U8 app_sub_trip1_clear(void)
 {
 	U8 ret=SUCCESS;
 	info.Trip1 = 0;
-	info.sub_trip_temp = 0;	
+	info.sub_trip_temp = 0;
 	info.total_trip_temp = 0;
+	dbg_printf("clear trip\n");
+	clear_trip_flag = 1;
 	if(write_sub_trip1(0)==FAIL)
 	{
+		clear_trip_flag = 0;
 		ret=FAIL;
 	}
-	
 	return ret;
 }
-
 
 U8 app_sub_trip2_clear(void)
 {
